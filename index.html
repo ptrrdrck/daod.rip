@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dao Drip</title>
+    <link href="./style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header>
+      <h1>dao</h1>
+      <button id="drip-button" type="submit">drip</button>
+    </header>
+    <main>
+      <p id="display" class="fade-in">Waiting...</p>
+    </main>
+    <div class="chapter-selection">
+      <div class="line-one">
+        <button class="button" id="drip-again-button">Drip again</button>
+        <span class="select-text" id="bullet">&bull;</span>
+        <div class="selection-area">
+          <span class="select-text">Select a chapter: </span>
+          <div class="selection-right">
+            <div class="input-area">
+              <input id="chapter-select-input" type="number" value="1">
+              <div class="number-controls">
+                <button class="button plus" id="add-button"></button>
+                <button class="button minus" id="subtract-button" disabled></button>
+              </div>
+            </div>
+            <button class="button" id="chapter-select-button">View</button>
+          </div>  
+        </div>
+      </div>
+      <div class="line-two">
+        <span class="select-text">Unread chapters: </span>
+        <div id="table-placeholder"><table id="unread-chapters"></table></div>
+      </div>
+    </div>
+    <footer class="fade-in">
+      <div id="links">
+        <a class="footer-link" href="./about.html">&rarr;About</a>
+        <a class="footer-link" href="./about.html">&rarr;Suggest an edit</a>
+        <a class="footer-link" href="./about.html">&rarr;Support the project</a>
+      </div>
+      <img id="yin-yang" src="./img/yin-yang-solid.svg" />
+    </footer>
+    <script src="./dao.js" type="text/javascript"></script>
+    <script src="./script.js" type="text/javascript"></script>
+  </body>
+</html>
