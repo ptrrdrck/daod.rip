@@ -40,7 +40,6 @@ html {
     margin: 0 14% 80px
   }
   .line-one,
-  .line-two,
   #links,
   .selection-area {
     flex-direction: row
@@ -262,7 +261,8 @@ input[type=number]::-webkit-inner-spin-button {
   gap: 20px
 }
 .line-one,
-.line-two {
+.line-two,
+.line-three {
   display: flex;
   flex-wrap: wrap;
   border: 1px solid #e0ccbc;
@@ -317,6 +317,64 @@ input[type=number]::-webkit-inner-spin-button {
 .chapter-numbers {
   justify-self:center;
   align-self: center
+}
+.line-three {
+  justify-content: space-between;
+  gap: 20px
+}
+.checkbox-container {
+  display: flex;
+  position: relative;
+  padding-left: 35px;
+  min-height: 30px;
+  cursor: pointer;
+  font-size: 24px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 30px;
+  width: 30px;
+  background-color: #fff6eb;
+  border: 1px solid #e0ccbc;
+  border-radius: 4px;
+}
+.checkbox-container:hover input ~ .checkmark {
+  background-color: #F2DFCE;
+}
+.checkbox-container input:checked ~ .checkmark {
+  background-color: #fff6eb;
+}
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+.checkbox-container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 6px;
+  height: 12px;
+  border: solid #e0ccbc;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 .emoji {
   filter: grayscale(100%) sepia(70%);

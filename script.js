@@ -31,39 +31,21 @@ function shuffle(array) {
   return array;
 };
 
+let translations = ['Stephen Mitchell','Gia-Fu Feng & Jane English','Stephen Addiss & Stanley Lombardo','Derek Lin'];
+
 /**
     Random chapter selection
 **/
 function newRandomChapter () {
   let message = [];
-  let rand = randNumb(dao['mitchell'].length);
+  let rand = randNumb(dao['Stephen Mitchell'].length);
 
-  for (let translation in dao) {
-    switch (translation) {
-      case 'mitchell':
-        message.push(
-          `<span class="chapter-author">Chapter ${rand + 1} by Stephen Mitchell:</span> ${dao[translation][rand]}`
-        );
-        break;
-      case 'fengEnglish':
-        message.push(
-          `<span class="chapter-author">Chapter ${rand + 1} by Gia-Fu Feng & Jane English:</span> ${dao[translation][rand]}`
-        );
-        break;
-      case 'addissLombardo':
-        message.push(
-          `<span class="chapter-author">Chapter ${rand + 1} by Stephen Addiss & Stanley Lombardo:</span> ${dao[translation][rand]}`
-        );
-        break;
-      case 'lin':
-        message.push(
-          `<span class="chapter-author">Chapter ${rand + 1} by Derek Lin:</span> ${dao[translation][rand]}`
-        );
-        break;
-      default:
-        message.push('Could not fetch the translations.');
-    }
-  };
+  translations.forEach(function(translation) {
+    message.push(
+      `<span class="chapter-author">Chapter ${rand + 1} by ${translation}:</span> ${dao[translation][rand]}`
+    );
+  });
+
   let shuffled = shuffle(message);
   let formatted = shuffled.join('<br /><span class="chapter-separator">&bull;</span>');
   displayArea.innerHTML = formatted;
@@ -156,32 +138,12 @@ function viewChapter(chapter) {
   let message = [];
   chapter = selectedChapter - 1;
 
-  for (let translation in dao) {
-    switch (translation) {
-      case 'mitchell':
-        message.push(
-          `<span class="chapter-author">Chapter ${chapter + 1} by Stephen Mitchell:</span> ${dao[translation][chapter]}`
-        );
-        break;
-      case 'fengEnglish':
-        message.push(
-          `<span class="chapter-author">Chapter ${chapter + 1} by Gia-Fu Feng & Jane English:</span> ${dao[translation][chapter]}`
-        );
-        break;
-      case 'addissLombardo':
-        message.push(
-          `<span class="chapter-author">Chapter ${chapter + 1} by Stephen Addiss & Stanley Lombardo:</span> ${dao[translation][chapter]}`
-        );
-        break;
-      case 'lin':
-        message.push(
-          `<span class="chapter-author">Chapter ${chapter + 1} by Derek Lin:</span> ${dao[translation][chapter]}`
-        );
-        break;
-      default:
-        message.push('Could not fetch the translations.');
-    }
-  };
+  translations.forEach(function(translation) {
+    message.push(
+      `<span class="chapter-author">Chapter ${chapter + 1} by ${translation}:</span> ${dao[translation][chapter]}`
+    );
+  });
+
   let shuffled = shuffle(message);
   let formatted = shuffled.join('<br /><span class="chapter-separator">&bull;</span>');
   displayArea.innerHTML = formatted;
@@ -210,4 +172,38 @@ function viewChapter(chapter) {
 
 chapterSelectButton.addEventListener('click', () => {
   viewChapter();
+});
+
+/**
+    Toggle individual translations
+**/
+const mitchellCheckbox = document.getElementById('mitchell-checkbox');
+const fengEnglishCheckbox = document.getElementById('fengEnglish-checkbox');
+const addissLombardoCheckbox = document.getElementById('addissLombardo-checkbox');
+const linCheckbox = document.getElementById('lin-checkbox');
+
+function toggleArrayItem(array, item) {
+    let i = array.indexOf(item);
+    if (i === -1) {
+      array.push(item);
+    }
+    else {
+      array.splice(i, 1);
+    }
+};
+
+mitchellCheckbox.addEventListener('change', (event) => {
+  toggleArrayItem(translations, 'Stephen Mitchell');
+});
+
+fengEnglishCheckbox.addEventListener('change', (event) => {
+  toggleArrayItem(translations, 'Gia-Fu Feng & Jane English');
+});
+
+addissLombardoCheckbox.addEventListener('change', (event) => {
+  toggleArrayItem(translations, 'Stephen Addiss & Stanley Lombardo');
+});
+
+linCheckbox.addEventListener('change', (event) => {
+  toggleArrayItem(translations, 'Derek Lin');
 });
