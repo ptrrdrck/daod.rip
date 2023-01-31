@@ -352,7 +352,18 @@ input[type=number]::-webkit-inner-spin-button {
   border-radius: 4px
 }
 .checkbox-container:hover input ~ .checkmark {
-  background-color: #F2DFCE
+  background-color: #f2dfce
+}
+.checkbox-container:hover input ~ .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 6px;
+  height: 12px;
+  border: solid #e0ccbc;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg)
 }
 .checkbox-container input:checked ~ .checkmark {
   background-color: #fff6eb
@@ -370,7 +381,7 @@ input[type=number]::-webkit-inner-spin-button {
   top: 5px;
   width: 6px;
   height: 12px;
-  border: solid #e0ccbc;
+  border: solid #000000;
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
