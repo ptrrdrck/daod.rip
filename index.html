@@ -12,7 +12,7 @@
       <button id="drip-button" type="submit">drip</button>
     </header>
     <main>
-      <p id="display" class="fade-in">Waiting...</p>
+      <p id="display" class="fade-in">Fetching translations...</p>
     </main>
     <div class="chapter-selection">
       <div class="line-one">
@@ -22,14 +22,18 @@
           <span class="select-text">Select a chapter: </span>
           <div class="selection-right">
             <div class="input-area">
-              <input id="chapter-select-input" type="number" value="1">
+              <input id="chapter-select-input" type="number" value="1" />
               <div class="number-controls">
                 <button class="button plus" id="add-button"></button>
-                <button class="button minus" id="subtract-button" disabled></button>
+                <button
+                  class="button minus"
+                  id="subtract-button"
+                  disabled
+                ></button>
               </div>
             </div>
             <button class="button" id="chapter-select-button">View</button>
-          </div>  
+          </div>
         </div>
       </div>
       <div class="line-two">
@@ -38,23 +42,27 @@
         <button class="button" id="reset-unread-button">Reset</button>
       </div>
       <div class="line-three">
-        <label class="checkbox-container">Stephen Mitchell
-          <input id="mitchell-checkbox" type="checkbox" checked>
+        <label class="checkbox-container"
+          >Stephen Mitchell
+          <input id="mitchell-checkbox" type="checkbox" checked />
           <span class="checkmark"></span>
         </label>
 
-        <label class="checkbox-container">Gia-Fu Feng & Jane English
-          <input id="fengEnglish-checkbox" type="checkbox" checked>
+        <label class="checkbox-container"
+          >Gia-Fu Feng & Jane English
+          <input id="fengEnglish-checkbox" type="checkbox" checked />
           <span class="checkmark"></span>
         </label>
 
-        <label class="checkbox-container">Stephen Addiss & Stanley Lombardo
-          <input id="addissLombardo-checkbox" type="checkbox" checked>
+        <label class="checkbox-container"
+          >Stephen Addiss & Stanley Lombardo
+          <input id="addissLombardo-checkbox" type="checkbox" checked />
           <span class="checkmark"></span>
         </label>
 
-        <label class="checkbox-container">Derek Lin
-          <input id="lin-checkbox" type="checkbox" checked>
+        <label class="checkbox-container"
+          >Derek Lin
+          <input id="lin-checkbox" type="checkbox" checked />
           <span class="checkmark"></span>
         </label>
       </div>
@@ -62,8 +70,12 @@
     <footer class="fade-in">
       <div id="links">
         <a class="footer-link" href="./about.html">&rarr;About</a>
-        <a class="footer-link" href="./about.html">&rarr;Suggest an edit</a>
-        <a class="footer-link" href="./about.html">&rarr;Support the project</a>
+        <a
+          class="footer-link"
+          href="https://daodrip.kampsite.co/"
+          target="_blank"
+          >&rarr;Feedback</a
+        >
       </div>
       <img id="yin-yang" src="./img/yin-yang-solid.svg" />
     </footer>
