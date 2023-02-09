@@ -24,7 +24,7 @@ html {
   #display,
   .sources {
     font-size: clamp(1rem, calc(1rem + 1vw), 1.5rem);
-    margin: 30px 10% 60px;
+    margin: 30px 10% 80px;
   }
   .chapter-selection {
     margin: 0 10% 80px;
@@ -40,7 +40,7 @@ html {
   #display,
   .sources {
     font-size: clamp(1.5rem, calc(1.5rem + 1vw), 1.8rem);
-    margin: 30px 14% 60px;
+    margin: 30px 14% 80px;
   }
   .chapter-selection {
     margin: 0 14% 80px;
@@ -406,7 +406,8 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 .emphasis,
 .footer-link:hover,
-p.sources a:hover {
+p.sources a:hover,
+a:hover {
   font-style: italic;
 }
 .sources {
@@ -418,8 +419,13 @@ p.sources a:hover {
   color: #000;
   background: #fff1e0;
 }
-p.sources a {
+p.sources a,
+a {
   color: #000;
+}
+.reference {
+  font-size: 20px;
+  font-weight: 200;
 }
 footer {
   display: flex;
