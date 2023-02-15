@@ -136,7 +136,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: calc(40px + 2vw);
+  padding-top: calc(40px + 2vw);
   margin-bottom: calc(15px + 2vw);
 }
 h1 {
@@ -166,7 +166,6 @@ h1 {
   box-shadow: 0 4px 15px rgba(67, 67, 67, 0.16);
 }
 #drip-button:hover {
-  cursor: pointer;
   -webkit-animation: 0.36s hover;
   animation: 0.36s hover;
 }
@@ -182,14 +181,10 @@ input {
   height: 42px;
   width: 50px;
   font-size: 1rem;
-  border: 1px solid #e0ccbc;
+  border: 1px solid #000;
   border-radius: 10px;
   text-align: center;
   outline: 0;
-}
-.number-control[disabled]:hover,
-input[disabled]:hover {
-  cursor: not-allowed;
 }
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -214,7 +209,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 .number-controls .minus:hover,
 .number-controls .plus:hover {
-  background-color: transparent;
+  background-color: transparent !important;
 }
 .number-controls .plus {
   top: 0;
@@ -222,7 +217,7 @@ input[type="number"]::-webkit-inner-spin-button {
   border-top: 10px solid transparent;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid #e0ccbc;
+  border-bottom: 10px solid #000;
 }
 .number-controls .minus {
   bottom: 0;
@@ -230,17 +225,16 @@ input[type="number"]::-webkit-inner-spin-button {
   border-bottom: 10px solid transparent;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-top: 10px solid #e0ccbc;
+  border-top: 10px solid #000;
 }
 .number-control[disabled] {
-  transition-duration: 0.3s;
+  transition-duration: 0.6s;
 }
 .number-controls .plus[disabled] {
   border-top: 10px solid transparent;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 10px solid #f5e2d4;
-  cursor: not-allowed;
   background-color: transparent;
 }
 .number-controls .minus[disabled] {
@@ -248,25 +242,46 @@ input[type="number"]::-webkit-inner-spin-button {
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-top: 10px solid #f5e2d4;
-  cursor: not-allowed;
   background-color: transparent;
 }
 .button {
   width: auto;
   height: 42px;
-  cursor: pointer;
-  border-radius: 10px;
+  border-radius: 20px;
   background-color: #fff6eb;
   padding: 4px 12px;
   color: #000;
   font-size: 1rem;
   letter-spacing: 0.32px;
-  border: 1px solid #e0ccbc;
+  border: 1px solid #000000;
   align-self: center;
 }
 .button:hover {
   transition-duration: 0.3s;
-  background-color: #f2dfce;
+  color: #fff6eb;
+  background-color: #000;
+}
+@keyframes blink {
+  0% {
+    color: #000;
+    background-color: #fff;
+  }
+  25% {
+    color: #fff;
+    background-color: #000;
+  }
+  50% {
+    color: #000;
+    background-color: #fff;
+  }
+  75% {
+    color: #fff;
+    background-color: #000;
+  }
+  100% {
+    color: #000;
+    background-color: #fff;
+  }
 }
 /**
     Misc body
@@ -321,27 +336,62 @@ input[type="number"]::-webkit-inner-spin-button {
   padding: 20px;
   gap: 20px;
 }
+main {
+  display: flex;
+  flex-direction: column;
+}
 .button-wrapper {
   display: flex;
   align-self: center;
-  width: 180.6px;
-  border: 1px solid #e0ccbc;
+  justify-content: center;
+  background: #fff1e0;
   border-radius: 10px;
-  padding: 20px;
+  padding: 5%;
+  margin-bottom: 80px;
 }
 .select-text {
   align-self: center;
   letter-spacing: 0.32px;
+}
+::selection {
+  color: #cbfcfe;
+  background: #e0ccbc;
+}
+::-moz-selection {
+  color: #cbfcfe;
+  background: #e0ccbc;
+}
+body,
+body * {
+  cursor: none;
+}
+.cursor {
+  position: fixed;
+  background: rgba(93, 250, 255, 0.418);
+  backdrop-filter: blur(3px);
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 50%;
+  will-change: transform;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  z-index: 10000;
 }
 #bullet {
   padding: 0 34px;
 }
 .input-area {
   display: flex;
-  gap: 4px;
+  gap: 5px;
 }
 .selection-area {
   display: flex;
+  width: 100%;
+  justify-content: center;
   align-self: center;
   border: 1px solid #e0ccbc;
   border-radius: 10px;
@@ -380,9 +430,8 @@ input[type="number"]::-webkit-inner-spin-button {
 .checkbox-container {
   display: flex;
   position: relative;
-  padding-left: 35px;
+  padding-left: 36px;
   min-height: 30px;
-  cursor: pointer;
   font-size: 24px;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -392,7 +441,6 @@ input[type="number"]::-webkit-inner-spin-button {
 .checkbox-container input {
   position: absolute;
   opacity: 0;
-  cursor: pointer;
   height: 0;
   width: 0;
 }
@@ -403,18 +451,18 @@ input[type="number"]::-webkit-inner-spin-button {
   height: 30px;
   width: 30px;
   background-color: #fff6eb;
-  border: 1px solid #e0ccbc;
+  border: 1px solid #000;
   border-radius: 4px;
 }
 .checkbox-container:hover input ~ .checkmark {
-  background-color: #f2dfce;
+  background-color: #000;
 }
 .checkbox-container:hover input ~ .checkmark:after {
   left: 9px;
   top: 5px;
   width: 6px;
   height: 12px;
-  border: solid #e0ccbc;
+  border: solid #fff6eb;
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
@@ -422,6 +470,9 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 .checkbox-container input:checked ~ .checkmark {
   background-color: #fff6eb;
+}
+.checkbox-container:hover input:checked ~ .checkmark {
+  background-color: #000;
 }
 .checkmark:after {
   content: "";
@@ -495,7 +546,6 @@ footer img {
 footer img:hover {
   -webkit-animation: 0.5s out;
   animation: 0.5s out;
-  cursor: pointer;
 }
 .footer-link {
   text-decoration: none;
@@ -506,13 +556,6 @@ footer img:hover {
   position: relative;
   padding-bottom: 2px;
 }
-.footer-link:hover::after {
-  content: "";
-  position: absolute;
-  bottom: 2px;
-  left: 0;
-  height: 2px;
-  width: 100%;
-  background: #fff1e0;
-  z-index: -1;
+.footer-link:hover {
+  text-decoration: underline;
 }
