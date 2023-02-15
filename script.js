@@ -10,6 +10,7 @@ let translations = [
   "Stephen Addiss & Stanley Lombardo",
   "Derek Lin",
 ];
+
 let selectedChapter = 1;
 let readChapters = JSON.parse(localStorage.getItem("readChapters")) || [];
 let unreadChapters = JSON.parse(localStorage.getItem("unreadChapters")) || [
