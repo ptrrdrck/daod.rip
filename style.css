@@ -34,6 +34,9 @@ html {
     Media queries
 **/
 @media (max-width: 599px) {
+  .cursor {
+    display: none;
+  }
   #change {
     top: 12px;
     right: 12px;
@@ -62,6 +65,9 @@ html {
   }
 }
 @media (min-width: 600px) {
+  .cursor {
+    display: unset;
+  }
   #change {
     top: 20px;
     right: 20px;
