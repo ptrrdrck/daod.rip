@@ -4,23 +4,42 @@
   padding: 0;
   box-sizing: border-box;
 }
+:root {
+  --primaryColor: #f2dfce;
+  --secondaryColor: #fff1e0;
+  --accentDark: #000f28;
+  --accentLight: #fff1e0;
+  --fontColor: #000f28;
+  --shadowColor: #000f2835;
+  --cursorColor: #000f2863;
+}
+.color-tester {
+  background-color: #cda4ff95;
+}
 html {
   min-height: 100%;
   background: linear-gradient(
     239deg,
-    #cbfcfe 0,
-    #f2dfce 20%,
-    #f2dfce 40%,
-    #f2dfce 100%
+    var(--secondaryColor) 0,
+    var(--primaryColor) 20%,
+    var(--primaryColor) 40%,
+    var(--tertiaryColor) 100%
   );
   font-family: Arial, Helvetica, sans-serif;
   font-size: 24px;
+  color: var(--fontColor);
 }
 
 /**
     Media queries
 **/
 @media (max-width: 599px) {
+  #change {
+    top: 12px;
+    right: 12px;
+    width: 30px;
+    height: 30px;
+  }
   #display,
   .sources {
     font-size: clamp(1rem, calc(1rem + 1vw), 1.5rem);
@@ -43,6 +62,12 @@ html {
   }
 }
 @media (min-width: 600px) {
+  #change {
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+  }
   #display,
   .sources {
     font-size: clamp(1rem, calc(1rem + 1vw), 1.5rem);
@@ -149,8 +174,8 @@ h1 {
     Buttons/inputs
 **/
 #drip-button {
-  background: #fff1e0;
-  color: #000;
+  background: var(--accentLight);
+  color: var(--fontColor);
   border: none;
   border-radius: 50%;
   font-size: calc(1.9rem + 1vw);
@@ -163,7 +188,7 @@ h1 {
   padding: calc(70px + 1vw);
   letter-spacing: 1px;
   margin: 20px;
-  box-shadow: 0 4px 15px rgba(67, 67, 67, 0.16);
+  box-shadow: 0 4px 15px var(--shadowColor);
 }
 #drip-button:hover {
   -webkit-animation: 0.36s hover;
@@ -177,11 +202,12 @@ h1 {
   text-decoration: none;
 }
 input {
-  background: #fff6eb;
+  background: var(--accentLight);
   height: 42px;
   width: 50px;
   font-size: 1rem;
-  border: 1px solid #000;
+  color: var(--fontColor);
+  border: 1px solid var(--fontColor);
   border-radius: 10px;
   text-align: center;
   outline: 0;
@@ -217,7 +243,7 @@ input[type="number"]::-webkit-inner-spin-button {
   border-top: 10px solid transparent;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid #000;
+  border-bottom: 10px solid var(--fontColor);
 }
 .number-controls .minus {
   bottom: 0;
@@ -225,7 +251,7 @@ input[type="number"]::-webkit-inner-spin-button {
   border-bottom: 10px solid transparent;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-top: 10px solid #000;
+  border-top: 10px solid var(--fontColor);
 }
 .number-control[disabled] {
   transition-duration: 0.6s;
@@ -234,55 +260,39 @@ input[type="number"]::-webkit-inner-spin-button {
   border-top: 10px solid transparent;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid #f5e2d4;
+  border-bottom: 10px solid var(--shadowColor);
   background-color: transparent;
 }
 .number-controls .minus[disabled] {
   border-bottom: 10px solid transparent;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-top: 10px solid #f5e2d4;
+  border-top: 10px solid var(--shadowColor);
   background-color: transparent;
 }
 .button {
   width: auto;
   height: 42px;
   border-radius: 20px;
-  background-color: #000;
+  background-color: var(--fontColor);
   padding: 4px 12px;
-  color: #fff6eb;
+  color: var(--accentLight);
   font-size: 1rem;
   letter-spacing: 0.32px;
-  border: 1px solid #000000;
+  border: 1px solid var(--fontColor);
   align-self: center;
 }
 .button:hover {
   transition-duration: 0.3s;
-  color: #fff6eb;
-  background-color: #000;
+  color: var(--accentLight);
+  background-color: var(--fontColor);
 }
-@keyframes blink {
-  0% {
-    color: #000;
-    background-color: #fff;
-  }
-  25% {
-    color: #fff;
-    background-color: #000;
-  }
-  50% {
-    color: #000;
-    background-color: #fff;
-  }
-  75% {
-    color: #fff;
-    background-color: #000;
-  }
-  100% {
-    color: #000;
-    background-color: #fff;
-  }
+#change {
+  position: fixed;
+  border-radius: 50%;
+  background-color: var(--accentDark);
 }
+
 /**
     Misc body
 **/
@@ -292,7 +302,7 @@ input[type="number"]::-webkit-inner-spin-button {
   border: none;
   border-radius: 10px;
   padding: 5% 6%;
-  background: #fff1e0;
+  background: var(--accentLight);
 }
 .chapter-author {
   text-decoration: underline;
@@ -310,7 +320,7 @@ input[type="number"]::-webkit-inner-spin-button {
   justify-content: center;
   padding: 5%;
   border-radius: 10px;
-  background: #fff1e0;
+  background: var(--accentLight);
   gap: 20px;
 }
 .line-two,
@@ -324,14 +334,14 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 .line-two {
   justify-content: center;
-  border: 1px solid #e0ccbc;
+  border: 1px solid var(--fontColor);
   border-radius: 10px;
   padding: 20px;
   gap: 20px;
 }
 .line-three {
   justify-content: space-between;
-  border: 1px solid #e0ccbc;
+  border: 1px solid var(--fontColor);
   border-radius: 10px;
   padding: 20px;
   gap: 20px;
@@ -352,12 +362,12 @@ main {
   letter-spacing: 0.32px;
 }
 ::selection {
-  color: #cbfcfe;
-  background: #e0ccbc;
+  color: var(--secondaryColor);
+  background: var(--accentDark);
 }
 ::-moz-selection {
-  color: #cbfcfe;
-  background: #e0ccbc;
+  color: var(--secondaryColor);
+  background: var(--accentDark);
 }
 body,
 body * {
@@ -365,7 +375,7 @@ body * {
 }
 .cursor {
   position: fixed;
-  background: rgba(93, 250, 255, 0.418);
+  background: var(--cursorColor);
   backdrop-filter: blur(3px);
   width: 40px;
   height: 40px;
@@ -391,7 +401,7 @@ body * {
   width: 100%;
   justify-content: center;
   align-self: center;
-  border: 1px solid #e0ccbc;
+  border: 1px solid var(--fontColor);
   border-radius: 10px;
   padding: 20px;
   gap: 19px;
@@ -420,7 +430,7 @@ body * {
   align-self: center;
 }
 .chapter-link {
-  color: #000;
+  color: var(--fontColor);
 }
 .chapter-link:hover {
   font-style: italic;
@@ -448,29 +458,29 @@ body * {
   left: 0;
   height: 30px;
   width: 30px;
-  background-color: #fff6eb;
-  border: 1px solid #000;
+  background-color: var(--accentLight);
+  border: 1px solid var(--fontColor);
   border-radius: 4px;
 }
 .checkbox-container:hover input ~ .checkmark {
-  background-color: #000;
+  background-color: var(--fontColor);
 }
 .checkbox-container:hover input ~ .checkmark:after {
   left: 9px;
   top: 5px;
   width: 6px;
   height: 12px;
-  border: solid #fff6eb;
+  border: solid var(--accentLight);
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
 .checkbox-container input:checked ~ .checkmark {
-  background-color: #fff6eb;
+  background-color: var(--accentLight);
 }
 .checkbox-container:hover input:checked ~ .checkmark {
-  background-color: #000;
+  background-color: var(--fontColor);
 }
 .checkmark:after {
   content: "";
@@ -485,7 +495,7 @@ body * {
   top: 5px;
   width: 6px;
   height: 12px;
-  border: solid #000000;
+  border: solid var(--fontColor);
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
@@ -510,18 +520,18 @@ a:hover {
   border: none;
   border-radius: 10px;
   padding: 5% 6%;
-  color: #000;
-  background: #fff1e0;
+  color: var(--fontColor);
+  background: var(--accentLight);
   gap: 20px;
 }
 p.sources a,
 a {
-  color: #000;
+  color: var(--fontColor);
 }
 .reference {
   display: flex;
   flex-wrap: wrap;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 200;
 }
 footer {
@@ -534,20 +544,23 @@ footer {
   display: flex;
   gap: 20px;
 }
-footer img {
+#yin-yang {
   margin: calc(60px + 2vw) auto;
   width: calc(80px + 1vw);
   height: calc(80px + 1vw);
   -webkit-animation: 0.5s in;
   animation: 0.5s in;
 }
-footer img:hover {
+svg {
+  color: var(--accentDark);
+}
+#yin-yang:hover {
   -webkit-animation: 0.5s out;
   animation: 0.5s out;
 }
 .footer-link {
   text-decoration: none;
-  color: #000;
+  color: var(--fontColor);
   font-size: 1rem;
   letter-spacing: 0.32px;
   margin: 0 12px;
