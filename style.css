@@ -14,7 +14,7 @@
   --cursorColor: #000f2863;
 }
 .color-tester {
-  background-color: #cda4ff95;
+  background-color: #a4a4a4;
 }
 html {
   min-height: 100%;
@@ -260,14 +260,14 @@ input[type="number"]::-webkit-inner-spin-button {
   border-top: 10px solid transparent;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid var(--shadowColor);
+  border-bottom: 10px solid var(--cursorColor);
   background-color: transparent;
 }
 .number-controls .minus[disabled] {
   border-bottom: 10px solid transparent;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-top: 10px solid var(--shadowColor);
+  border-top: 10px solid var(--cursorColor);
   background-color: transparent;
 }
 .button {
