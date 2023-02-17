@@ -13,9 +13,6 @@
   --shadowColor: #000f2835;
   --cursorColor: #000f2863;
 }
-.color-tester {
-  background-color: #a4a4a4;
-}
 html {
   min-height: 100%;
   background: linear-gradient(
@@ -33,10 +30,12 @@ html {
 /**
     Media queries
 **/
-@media (max-width: 599px) {
+@media (hover: none) {
   .cursor {
     display: none;
   }
+}
+@media (max-width: 599px) {
   #change {
     top: 12px;
     right: 12px;
@@ -65,9 +64,6 @@ html {
   }
 }
 @media (min-width: 600px) {
-  .cursor {
-    display: unset;
-  }
   #change {
     top: 20px;
     right: 20px;
@@ -142,22 +138,6 @@ html {
     -webkit-transform: rotate(0);
   }
 }
-@keyframes click {
-  0% {
-    -webkit-transform: scale(1);
-  }
-  100% {
-    -webkit-transform: scale(0.964);
-  }
-}
-@keyframes hover {
-  0% {
-    -webkit-transform: scale(1.03);
-  }
-  100% {
-    -webkit-transform: scale(1);
-  }
-}
 .fade-in {
   animation: 1s fadeIn;
   opacity: 1;
@@ -197,12 +177,20 @@ h1 {
   box-shadow: 0 4px 15px var(--shadowColor);
 }
 #drip-button:hover {
-  -webkit-animation: 0.36s hover;
-  animation: 0.36s hover;
+  transform: scale(1.05);
+  transition: 0.3s;
 }
 #drip-button:active {
-  -webkit-animation: 0.18s ease-in-out click;
-  animation: 0.18s ease-in-out click;
+  transform: scale(0.95);
+  transition: 0.3s;
+  box-shadow: unset;
+}
+#drip-again-button {
+  box-shadow: 0 4px 15px var(--shadowColor);
+  margin: 20px;
+}
+#drip-again-button:active {
+  box-shadow: unset;
 }
 .index {
   text-decoration: none;
@@ -289,9 +277,14 @@ input[type="number"]::-webkit-inner-spin-button {
   align-self: center;
 }
 .button:hover {
-  transition-duration: 0.3s;
+  transform: scale(1.05);
+  transition: 0.3s;
   color: var(--accentLight);
   background-color: var(--fontColor);
+}
+.button:active {
+  transform: scale(0.95);
+  transition: 0.3s;
 }
 #change {
   position: fixed;
@@ -427,7 +420,8 @@ body * {
 #unread-chapters td {
   border: none;
   width: 43px;
-  height: 43px;
+  height: 25px;
+  margin-bottom: 18px;
   display: flex;
   justify-content: center;
 }
@@ -436,10 +430,15 @@ body * {
   align-self: center;
 }
 .chapter-link {
+  padding: 0 1px 1px 0;
   color: var(--fontColor);
 }
 .chapter-link:hover {
-  font-style: italic;
+  padding: 0 1px 4px 2px;
+  font-style: normal;
+  text-decoration: none;
+  color: var(--accentLight);
+  background-color: var(--fontColor);
 }
 .checkbox-container {
   display: flex;
