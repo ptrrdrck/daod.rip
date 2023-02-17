@@ -12,6 +12,7 @@
   --fontColor: #000f28;
   --shadowColor: #000f2835;
   --cursorColor: #000f2863;
+  --filterColor: grayscale(100%) sepia(70%);
 }
 html {
   min-height: 100%;
@@ -503,9 +504,9 @@ body * {
   transform: rotate(45deg);
 }
 .emoji {
-  filter: grayscale(100%) sepia(70%);
-  -webkit-filter: grayscale(100%) sepia(70%);
-  -moz-filter: grayscale(100%) sepia(70%);
+  filter: var(--filterColor);
+  -webkit-filter: var(--filterColor);
+  -moz-filter: var(--filterColor);
 }
 .emphasis,
 .footer-link:hover,

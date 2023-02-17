@@ -30,6 +30,7 @@ const themes = {
     "--fontColor": "#001436",
     "--shadowColor": "#00143628",
     "--cursorColor": "#00143663",
+    "--filterColor": "grayscale(100%) sepia(70%)",
   },
   dark: {
     "--primaryColor": "#000f28",
@@ -40,6 +41,8 @@ const themes = {
     "--fontColor": "#fff6eb",
     "--shadowColor": "#fff6eb28",
     "--cursorColor": "#fff6eb63",
+    "--filterColor":
+      "sepia(100%) brightness(88%) hue-rotate(170deg) saturate(150%)",
   },
   grayscale: {
     "--primaryColor": "#747474",
@@ -50,6 +53,7 @@ const themes = {
     "--fontColor": "#fbfbfb",
     "--shadowColor": "#fbfbfb28",
     "--cursorColor": "#fbfbfb63",
+    "--filterColor": "grayscale(100%)",
   },
   blackwhite: {
     "--primaryColor": "#fff",
@@ -60,6 +64,7 @@ const themes = {
     "--fontColor": "#000",
     "--shadowColor": "#00000028",
     "--cursorColor": "#00000063",
+    "--filterColor": "grayscale(100%)",
   },
   color: {
     "--primaryColor": "#e3cbff",
@@ -70,6 +75,7 @@ const themes = {
     "--fontColor": "#240748",
     "--shadowColor": "#24074828",
     "--cursorColor": "#126e5c63",
+    "--filterColor": "sepia(100%) hue-rotate(197deg) saturate(150%)",
   },
 };
 
