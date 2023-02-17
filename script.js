@@ -11,6 +11,7 @@ let translations = [
   "Derek Lin",
 ];
 
+let currentChapterIndex;
 let selectedChapter = 1;
 let readChapters = JSON.parse(localStorage.getItem("readChapters")) || [];
 let unreadChapters = JSON.parse(localStorage.getItem("unreadChapters")) || [
@@ -95,6 +96,7 @@ function newRandomChapter() {
   localStorage.setItem("unreadChapters", JSON.stringify(unreadChapters));
 
   displayUnreadChapters();
+  currentChapterIndex = rand;
 }
 
 newRandomChapter();
@@ -189,6 +191,7 @@ function viewChapter(chapter) {
   localStorage.setItem("unreadChapters", JSON.stringify(unreadChapters));
 
   displayUnreadChapters();
+  currentChapterIndex = chapter;
 }
 
 chapterSelectButton.addEventListener("click", () => {
@@ -230,18 +233,37 @@ function toggleArrayItem(array, item) {
   }
 }
 
+function refreshCurrentChapter() {
+  let message = [];
+  translations.forEach(function (translation) {
+    message.push(
+      `<span class="chapter-author">Chapter ${
+        currentChapterIndex + 1
+      } by ${translation}:</span> ${dao[translation][currentChapterIndex]}`
+    );
+  });
+  let formatted = message.join(
+    '<br /><span class="chapter-separator">&bull;</span>'
+  );
+  displayArea.innerHTML = formatted;
+}
+
 mitchellCheckbox.addEventListener("change", (event) => {
   toggleArrayItem(translations, "Stephen Mitchell");
+  refreshCurrentChapter();
 });
 
 fengEnglishCheckbox.addEventListener("change", (event) => {
   toggleArrayItem(translations, "Gia-Fu Feng & Jane English");
+  refreshCurrentChapter();
 });
 
 addissLombardoCheckbox.addEventListener("change", (event) => {
   toggleArrayItem(translations, "Stephen Addiss & Stanley Lombardo");
+  refreshCurrentChapter();
 });
 
 linCheckbox.addEventListener("change", (event) => {
   toggleArrayItem(translations, "Derek Lin");
+  refreshCurrentChapter();
 });
