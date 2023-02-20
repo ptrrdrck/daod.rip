@@ -4,12 +4,14 @@
     from characteristically distinct translations.
 **/
 
-let translations = [
-  "Stephen Mitchell",
-  "Gia-Fu Feng & Jane English",
+let translations = JSON.parse(localStorage.getItem("translations")) || [
   "Stephen Addiss & Stanley Lombardo",
+  "Gia-Fu Feng & Jane English",
   "Derek Lin",
+  "Stephen Mitchell",
 ];
+
+localStorage.setItem("translations", JSON.stringify(translations));
 
 let currentChapterIndex;
 let selectedChapter = 1;
@@ -215,7 +217,7 @@ resetUnreadButton.addEventListener("click", () => {
 });
 
 /**
-    Toggle individual translations
+    Translation control
 **/
 const mitchellCheckbox = document.getElementById("mitchell-checkbox");
 const fengEnglishCheckbox = document.getElementById("fengEnglish-checkbox");
@@ -223,6 +225,44 @@ const addissLombardoCheckbox = document.getElementById(
   "addissLombardo-checkbox"
 );
 const linCheckbox = document.getElementById("lin-checkbox");
+
+if (!localStorage.getItem("addissLombardo-checkbox")) {
+  localStorage.setItem("addissLombardo-checkbox", "true");
+}
+
+if (!localStorage.getItem("fengEnglish-checkbox")) {
+  localStorage.setItem("fengEnglish-checkbox", "true");
+}
+
+if (!localStorage.getItem("lin-checkbox")) {
+  localStorage.setItem("lin-checkbox", "true");
+}
+
+if (!localStorage.getItem("mitchell-checkbox")) {
+  localStorage.setItem("mitchell-checkbox", "true");
+}
+
+function checkBoxes() {
+  var boxes = document.querySelectorAll("input[type='checkbox']");
+  for (var i = 0; i < boxes.length; i++) {
+    var box = boxes[i];
+    if (box.hasAttribute("store")) {
+      setupBox(box);
+    }
+  }
+
+  function setupBox(box) {
+    var storageId = box.getAttribute("store");
+    var oldVal = localStorage.getItem(storageId);
+    box.checked = oldVal === "true" ? true : false;
+
+    box.addEventListener("change", function () {
+      localStorage.setItem(storageId, this.checked);
+    });
+  }
+}
+
+checkBoxes();
 
 function toggleArrayItem(array, item) {
   let i = array.indexOf(item);
@@ -251,19 +291,23 @@ function refreshCurrentChapter() {
 mitchellCheckbox.addEventListener("change", (event) => {
   toggleArrayItem(translations, "Stephen Mitchell");
   refreshCurrentChapter();
+  localStorage.setItem("translations", JSON.stringify(translations));
 });
 
 fengEnglishCheckbox.addEventListener("change", (event) => {
   toggleArrayItem(translations, "Gia-Fu Feng & Jane English");
   refreshCurrentChapter();
+  localStorage.setItem("translations", JSON.stringify(translations));
 });
 
 addissLombardoCheckbox.addEventListener("change", (event) => {
   toggleArrayItem(translations, "Stephen Addiss & Stanley Lombardo");
   refreshCurrentChapter();
+  localStorage.setItem("translations", JSON.stringify(translations));
 });
 
 linCheckbox.addEventListener("change", (event) => {
   toggleArrayItem(translations, "Derek Lin");
   refreshCurrentChapter();
+  localStorage.setItem("translations", JSON.stringify(translations));
 });
