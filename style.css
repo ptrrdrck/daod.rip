@@ -177,12 +177,12 @@ h1 {
   box-shadow: 0 4px 15px var(--shadowColor);
 }
 #drip-button:hover {
-  transform: scale(1.05);
-  transition: 0.3s;
+  transform: scale(1.03);
+  transition: 0.1s;
 }
 #drip-button:active {
-  transform: scale(0.95);
-  transition: 0.3s;
+  transform: scale(0.97);
+  transition: 0.1s;
   box-shadow: unset;
 }
 #drip-again-button {
@@ -248,7 +248,7 @@ input[type="number"]::-webkit-inner-spin-button {
   border-top: 10px solid var(--fontColor);
 }
 .number-control[disabled] {
-  transition-duration: 0.6s;
+  transition-duration: 0.2s;
 }
 .number-controls .plus[disabled] {
   border-top: 10px solid transparent;
@@ -277,14 +277,14 @@ input[type="number"]::-webkit-inner-spin-button {
   align-self: center;
 }
 .button:hover {
-  transform: scale(1.05);
-  transition: 0.3s;
+  transform: scale(1.03);
+  transition: 0.1s;
   color: var(--accentLight);
   background-color: var(--fontColor);
 }
 .button:active {
-  transform: scale(0.95);
-  transition: 0.3s;
+  transform: scale(0.97);
+  transition: 0.1s;
 }
 #change {
   position: fixed;
