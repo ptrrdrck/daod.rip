@@ -7,6 +7,7 @@
 /**
  * Custom cursor
  */
+/*
 document.body.addEventListener("mousemove", (evt) => {
   const mouseX = evt.clientX;
   const mouseY = evt.clientY;
@@ -16,6 +17,7 @@ document.body.addEventListener("mousemove", (evt) => {
     y: mouseY,
   });
 });
+*/
 
 /**
  * Theme changing
@@ -23,6 +25,7 @@ document.body.addEventListener("mousemove", (evt) => {
 const themes = {
   light: {
     "--primaryColor": "#f2dfce",
+    "--primaryTrans": "#f2dfce2a",
     "--secondaryColor": "#fff1e0",
     "--tertiaryColor": "#f2dfce",
     "--accentDark": "#001436",
@@ -34,6 +37,7 @@ const themes = {
   },
   dark: {
     "--primaryColor": "#000f28",
+    "--primaryTrans": "#000f282a",
     "--secondaryColor": "#001436",
     "--tertiaryColor": "#000f28",
     "--accentDark": "#fff6eb",
@@ -46,6 +50,7 @@ const themes = {
   },
   grayscale: {
     "--primaryColor": "#747474",
+    "--primaryTrans": "#7474742a",
     "--secondaryColor": "#949494",
     "--tertiaryColor": "#747474",
     "--accentDark": "#fbfbfb",
@@ -57,6 +62,7 @@ const themes = {
   },
   blackwhite: {
     "--primaryColor": "#fff",
+    "--primaryTrans": "#ffffff2a",
     "--secondaryColor": "#fff",
     "--tertiaryColor": "#fff",
     "--accentDark": "#000",
@@ -68,8 +74,9 @@ const themes = {
   },
   color: {
     "--primaryColor": "#e3cbff",
+    "--primaryTrans": "#e3cbff2a",
     "--secondaryColor": "#ffc489",
-    "--tertiaryColor": "#cbfcfe",
+    "--tertiaryColor": "#ffc489",
     "--accentDark": "#126e5c",
     "--accentLight": "#beaeff",
     "--fontColor": "#240748",
@@ -86,6 +93,9 @@ function change(theme) {
     document.querySelector(":root").style.setProperty(prop, theme[prop]);
   }
 }
+
+var theme = themes[Object.keys(themes)[themesIndex]];
+change(theme);
 
 document.getElementById("change").addEventListener("click", function () {
   themesIndex++;
