@@ -25,83 +25,145 @@
       <button id="drip-button" type="submit">drip</button>
     </header>
     <main>
-      <p id="display" class="fade-in">Fetching translations...</p>
-      <div class="button-wrapper">
-        <button class="button" id="drip-again-button">Drip again</button>
-      </div>
-    </main>
-    <div class="chapter-selection">
-      <div class="line-one">
-        <div class="selection-area">
-          <span class="select-text">Select a chapter: </span>
-          <div class="selection-right">
-            <div class="input-area">
-              <input id="chapter-select-input" type="number" value="1" />
-              <div class="number-controls">
-                <button class="button plus" id="add-button"></button>
-                <button
-                  class="button minus"
-                  id="subtract-button"
-                  disabled
-                ></button>
-              </div>
-            </div>
-            <button class="button" id="chapter-select-button">View</button>
-          </div>
+      <div id="history-nav">
+        <div id="history-left">
+          <span class="history" id="prev-ch-3"></span>
+          <span class="history" id="prev-ch-2"></span>
+          <span class="history" id="prev-ch"></span>
+          <button class="button" id="ch-seek-back">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              class="bi bi-caret-left-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill="currentColor"
+                d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"
+              />
+            </svg>
+          </button>
+        </div>
+        <div id="history-center"></div>
+        <div id="history-right">
+          <button class="button" id="ch-seek-fwd">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-caret-right-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill="currentColor"
+                d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"
+              />
+            </svg>
+          </button>
+          <span class="history" id="next-ch"></span>
+          <span class="history" id="next-ch-2"></span>
+          <span class="history" id="next-ch-3"></span>
         </div>
       </div>
-      <div class="line-two">
-        <span class="select-text">Unread chapters: </span>
-        <div id="table-placeholder"><table id="unread-chapters"></table></div>
-        <button class="button" id="reset-unread-button">Reset</button>
+      <div id="display" class="fade-in">Fetching translations...</div>
+      <div class="chapter-nav">
+        <div id="chapter-nav-top">
+          <div id="chapter-nav-left">
+            <button class="button" id="drip-again-button">Drip again</button>
+          </div>
+          <div id="chapter-nav-right">
+            <div class="selection-area">
+              <div class="input-area">
+                <input id="chapter-select-input" type="number" value="1" />
+                <div class="number-controls">
+                  <button class="button plus" id="add-button">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-caret-up-fill"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"
+                      />
+                    </svg>
+                  </button>
+                  <button class="button minus" id="subtract-button" disabled>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-caret-down-fill"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <button class="button" id="chapter-select-button">View</button>
+            </div>
+          </div>
+        </div>
+        <div id="chapter-nav-bottom">
+          <span class="select-text">Unread chapters: </span>
+          <div id="table-placeholder"><table id="unread-chapters"></table></div>
+          <button class="button" id="reset-unread-button">Reset</button>
+        </div>
+        <div class="translation-selection">
+          <span class="select-text">Select translations: </span>
+          <label for="addissLombardo-checkbox" class="checkbox-container"
+            >Stephen Addiss & Stanley Lombardo
+            <input
+              id="addissLombardo-checkbox"
+              type="checkbox"
+              store="addissLombardo-checkbox"
+              checked
+            />
+            <span class="checkmark"></span>
+          </label>
+          <label for="fengEnglish-checkbox" class="checkbox-container"
+            >Gia-Fu Feng & Jane English
+            <input
+              id="fengEnglish-checkbox"
+              type="checkbox"
+              store="fengEnglish-checkbox"
+              checked
+            />
+            <span class="checkmark"></span>
+          </label>
+          <label for="lin-checkbox" class="checkbox-container"
+            >Derek Lin
+            <input
+              id="lin-checkbox"
+              type="checkbox"
+              store="lin-checkbox"
+              checked
+            />
+            <span class="checkmark"></span>
+          </label>
+          <label for="mitchell-checkbox" class="checkbox-container"
+            >Stephen Mitchell
+            <input
+              id="mitchell-checkbox"
+              type="checkbox"
+              store="mitchell-checkbox"
+              checked
+            />
+            <span class="checkmark"></span>
+          </label>
+        </div>
       </div>
-      <div class="line-three">
-        <span class="select-text">Select translations: </span>
-        <label for="addissLombardo-checkbox" class="checkbox-container"
-          >Stephen Addiss & Stanley Lombardo
-          <input
-            id="addissLombardo-checkbox"
-            type="checkbox"
-            store="addissLombardo-checkbox"
-            checked
-          />
-          <span class="checkmark"></span>
-        </label>
-
-        <label for="fengEnglish-checkbox" class="checkbox-container"
-          >Gia-Fu Feng & Jane English
-          <input
-            id="fengEnglish-checkbox"
-            type="checkbox"
-            store="fengEnglish-checkbox"
-            checked
-          />
-          <span class="checkmark"></span>
-        </label>
-
-        <label for="lin-checkbox" class="checkbox-container"
-          >Derek Lin
-          <input
-            id="lin-checkbox"
-            type="checkbox"
-            store="lin-checkbox"
-            checked
-          />
-          <span class="checkmark"></span>
-        </label>
-
-        <label for="mitchell-checkbox" class="checkbox-container"
-          >Stephen Mitchell
-          <input
-            id="mitchell-checkbox"
-            type="checkbox"
-            store="mitchell-checkbox"
-            checked
-          />
-          <span class="checkmark"></span>
-        </label>
-      </div>
-    </div>
+    </main>
     <footer class="fade-in">
       <div id="links">
         <a class="footer-link" href="./about.html">&rarr;About</a>
@@ -127,8 +189,8 @@
         />
       </svg>
     </footer>
-    <script src="./dao.js" type="text/javascript"></script>
     <script src="./util.js" type="text/javascript"></script>
+    <script src="./dao.js" type="text/javascript"></script>
     <script src="./script.js" type="text/javascript"></script>
   </body>
 </html>

@@ -23,6 +23,15 @@ let unreadChapters = JSON.parse(localStorage.getItem("unreadChapters")) || [
   61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
   80, 81,
 ];
+let readOrder = JSON.parse(localStorage.getItem("readOrder")) || [];
+let historyIndex = -1;
+let prevChapter =
+  readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
+let prevChapterTwo;
+let prevChapterThree;
+let nextChapter = readOrder[(historyIndex + 1) % readOrder.length];
+let nextChapterTwo;
+let nextChapterThree;
 
 const displayArea = document.getElementById("display");
 const tablePlaceholder = document.getElementById("table-placeholder");
@@ -34,6 +43,16 @@ const chapterSelectInput = document.getElementById("chapter-select-input");
 const chapterSelectButton = document.getElementById("chapter-select-button");
 const addButton = document.getElementById("add-button");
 const subtractButton = document.getElementById("subtract-button");
+
+const prevChapterDisplay = document.getElementById("prev-ch");
+const prevChapterTwoDisplay = document.getElementById("prev-ch-2");
+const prevChapterThreeDisplay = document.getElementById("prev-ch-3");
+const nextChapterDisplay = document.getElementById("next-ch");
+const nextChapterTwoDisplay = document.getElementById("next-ch-2");
+const nextChapterThreeDisplay = document.getElementById("next-ch-3");
+const seekBackButton = document.getElementById("ch-seek-back");
+const seekFwdButton = document.getElementById("ch-seek-fwd");
+const historyDisplay = document.getElementById("history-nav");
 
 function randNumb(num) {
   return Math.floor(Math.random() * num);
@@ -66,6 +85,114 @@ function displayUnreadChapters() {
   }
 }
 
+function hideUndefinedHistory() {
+  var historyChapters = document.getElementsByClassName("history");
+  for (var i = 0; i < historyChapters.length; i++) {
+    var historyChapter = historyChapters[i];
+    if (historyChapter.innerText == "undefined") {
+      historyChapter.classList.add("history-hide");
+    } else {
+      historyChapter.classList.remove("history-hide");
+    }
+  }
+  if (
+    prevChapter === undefined &&
+    prevChapterTwo === undefined &&
+    prevChapterThree === undefined
+  ) {
+    seekBackButton.style.display = "none";
+  } else {
+    seekBackButton.style.display = "inline-block";
+  }
+  if (
+    nextChapter === undefined &&
+    nextChapterTwo === undefined &&
+    nextChapterThree === undefined
+  ) {
+    seekFwdButton.style.display = "none";
+  } else {
+    seekFwdButton.style.display = "inline-block";
+  }
+  if (
+    prevChapter === undefined &&
+    prevChapterTwo === undefined &&
+    prevChapterThree === undefined &&
+    nextChapter === undefined &&
+    nextChapterTwo === undefined &&
+    nextChapterThree === undefined
+  ) {
+    historyDisplay.style.display = "none";
+  } else {
+    historyDisplay.style.display = "flex";
+  }
+}
+
+hideUndefinedHistory();
+
+function updatePreviousChapters() {
+  if (readOrder.length == 2) {
+    prevChapter =
+      readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
+    [prevChapterTwo, prevChapterThree] = [undefined, undefined];
+    prevChapterDisplay.innerHTML = prevChapter;
+  } else if (readOrder.length == 3) {
+    prevChapter =
+      readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
+    prevChapterTwo =
+      readOrder[(historyIndex + readOrder.length - 2) % readOrder.length];
+    prevChapterThree = undefined;
+    prevChapterDisplay.innerHTML = prevChapter;
+    prevChapterTwoDisplay.innerHTML = prevChapterTwo;
+  } else if (readOrder.length > 3) {
+    prevChapter =
+      readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
+    prevChapterTwo =
+      readOrder[(historyIndex + readOrder.length - 2) % readOrder.length];
+    prevChapterThree =
+      readOrder[(historyIndex + readOrder.length - 3) % readOrder.length];
+    prevChapterDisplay.innerHTML = prevChapter;
+    prevChapterTwoDisplay.innerHTML = prevChapterTwo;
+    prevChapterThreeDisplay.innerHTML = prevChapterThree;
+  }
+}
+
+function updateNextChapters() {
+  if (historyIndex == -1) {
+    [nextChapter, nextChapterTwo, nextChapterThree] = [
+      undefined,
+      undefined,
+      undefined,
+    ];
+  } else if (historyIndex == -2) {
+    nextChapter =
+      readOrder[(historyIndex + readOrder.length + 1) % readOrder.length];
+    [nextChapterTwo, nextChapterThree] = [undefined, undefined];
+  } else if (historyIndex == -3) {
+    nextChapter =
+      readOrder[(historyIndex + readOrder.length + 1) % readOrder.length];
+    nextChapterTwo =
+      readOrder[(historyIndex + readOrder.length + 2) % readOrder.length];
+    nextChapterThree = undefined;
+  } else {
+    nextChapter =
+      readOrder[(historyIndex + readOrder.length + 1) % readOrder.length];
+    nextChapterTwo =
+      readOrder[(historyIndex + readOrder.length + 2) % readOrder.length];
+    nextChapterThree =
+      readOrder[(historyIndex + readOrder.length + 3) % readOrder.length];
+  }
+  nextChapterDisplay.innerHTML = nextChapter;
+  nextChapterTwoDisplay.innerHTML = nextChapterTwo;
+  nextChapterThreeDisplay.innerHTML = nextChapterThree;
+}
+
+function updateHistory() {
+  historyIndex = -1;
+  updatePreviousChapters();
+  updateNextChapters();
+  hideUndefinedHistory();
+}
+
 /**
     Random chapter selection
 **/
@@ -96,8 +223,12 @@ function newRandomChapter() {
     return readChapters.indexOf(item) === -1;
   });
   localStorage.setItem("unreadChapters", JSON.stringify(unreadChapters));
-
   displayUnreadChapters();
+
+  readOrder.push(rand + 1);
+  localStorage.setItem("readOrder", JSON.stringify(readOrder));
+  updateHistory();
+
   currentChapterIndex = rand;
 }
 
@@ -115,6 +246,50 @@ dripAgainButton.addEventListener("click", () => {
 yinYang.addEventListener("click", () => {
   newRandomChapter();
   window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+/**
+    History chapter selection
+**/
+function getHistoryChapter(chapter) {
+  let message = [];
+  translations.forEach(function (translation) {
+    message.push(
+      `<span class="chapter-author">Chapter ${chapter} by ${translation}:</span> ${
+        dao[translation][chapter - 1]
+      }`
+    );
+  });
+  let formatted = message.join(
+    '<br /><span class="chapter-separator">&bull;</span>'
+  );
+  displayArea.innerHTML = formatted;
+
+  currentChapterIndex = chapter;
+}
+
+function seekBack() {
+  historyIndex--;
+  updatePreviousChapters();
+  updateNextChapters();
+  hideUndefinedHistory();
+}
+
+function seekFwd() {
+  historyIndex++;
+  updatePreviousChapters();
+  updateNextChapters();
+  hideUndefinedHistory();
+}
+
+seekBackButton.addEventListener("click", () => {
+  getHistoryChapter(prevChapter);
+  seekBack();
+});
+
+seekFwdButton.addEventListener("click", () => {
+  getHistoryChapter(nextChapter);
+  seekFwd();
 });
 
 /**
@@ -182,8 +357,8 @@ function viewChapter(chapter) {
   displayArea.innerHTML = formatted;
   window.scrollTo({ top: 0, behavior: "smooth" });
 
-  if (readChapters.indexOf(selectedChapter) === -1) {
-    readChapters.push(selectedChapter);
+  if (readChapters.indexOf(chapter + 1) === -1) {
+    readChapters.push(chapter + 1);
   }
   localStorage.setItem("readChapters", JSON.stringify(readChapters));
 
@@ -191,8 +366,12 @@ function viewChapter(chapter) {
     return readChapters.indexOf(item) === -1;
   });
   localStorage.setItem("unreadChapters", JSON.stringify(unreadChapters));
-
   displayUnreadChapters();
+
+  readOrder.push(chapter + 1);
+  localStorage.setItem("readOrder", JSON.stringify(readOrder));
+  updateHistory();
+
   currentChapterIndex = chapter;
 }
 
