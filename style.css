@@ -93,6 +93,12 @@ html {
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
   }
+  #add-button svg {
+    margin-bottom: 7px;
+  }
+  #subtract-button svg {
+    margin-bottom: 6px;
+  }
 }
 @media (min-width: 600px) {
   #change {
@@ -140,6 +146,12 @@ html {
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
   }
+  #add-button svg {
+    margin-bottom: 7px;
+  }
+  #subtract-button svg {
+    margin-bottom: 6px;
+  }
 }
 @media (min-width: 1024px) {
   .translation {
@@ -173,6 +185,12 @@ html {
   }
   #chapter-nav-right {
     border-top-right-radius: 10px;
+  }
+  #add-button svg {
+    margin-bottom: 6px;
+  }
+  #subtract-button svg {
+    margin-bottom: 5px;
   }
 }
 
@@ -307,12 +325,6 @@ input[type="number"]::-webkit-inner-spin-button {
   transition-duration: 0.2s;
   display: none;
 }
-#add-button svg {
-  margin-bottom: 6px;
-}
-#subtract-button svg {
-  margin-bottom: 4px;
-}
 #add-button svg,
 #subtract-button svg {
   color: var(--accentLight);
@@ -419,7 +431,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 .history {
   align-self: center;
-  padding: 0 5px;
+  padding: 0 6px;
 }
 .history-hide {
   display: none;
@@ -429,11 +441,11 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 #prev-ch-2,
 #next-ch-2 {
-  font-size: 21px;
+  font-size: 22px;
 }
 #prev-ch-3,
 #next-ch-3 {
-  font-size: 18px;
+  font-size: 22px;
 }
 #ch-seek-back svg,
 #ch-seek-fwd svg {
@@ -449,9 +461,12 @@ input[type="number"]::-webkit-inner-spin-button {
   transform: scale(0.97);
   transition: 0.1s;
 }
-#ch-seek-back,
+#ch-seek-back {
+  margin: 0 5px 0 8px;
+  padding: 0 5px;
+}
 #ch-seek-fwd {
-  margin: 0 5px;
+  margin: 0 8px 0 5px;
   padding: 0 5px;
 }
 .chapter-nav {
