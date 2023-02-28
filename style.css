@@ -32,16 +32,6 @@ html {
 /**
     Media queries
 **/
-/*
-@media (hover: none) {
-  .cursor {
-    display: none;
-  }
-  .translation {
-    padding: 0;
-  }
-}
-*/
 @media (max-width: 599px) {
   #change {
     top: 12px;
@@ -49,17 +39,17 @@ html {
     width: 30px;
     height: 30px;
   }
-  #display,
-  .sources {
+  #display {
     font-size: clamp(1rem, calc(1rem + 1vw), 1.5rem);
-    margin: 2px 10%;
+    margin: 0 10% 2px;
     padding: 20px;
   }
-  .chapter-nav {
+  .chapter-nav,
+  .sources {
     margin: 0 10% 80px;
   }
   #history-nav {
-    margin: 0 10%;
+    margin: 0 10% 2px;
   }
   #links,
   #history-nav,
@@ -68,6 +58,7 @@ html {
   #chapter-nav-top {
     flex-direction: column;
   }
+  .sources,
   #chapter-nav-left,
   #chapter-nav-right,
   #chapter-nav-bottom,
@@ -99,6 +90,9 @@ html {
   #subtract-button svg {
     margin-bottom: 6px;
   }
+  .checkbox-container {
+    align-self: unset;
+  }
 }
 @media (min-width: 600px) {
   #change {
@@ -110,7 +104,7 @@ html {
   #display,
   .sources {
     font-size: clamp(1rem, calc(1rem + 1vw), 1.5rem);
-    margin: 2px 10%;
+    margin: 0 10% 2px;
     padding: 5%;
   }
   #history-nav,
@@ -125,11 +119,12 @@ html {
   .translation-selection {
     padding: 30px;
   }
-  .chapter-nav {
+  .chapter-nav,
+  .sources {
     margin: 0 10% 80px;
   }
   #history-nav {
-    margin: 0 10%;
+    margin: 0 10% 2px;
   }
   .reference {
     word-break: break-all;
@@ -152,6 +147,9 @@ html {
   #subtract-button svg {
     margin-bottom: 6px;
   }
+  .checkbox-container {
+    align-self: center;
+  }
 }
 @media (min-width: 1024px) {
   .translation {
@@ -160,13 +158,14 @@ html {
   #display,
   .sources {
     font-size: clamp(1.5rem, calc(1.5rem + 1vw), 1.8rem);
-    margin: 2px 14%;
+    margin: 0 14% 2px;
   }
-  .chapter-nav {
+  .chapter-nav,
+  .sources {
     margin: 0 14% 80px;
   }
   #history-nav {
-    margin: 0 14%;
+    margin: 0 14% 2px;
   }
   #history-nav,
   .chapter-nav {
@@ -222,7 +221,7 @@ html {
   }
 }
 .fade-in {
-  animation: 1s fadeIn;
+  animation: 0.6s fadeIn;
   opacity: 1;
 }
 
@@ -513,28 +512,6 @@ main {
   color: var(--secondaryColor);
   background: var(--accentDark);
 }
-/*
-body,
-body * {
-  cursor: none;
-}
-.cursor {
-  position: fixed;
-  background: var(--cursorColor);
-  backdrop-filter: blur(3px);
-  width: 40px;
-  height: 40px;
-  margin: -20px 0 0 -20px;
-  border-radius: 50%;
-  will-change: transform;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  pointer-events: none;
-  z-index: 10000;
-}
-*/
 #bullet {
   padding: 0 34px;
 }
