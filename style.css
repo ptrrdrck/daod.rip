@@ -93,6 +93,9 @@ html {
   .checkbox-container {
     align-self: unset;
   }
+  #copyright {
+    width: 300px;
+  }
 }
 @media (min-width: 600px) {
   #change {
@@ -149,6 +152,9 @@ html {
   }
   .checkbox-container {
     align-self: center;
+  }
+  #copyright {
+    width: 600px;
   }
 }
 @media (min-width: 1024px) {
@@ -686,6 +692,11 @@ footer {
 #yin-yang:active {
   transform: scale(0.97);
   transition: 0.1s;
+}
+#copyright {
+  font-size: 0.7rem;
+  margin-bottom: 60px;
+  text-align: center;
 }
 .footer-link {
   text-decoration: none;

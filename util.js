@@ -5,6 +5,11 @@
 **/
 
 /**
+ * Current year display
+ */
+document.getElementById("year").innerHTML = new Date().getFullYear();
+
+/**
  * Theme changing
  */
 const themes = {
