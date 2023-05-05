@@ -265,7 +265,7 @@ function getHistoryChapter(chapter) {
   );
   displayArea.innerHTML = formatted;
 
-  currentChapterIndex = chapter;
+  currentChapterIndex = chapter - 1;
 }
 
 function seekBack() {
@@ -376,6 +376,7 @@ function viewChapter(chapter) {
 }
 
 chapterSelectButton.addEventListener("click", () => {
+  selectedChapter = chapterSelectInput.valueAsNumber;
   viewChapter(selectedChapter - 1);
 });
 
