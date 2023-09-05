@@ -9,6 +9,7 @@ let translations = JSON.parse(localStorage.getItem("translations")) || [
   "Gia-Fu Feng & Jane English",
   "Derek Lin",
   "Stephen Mitchell",
+  "James Legge",
 ];
 
 localStorage.setItem("translations", JSON.stringify(translations));
@@ -405,6 +406,7 @@ const addissLombardoCheckbox = document.getElementById(
   "addissLombardo-checkbox"
 );
 const linCheckbox = document.getElementById("lin-checkbox");
+const leggeCheckbox = document.getElementById("legge-checkbox");
 
 if (!localStorage.getItem("addissLombardo-checkbox")) {
   localStorage.setItem("addissLombardo-checkbox", "true");
@@ -420,6 +422,10 @@ if (!localStorage.getItem("lin-checkbox")) {
 
 if (!localStorage.getItem("mitchell-checkbox")) {
   localStorage.setItem("mitchell-checkbox", "true");
+}
+
+if (!localStorage.getItem("legge-checkbox")) {
+  localStorage.setItem("legge-checkbox", "true");
 }
 
 function checkBoxes() {
@@ -488,6 +494,12 @@ addissLombardoCheckbox.addEventListener("change", (event) => {
 
 linCheckbox.addEventListener("change", (event) => {
   toggleArrayItem(translations, "Derek Lin");
+  refreshCurrentChapter();
+  localStorage.setItem("translations", JSON.stringify(translations));
+});
+
+leggeCheckbox.addEventListener("change", (event) => {
+  toggleArrayItem(translations, "James Legge");
   refreshCurrentChapter();
   localStorage.setItem("translations", JSON.stringify(translations));
 });
