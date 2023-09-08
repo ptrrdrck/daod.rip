@@ -3,8 +3,7 @@
     Displays the same random chapter of the Daodejing
     from characteristically distinct translations.
 **/
-
-let translations = JSON.parse(localStorage.getItem("translations")) || [
+const allTranslations = [
   "Stephen Addiss & Stanley Lombardo",
   "Gia-Fu Feng & Jane English",
   "Derek Lin",
@@ -12,6 +11,17 @@ let translations = JSON.parse(localStorage.getItem("translations")) || [
   "James Legge",
   "Ursula K. Le Guin",
 ];
+
+function getRandomTranslations(arr, num) {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+
+  return shuffled.slice(0, num);
+}
+
+let randomTranslations = getRandomTranslations(allTranslations, 3);
+
+let translations =
+  JSON.parse(localStorage.getItem("translations")) || randomTranslations;
 
 localStorage.setItem("translations", JSON.stringify(translations));
 
@@ -410,28 +420,40 @@ const linCheckbox = document.getElementById("lin-checkbox");
 const leggeCheckbox = document.getElementById("legge-checkbox");
 const leguinCheckbox = document.getElementById("leguin-checkbox");
 
-if (!localStorage.getItem("addissLombardo-checkbox")) {
+if (translations.includes("Stephen Addiss & Stanley Lombardo")) {
   localStorage.setItem("addissLombardo-checkbox", "true");
+} else {
+  localStorage.setItem("addissLombardo-checkbox", "false");
 }
 
-if (!localStorage.getItem("fengEnglish-checkbox")) {
+if (translations.includes("Gia-Fu Feng & Jane English")) {
   localStorage.setItem("fengEnglish-checkbox", "true");
+} else {
+  localStorage.setItem("fengEnglish-checkbox", "false");
 }
 
-if (!localStorage.getItem("lin-checkbox")) {
+if (translations.includes("Derek Lin")) {
   localStorage.setItem("lin-checkbox", "true");
+} else {
+  localStorage.setItem("lin-checkbox", "false");
 }
 
-if (!localStorage.getItem("mitchell-checkbox")) {
+if (translations.includes("Stephen Mitchell")) {
   localStorage.setItem("mitchell-checkbox", "true");
+} else {
+  localStorage.setItem("mitchell-checkbox", "false");
 }
 
-if (!localStorage.getItem("legge-checkbox")) {
+if (translations.includes("James Legge")) {
   localStorage.setItem("legge-checkbox", "true");
+} else {
+  localStorage.setItem("legge-checkbox", "false");
 }
 
-if (!localStorage.getItem("leguin-checkbox")) {
+if (translations.includes("Ursula K. Le Guin")) {
   localStorage.setItem("leguin-checkbox", "true");
+} else {
+  localStorage.setItem("leguin-checkbox", "false");
 }
 
 function checkBoxes() {
