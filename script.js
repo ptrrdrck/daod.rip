@@ -10,11 +10,11 @@ const allTranslations = [
   "Stephen Mitchell",
   "James Legge",
   "Ursula K. Le Guin",
+  "D. C. Lau",
 ];
 
 function getRandomTranslations(arr, num) {
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
-
   return shuffled.slice(0, num);
 }
 
@@ -419,6 +419,16 @@ const addissLombardoCheckbox = document.getElementById(
 const linCheckbox = document.getElementById("lin-checkbox");
 const leggeCheckbox = document.getElementById("legge-checkbox");
 const leguinCheckbox = document.getElementById("leguin-checkbox");
+const lauCheckbox = document.getElementById("lau-checkbox");
+
+/*
+for (let i = 0; i < allTranslations.length; i++) {
+  let transBox = 
+  if (translations.includes(i)) {
+    localStorage.setItem("addissLombardo-checkbox", "true");
+  }
+}
+*/
 
 if (translations.includes("Stephen Addiss & Stanley Lombardo")) {
   localStorage.setItem("addissLombardo-checkbox", "true");
@@ -454,6 +464,12 @@ if (translations.includes("Ursula K. Le Guin")) {
   localStorage.setItem("leguin-checkbox", "true");
 } else {
   localStorage.setItem("leguin-checkbox", "false");
+}
+
+if (translations.includes("D. C. Lau")) {
+  localStorage.setItem("lau-checkbox", "true");
+} else {
+  localStorage.setItem("lau-checkbox", "false");
 }
 
 function checkBoxes() {
@@ -534,6 +550,12 @@ leggeCheckbox.addEventListener("change", (event) => {
 
 leguinCheckbox.addEventListener("change", (event) => {
   toggleArrayItem(translations, "Ursula K. Le Guin");
+  refreshCurrentChapter();
+  localStorage.setItem("translations", JSON.stringify(translations));
+});
+
+lauCheckbox.addEventListener("change", (event) => {
+  toggleArrayItem(translations, "D. C. Lau");
   refreshCurrentChapter();
   localStorage.setItem("translations", JSON.stringify(translations));
 });
