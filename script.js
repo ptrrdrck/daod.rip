@@ -67,7 +67,8 @@ const seekFwdButton = document.getElementById("ch-seek-fwd");
 const historyDisplay = document.getElementById("history-nav");
 const shuffleControl = document.getElementById("shuffle-control");
 
-localStorage.setItem("shuffle-control", "true");
+localStorage.getItem("shuffle-control") ||
+  localStorage.setItem("shuffle-control", "true");
 
 function randNumb(num) {
   return Math.floor(Math.random() * num);
