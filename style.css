@@ -55,6 +55,7 @@ html {
   #history-nav,
   .chapter-nav,
   #chapter-nav-bottom,
+  #other-controls,
   #chapter-nav-top {
     flex-direction: column;
   }
@@ -62,6 +63,7 @@ html {
   #chapter-nav-left,
   #chapter-nav-right,
   #chapter-nav-bottom,
+  #other-controls,
   .translation-selection {
     padding: 20px;
   }
@@ -113,12 +115,14 @@ html {
   #history-nav,
   .chapter-nav,
   #chapter-nav-bottom,
+  #other-controls,
   #chapter-nav-top {
     flex-direction: column;
   }
   #chapter-nav-left,
   #chapter-nav-right,
   #chapter-nav-bottom,
+  #other-controls,
   .translation-selection {
     padding: 30px;
   }
@@ -484,12 +488,17 @@ input[type="number"]::-webkit-inner-spin-button {
   display: flex;
   gap: 2px;
 }
-#chapter-nav-bottom {
+#chapter-nav-bottom,
+#other-controls {
   gap: 20px;
+}
+#other-controls {
+  border-radius: 10px;
 }
 #chapter-nav-left,
 #chapter-nav-right,
 #chapter-nav-bottom,
+#other-controls,
 .translation-selection {
   display: flex;
   flex-grow: 1;

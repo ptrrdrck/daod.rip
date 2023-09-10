@@ -65,6 +65,9 @@ const nextChapterThreeDisplay = document.getElementById("next-ch-3");
 const seekBackButton = document.getElementById("ch-seek-back");
 const seekFwdButton = document.getElementById("ch-seek-fwd");
 const historyDisplay = document.getElementById("history-nav");
+const shuffleControl = document.getElementById("shuffle-control");
+
+localStorage.setItem("shuffle-control", "true");
 
 function randNumb(num) {
   return Math.floor(Math.random() * num);
@@ -220,11 +223,18 @@ function newRandomChapter() {
     );
   });
 
-  let shuffled = shuffle(message);
-  let formatted = shuffled.join(
-    '<br /><span class="chapter-separator">&bull;</span>'
-  );
-  displayArea.innerHTML = formatted;
+  if (localStorage.getItem("shuffle-control") === "true") {
+    let shuffled = shuffle(message);
+    let formatted = shuffled.join(
+      '<br /><span class="chapter-separator">&bull;</span>'
+    );
+    displayArea.innerHTML = formatted;
+  } else if (localStorage.getItem("shuffle-control") === "false") {
+    let formatted = message.join(
+      '<br /><span class="chapter-separator">&bull;</span>'
+    );
+    displayArea.innerHTML = formatted;
+  }
 
   if (readChapters.indexOf(rand + 1) === -1) {
     readChapters.push(rand + 1);
@@ -362,11 +372,19 @@ function viewChapter(chapter) {
     );
   });
 
-  let shuffled = shuffle(message);
-  let formatted = shuffled.join(
-    '<br /><span class="chapter-separator">&bull;</span>'
-  );
-  displayArea.innerHTML = formatted;
+  if (localStorage.getItem("shuffle-control") === "true") {
+    let shuffled = shuffle(message);
+    let formatted = shuffled.join(
+      '<br /><span class="chapter-separator">&bull;</span>'
+    );
+    displayArea.innerHTML = formatted;
+  } else if (localStorage.getItem("shuffle-control") === "false") {
+    let formatted = message.join(
+      '<br /><span class="chapter-separator">&bull;</span>'
+    );
+    displayArea.innerHTML = formatted;
+  }
+
   window.scrollTo({ top: 0, behavior: "smooth" });
 
   if (readChapters.indexOf(chapter + 1) === -1) {
