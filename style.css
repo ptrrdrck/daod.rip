@@ -39,6 +39,10 @@ html {
     width: 30px;
     height: 30px;
   }
+  #tour-button {
+    margin-top: 12px;
+    margin-left: 12px;
+  }
   #display {
     font-size: clamp(1rem, calc(1rem + 1vw), 1.5rem);
     margin: 0 10% 2px;
@@ -105,6 +109,10 @@ html {
     right: 20px;
     width: 42px;
     height: 42px;
+  }
+  #tour-button {
+    margin-top: 20px;
+    margin-left: 20px;
   }
   #display,
   .sources {
