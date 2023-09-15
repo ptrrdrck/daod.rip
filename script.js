@@ -3,15 +3,7 @@
     Displays the same random chapter of the Daodejing
     from characteristically distinct translations.
 **/
-const allTranslations = [
-  "Stephen Addiss & Stanley Lombardo",
-  "Gia-Fu Feng & Jane English",
-  "Derek Lin",
-  "Stephen Mitchell",
-  "James Legge",
-  "Ursula K. Le Guin",
-  "D. C. Lau",
-];
+const allTranslations = Object.keys(dao);
 
 function getRandomTranslations(arr, num) {
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
@@ -20,13 +12,20 @@ function getRandomTranslations(arr, num) {
 
 let randomTranslations = getRandomTranslations(allTranslations, 3);
 
-let translations =
-  JSON.parse(localStorage.getItem("translations")) || randomTranslations;
+let selectedTranslations =
+  JSON.parse(localStorage.getItem("selectedTranslations")) ||
+  randomTranslations;
 
-localStorage.setItem("translations", JSON.stringify(translations));
+localStorage.setItem(
+  "selectedTranslations",
+  JSON.stringify(selectedTranslations)
+);
 
-let currentChapterIndex;
-let selectedChapter = 1;
+localStorage.getItem("shuffle-control") ||
+  localStorage.setItem("shuffle-control", "true");
+
+const totalChapters = dao[allTranslations[0]].length;
+
 let readChapters = JSON.parse(localStorage.getItem("readChapters")) || [];
 let unreadChapters = JSON.parse(localStorage.getItem("unreadChapters")) || [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
@@ -35,6 +34,29 @@ let unreadChapters = JSON.parse(localStorage.getItem("unreadChapters")) || [
   61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
   80, 81,
 ];
+
+function displayUnreadChapters() {
+  document.getElementById("unread-chapters").remove();
+  let x = document.createElement("TABLE");
+  x.setAttribute("id", "unread-chapters");
+  tablePlaceholder.appendChild(x);
+  for (var unreadChapter of unreadChapters) {
+    let y = document.createElement("TD");
+    let w = document.createElement("A");
+    w.setAttribute(
+      "href",
+      `javascript:selectedChapter = ${unreadChapter}; viewChapter(${unreadChapter} - 1);`
+    );
+    w.classList.add("chapter-link");
+    w.innerText = `${unreadChapter}`;
+    y.appendChild(w);
+    document.getElementById("unread-chapters").appendChild(y);
+  }
+}
+
+let currentChapterIndex;
+let selectedChapter = 1;
+
 let readOrder = JSON.parse(localStorage.getItem("readOrder")) || [];
 let historyIndex = -1;
 let prevChapter =
@@ -66,40 +88,6 @@ const seekBackButton = document.getElementById("ch-seek-back");
 const seekFwdButton = document.getElementById("ch-seek-fwd");
 const historyDisplay = document.getElementById("history-nav");
 const shuffleControl = document.getElementById("shuffle-control");
-
-localStorage.getItem("shuffle-control") ||
-  localStorage.setItem("shuffle-control", "true");
-
-function randNumb(num) {
-  return Math.floor(Math.random() * num);
-}
-
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
-function displayUnreadChapters() {
-  document.getElementById("unread-chapters").remove();
-  let x = document.createElement("TABLE");
-  x.setAttribute("id", "unread-chapters");
-  tablePlaceholder.appendChild(x);
-  for (var unreadChapter of unreadChapters) {
-    let y = document.createElement("TD");
-    let w = document.createElement("A");
-    w.setAttribute(
-      "href",
-      `javascript:selectedChapter = ${unreadChapter}; viewChapter(${unreadChapter} - 1);`
-    );
-    w.classList.add("chapter-link");
-    w.innerText = `${unreadChapter}`;
-    y.appendChild(w);
-    document.getElementById("unread-chapters").appendChild(y);
-  }
-}
 
 function hideUndefinedHistory() {
   var historyChapters = document.getElementsByClassName("history");
@@ -209,21 +197,31 @@ function updateHistory() {
   hideUndefinedHistory();
 }
 
+function randNumb(num) {
+  return Math.floor(Math.random() * num);
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 /**
     Random chapter selection
 **/
 function newRandomChapter() {
   let message = [];
-  let rand = randNumb(dao["Stephen Mitchell"].length);
-
-  translations.forEach(function (translation) {
+  const randomChapter = randNumb(totalChapters);
+  selectedTranslations.forEach(function (translation) {
     message.push(
       `<span class="chapter-author">Chapter ${
-        rand + 1
-      } by ${translation}:</span> ${dao[translation][rand]}`
+        randomChapter + 1
+      } by ${translation}:</span> ${dao[translation][randomChapter]}`
     );
   });
-
   if (localStorage.getItem("shuffle-control") === "true") {
     let shuffled = shuffle(message);
     let formatted = shuffled.join(
@@ -236,23 +234,19 @@ function newRandomChapter() {
     );
     displayArea.innerHTML = formatted;
   }
-
-  if (readChapters.indexOf(rand + 1) === -1) {
-    readChapters.push(rand + 1);
+  if (readChapters.indexOf(randomChapter + 1) === -1) {
+    readChapters.push(randomChapter + 1);
   }
   localStorage.setItem("readChapters", JSON.stringify(readChapters));
-
   unreadChapters = unreadChapters.filter(function (item) {
     return readChapters.indexOf(item) === -1;
   });
   localStorage.setItem("unreadChapters", JSON.stringify(unreadChapters));
   displayUnreadChapters();
-
-  readOrder.push(rand + 1);
+  readOrder.push(randomChapter + 1);
   localStorage.setItem("readOrder", JSON.stringify(readOrder));
   updateHistory();
-
-  currentChapterIndex = rand;
+  currentChapterIndex = randomChapter;
 }
 
 newRandomChapter();
@@ -276,7 +270,7 @@ yinYang.addEventListener("click", () => {
 **/
 function getHistoryChapter(chapter) {
   let message = [];
-  translations.forEach(function (translation) {
+  selectedTranslations.forEach(function (translation) {
     message.push(
       `<span class="chapter-author">Chapter ${chapter} by ${translation}:</span> ${
         dao[translation][chapter - 1]
@@ -287,7 +281,6 @@ function getHistoryChapter(chapter) {
     '<br /><span class="chapter-separator">&bull;</span>'
   );
   displayArea.innerHTML = formatted;
-
   currentChapterIndex = chapter - 1;
 }
 
@@ -364,15 +357,13 @@ chapterSelectInput.addEventListener("change", function (e) {
 
 function viewChapter(chapter) {
   let message = [];
-
-  translations.forEach(function (translation) {
+  selectedTranslations.forEach(function (translation) {
     message.push(
       `<span class="chapter-author">Chapter ${
         chapter + 1
       } by ${translation}:</span> ${dao[translation][chapter]}`
     );
   });
-
   if (localStorage.getItem("shuffle-control") === "true") {
     let shuffled = shuffle(message);
     let formatted = shuffled.join(
@@ -385,24 +376,19 @@ function viewChapter(chapter) {
     );
     displayArea.innerHTML = formatted;
   }
-
   window.scrollTo({ top: 0, behavior: "smooth" });
-
   if (readChapters.indexOf(chapter + 1) === -1) {
     readChapters.push(chapter + 1);
   }
   localStorage.setItem("readChapters", JSON.stringify(readChapters));
-
   unreadChapters = unreadChapters.filter(function (item) {
     return readChapters.indexOf(item) === -1;
   });
   localStorage.setItem("unreadChapters", JSON.stringify(unreadChapters));
   displayUnreadChapters();
-
   readOrder.push(chapter + 1);
   localStorage.setItem("readOrder", JSON.stringify(readOrder));
   updateHistory();
-
   currentChapterIndex = chapter;
 }
 
@@ -440,52 +426,43 @@ const leggeCheckbox = document.getElementById("legge-checkbox");
 const leguinCheckbox = document.getElementById("leguin-checkbox");
 const lauCheckbox = document.getElementById("lau-checkbox");
 
-/*
-for (let i = 0; i < allTranslations.length; i++) {
-  let transBox = 
-  if (translations.includes(i)) {
-    localStorage.setItem("addissLombardo-checkbox", "true");
-  }
-}
-*/
-
-if (translations.includes("Stephen Addiss & Stanley Lombardo")) {
+if (selectedTranslations.includes("Stephen Addiss & Stanley Lombardo")) {
   localStorage.setItem("addissLombardo-checkbox", "true");
 } else {
   localStorage.setItem("addissLombardo-checkbox", "false");
 }
 
-if (translations.includes("Gia-Fu Feng & Jane English")) {
+if (selectedTranslations.includes("Gia-Fu Feng & Jane English")) {
   localStorage.setItem("fengEnglish-checkbox", "true");
 } else {
   localStorage.setItem("fengEnglish-checkbox", "false");
 }
 
-if (translations.includes("Derek Lin")) {
+if (selectedTranslations.includes("Derek Lin")) {
   localStorage.setItem("lin-checkbox", "true");
 } else {
   localStorage.setItem("lin-checkbox", "false");
 }
 
-if (translations.includes("Stephen Mitchell")) {
+if (selectedTranslations.includes("Stephen Mitchell")) {
   localStorage.setItem("mitchell-checkbox", "true");
 } else {
   localStorage.setItem("mitchell-checkbox", "false");
 }
 
-if (translations.includes("James Legge")) {
+if (selectedTranslations.includes("James Legge")) {
   localStorage.setItem("legge-checkbox", "true");
 } else {
   localStorage.setItem("legge-checkbox", "false");
 }
 
-if (translations.includes("Ursula K. Le Guin")) {
+if (selectedTranslations.includes("Ursula K. Le Guin")) {
   localStorage.setItem("leguin-checkbox", "true");
 } else {
   localStorage.setItem("leguin-checkbox", "false");
 }
 
-if (translations.includes("D. C. Lau")) {
+if (selectedTranslations.includes("D. C. Lau")) {
   localStorage.setItem("lau-checkbox", "true");
 } else {
   localStorage.setItem("lau-checkbox", "false");
@@ -499,7 +476,6 @@ function checkBoxes() {
       setupBox(box);
     }
   }
-
   function setupBox(box) {
     var storageId = box.getAttribute("store");
     var oldVal = localStorage.getItem(storageId);
@@ -524,7 +500,7 @@ function toggleArrayItem(array, item) {
 
 function refreshCurrentChapter() {
   let message = [];
-  translations.forEach(function (translation) {
+  selectedTranslations.forEach(function (translation) {
     message.push(
       `<span class="chapter-author">Chapter ${
         currentChapterIndex + 1
@@ -538,43 +514,64 @@ function refreshCurrentChapter() {
 }
 
 mitchellCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(translations, "Stephen Mitchell");
+  toggleArrayItem(selectedTranslations, "Stephen Mitchell");
   refreshCurrentChapter();
-  localStorage.setItem("translations", JSON.stringify(translations));
+  localStorage.setItem(
+    "selectedTranslations",
+    JSON.stringify(selectedTranslations)
+  );
 });
 
 fengEnglishCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(translations, "Gia-Fu Feng & Jane English");
+  toggleArrayItem(selectedTranslations, "Gia-Fu Feng & Jane English");
   refreshCurrentChapter();
-  localStorage.setItem("translations", JSON.stringify(translations));
+  localStorage.setItem(
+    "selectedTranslations",
+    JSON.stringify(selectedTranslations)
+  );
 });
 
 addissLombardoCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(translations, "Stephen Addiss & Stanley Lombardo");
+  toggleArrayItem(selectedTranslations, "Stephen Addiss & Stanley Lombardo");
   refreshCurrentChapter();
-  localStorage.setItem("translations", JSON.stringify(translations));
+  localStorage.setItem(
+    "selectedTranslations",
+    JSON.stringify(selectedTranslations)
+  );
 });
 
 linCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(translations, "Derek Lin");
+  toggleArrayItem(selectedTranslations, "Derek Lin");
   refreshCurrentChapter();
-  localStorage.setItem("translations", JSON.stringify(translations));
+  localStorage.setItem(
+    "selectedTranslations",
+    JSON.stringify(selectedTranslations)
+  );
 });
 
 leggeCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(translations, "James Legge");
+  toggleArrayItem(selectedTranslations, "James Legge");
   refreshCurrentChapter();
-  localStorage.setItem("translations", JSON.stringify(translations));
+  localStorage.setItem(
+    "selectedTranslations",
+    JSON.stringify(selectedTranslations)
+  );
 });
 
 leguinCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(translations, "Ursula K. Le Guin");
+  toggleArrayItem(selectedTranslations, "Ursula K. Le Guin");
   refreshCurrentChapter();
-  localStorage.setItem("translations", JSON.stringify(translations));
+  localStorage.setItem(
+    "selectedTranslations",
+    JSON.stringify(selectedTranslations)
+  );
 });
 
 lauCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(translations, "D. C. Lau");
+  toggleArrayItem(selectedTranslations, "D. C. Lau");
   refreshCurrentChapter();
-  localStorage.setItem("translations", JSON.stringify(translations));
+  localStorage.setItem(
+    "selectedTranslations",
+    JSON.stringify(selectedTranslations)
+  );
 });
