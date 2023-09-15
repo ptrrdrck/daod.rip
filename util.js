@@ -103,3 +103,21 @@ if (localStorage.getItem("theme")) {
 } else {
   localStorage.setItem("theme", themesIndex);
 }
+
+function activateDarkMode() {
+  change(themes[Object.keys(themes)[1]]);
+  localStorage.setItem("theme", themesIndex);
+}
+
+window
+  .matchMedia("(prefers-color-scheme: dark)")
+  .addEventListener("change", (e) => e.matches && activateDarkMode());
+
+function activateLightMode() {
+  change(themes[Object.keys(themes)[0]]);
+  localStorage.setItem("theme", themesIndex);
+}
+
+window
+  .matchMedia("(prefers-color-scheme: light)")
+  .addEventListener("change", (e) => e.matches && activateLightMode());
