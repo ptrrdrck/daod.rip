@@ -106,7 +106,7 @@ if (localStorage.getItem("theme")) {
 
 function activateDarkMode() {
   change(themes[Object.keys(themes)[1]]);
-  localStorage.setItem("theme", themesIndex);
+  localStorage.setItem("theme", 1);
 }
 
 window
@@ -115,7 +115,7 @@ window
 
 function activateLightMode() {
   change(themes[Object.keys(themes)[0]]);
-  localStorage.setItem("theme", themesIndex);
+  localStorage.setItem("theme", 0);
 }
 
 window
