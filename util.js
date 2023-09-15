@@ -10,6 +10,23 @@
 document.getElementById("year").innerHTML = new Date().getFullYear();
 
 /**
+ * Version checking
+ */
+const version = "2.0.0";
+
+if (
+  localStorage.getItem("version") === "undefined" ||
+  localStorage.getItem("version") === null
+) {
+  localStorage.setItem("version", version);
+}
+
+if (localStorage.getItem("version") !== version) {
+  localStorage.clear();
+  localStorage.setItem("version", version);
+}
+
+/**
  * Theme changing
  */
 const themes = {
