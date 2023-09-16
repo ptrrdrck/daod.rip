@@ -27,30 +27,25 @@ localStorage.getItem("shuffle-control") ||
 const totalChapters = dao[allTranslations[0]].length;
 
 let readChapters = JSON.parse(localStorage.getItem("readChapters")) || [];
-let unreadChapters = JSON.parse(localStorage.getItem("unreadChapters")) || [
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-  23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
-  42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
-  61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
-  80, 81,
-];
 
 function displayUnreadChapters() {
   document.getElementById("unread-chapters").remove();
-  let x = document.createElement("TABLE");
-  x.setAttribute("id", "unread-chapters");
-  tablePlaceholder.appendChild(x);
-  for (var unreadChapter of unreadChapters) {
-    let y = document.createElement("TD");
-    let w = document.createElement("A");
-    w.setAttribute(
-      "href",
-      `javascript:selectedChapter = ${unreadChapter}; viewChapter(${unreadChapter} - 1);`
-    );
-    w.classList.add("chapter-link");
-    w.innerText = `${unreadChapter}`;
-    y.appendChild(w);
-    document.getElementById("unread-chapters").appendChild(y);
+  const root = document.createElement("TABLE");
+  root.setAttribute("id", "unread-chapters");
+  tablePlaceholder.appendChild(root);
+  for (let unreadChapter = 1; unreadChapter <= totalChapters; unreadChapter++) {
+    if (!readChapters.includes(unreadChapter)) {
+      const w = document.createElement("A");
+      w.setAttribute(
+        "href",
+        `javascript:selectedChapter = ${unreadChapter}; viewChapter(${unreadChapter} - 1);`
+      );
+      w.classList.add("chapter-link");
+      w.innerText = `${unreadChapter}`;
+      const y = document.createElement("TD");
+      y.appendChild(w);
+      root.appendChild(y);
+    }
   }
 }
 
@@ -238,10 +233,6 @@ function newRandomChapter() {
     readChapters.push(randomChapter + 1);
   }
   localStorage.setItem("readChapters", JSON.stringify(readChapters));
-  unreadChapters = unreadChapters.filter(function (item) {
-    return readChapters.indexOf(item) === -1;
-  });
-  localStorage.setItem("unreadChapters", JSON.stringify(unreadChapters));
   displayUnreadChapters();
   readOrder.push(randomChapter + 1);
   localStorage.setItem("readOrder", JSON.stringify(readOrder));
@@ -381,10 +372,6 @@ function viewChapter(chapter) {
     readChapters.push(chapter + 1);
   }
   localStorage.setItem("readChapters", JSON.stringify(readChapters));
-  unreadChapters = unreadChapters.filter(function (item) {
-    return readChapters.indexOf(item) === -1;
-  });
-  localStorage.setItem("unreadChapters", JSON.stringify(unreadChapters));
   displayUnreadChapters();
   readOrder.push(chapter + 1);
   localStorage.setItem("readOrder", JSON.stringify(readOrder));
@@ -401,15 +388,7 @@ const resetUnreadButton = document.getElementById("reset-unread-button");
 
 resetUnreadButton.addEventListener("click", () => {
   localStorage.removeItem("readChapters");
-  localStorage.removeItem("unreadChapters");
   readChapters = [];
-  unreadChapters = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-    22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
-    60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78,
-    79, 80, 81,
-  ];
   displayUnreadChapters();
 });
 
