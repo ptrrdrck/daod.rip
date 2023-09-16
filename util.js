@@ -126,6 +126,13 @@ function activateDarkMode() {
   localStorage.setItem("theme", 1);
 }
 
+if (
+  window.matchMedia &&
+  window.matchMedia("(prefers-color-scheme: dark)").matches
+) {
+  activateDarkMode();
+}
+
 window
   .matchMedia("(prefers-color-scheme: dark)")
   .addEventListener("change", (e) => e.matches && activateDarkMode());
@@ -133,6 +140,13 @@ window
 function activateLightMode() {
   change(themes[Object.keys(themes)[0]]);
   localStorage.setItem("theme", 0);
+}
+
+if (
+  window.matchMedia &&
+  window.matchMedia("(prefers-color-scheme: light)").matches
+) {
+  activateLightMode();
 }
 
 window
