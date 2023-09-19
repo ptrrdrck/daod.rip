@@ -24,9 +24,10 @@ localStorage.setItem(
 localStorage.getItem("shuffle-control") ||
   localStorage.setItem("shuffle-control", "true");
 
-const totalChapters = dao[allTranslations[0]].length;
-
 let readChapters = JSON.parse(localStorage.getItem("readChapters")) || [];
+
+const totalChapters = dao[allTranslations[0]].length;
+const tablePlaceholder = document.getElementById("table-placeholder");
 
 function displayUnreadChapters() {
   document.getElementById("unread-chapters").remove();
@@ -48,17 +49,6 @@ function displayUnreadChapters() {
     }
   }
 }
-
-const displayArea = document.getElementById("display");
-const tablePlaceholder = document.getElementById("table-placeholder");
-const dripButton = document.getElementById("drip-button");
-const dripAgainButton = document.getElementById("drip-again-button");
-const yinYang = document.getElementById("yin-yang");
-
-const chapterSelectInput = document.getElementById("chapter-select-input");
-const chapterSelectButton = document.getElementById("chapter-select-button");
-const addButton = document.getElementById("add-button");
-const subtractButton = document.getElementById("subtract-button");
 
 /**
     History control
@@ -196,6 +186,11 @@ function updateHistory() {
 **/
 let currentChapterIndex;
 
+const displayArea = document.getElementById("display");
+const dripButton = document.getElementById("drip-button");
+const dripAgainButton = document.getElementById("drip-again-button");
+const yinYang = document.getElementById("yin-yang");
+
 function randNumb(num) {
   return Math.floor(Math.random() * num);
 }
@@ -304,6 +299,11 @@ seekFwdButton.addEventListener("click", () => {
     Manual chapter selection
 **/
 let selectedChapter = 1;
+
+const chapterSelectInput = document.getElementById("chapter-select-input");
+const chapterSelectButton = document.getElementById("chapter-select-button");
+const addButton = document.getElementById("add-button");
+const subtractButton = document.getElementById("subtract-button");
 
 const handleValueChange = (value) => {
   if (value <= 1) {
