@@ -49,19 +49,6 @@ function displayUnreadChapters() {
   }
 }
 
-let currentChapterIndex;
-let selectedChapter = 1;
-
-let readOrder = JSON.parse(localStorage.getItem("readOrder")) || [];
-let historyIndex = -1;
-let prevChapter =
-  readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
-let prevChapterTwo;
-let prevChapterThree;
-let nextChapter = readOrder[(historyIndex + 1) % readOrder.length];
-let nextChapterTwo;
-let nextChapterThree;
-
 const displayArea = document.getElementById("display");
 const tablePlaceholder = document.getElementById("table-placeholder");
 const dripButton = document.getElementById("drip-button");
@@ -73,6 +60,19 @@ const chapterSelectButton = document.getElementById("chapter-select-button");
 const addButton = document.getElementById("add-button");
 const subtractButton = document.getElementById("subtract-button");
 
+/**
+    History control
+**/
+let readOrder = JSON.parse(localStorage.getItem("readOrder")) || [];
+let historyIndex = -1;
+let prevChapter =
+  readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
+let prevChapterTwo;
+let prevChapterThree;
+let nextChapter = readOrder[(historyIndex + 1) % readOrder.length];
+let nextChapterTwo;
+let nextChapterThree;
+
 const prevChapterDisplay = document.getElementById("prev-ch");
 const prevChapterTwoDisplay = document.getElementById("prev-ch-2");
 const prevChapterThreeDisplay = document.getElementById("prev-ch-3");
@@ -82,7 +82,6 @@ const nextChapterThreeDisplay = document.getElementById("next-ch-3");
 const seekBackButton = document.getElementById("ch-seek-back");
 const seekFwdButton = document.getElementById("ch-seek-fwd");
 const historyDisplay = document.getElementById("history-nav");
-const shuffleControl = document.getElementById("shuffle-control");
 
 function hideUndefinedHistory() {
   var historyChapters = document.getElementsByClassName("history");
@@ -192,6 +191,11 @@ function updateHistory() {
   hideUndefinedHistory();
 }
 
+/**
+    Random chapter selection
+**/
+let currentChapterIndex;
+
 function randNumb(num) {
   return Math.floor(Math.random() * num);
 }
@@ -204,9 +208,6 @@ function shuffle(array) {
   return array;
 }
 
-/**
-    Random chapter selection
-**/
 function newRandomChapter() {
   let message = [];
   const randomChapter = randNumb(totalChapters);
@@ -302,6 +303,8 @@ seekFwdButton.addEventListener("click", () => {
 /**
     Manual chapter selection
 **/
+let selectedChapter = 1;
+
 const handleValueChange = (value) => {
   if (value <= 1) {
     subtractButton.setAttribute("disabled", true);
