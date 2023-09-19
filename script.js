@@ -395,57 +395,25 @@ resetUnreadButton.addEventListener("click", () => {
 /**
     Translation control
 **/
-const mitchellCheckbox = document.getElementById("mitchell-checkbox");
-const fengEnglishCheckbox = document.getElementById("fengEnglish-checkbox");
-const addissLombardoCheckbox = document.getElementById(
-  "addissLombardo-checkbox"
-);
-const linCheckbox = document.getElementById("lin-checkbox");
-const leggeCheckbox = document.getElementById("legge-checkbox");
-const leguinCheckbox = document.getElementById("leguin-checkbox");
-const lauCheckbox = document.getElementById("lau-checkbox");
 
-if (selectedTranslations.includes("Stephen Addiss & Stanley Lombardo")) {
-  localStorage.setItem("addissLombardo-checkbox", "true");
-} else {
-  localStorage.setItem("addissLombardo-checkbox", "false");
-}
-
-if (selectedTranslations.includes("Gia-Fu Feng & Jane English")) {
-  localStorage.setItem("fengEnglish-checkbox", "true");
-} else {
-  localStorage.setItem("fengEnglish-checkbox", "false");
-}
-
-if (selectedTranslations.includes("Derek Lin")) {
-  localStorage.setItem("lin-checkbox", "true");
-} else {
-  localStorage.setItem("lin-checkbox", "false");
-}
-
-if (selectedTranslations.includes("Stephen Mitchell")) {
-  localStorage.setItem("mitchell-checkbox", "true");
-} else {
-  localStorage.setItem("mitchell-checkbox", "false");
-}
-
-if (selectedTranslations.includes("James Legge")) {
-  localStorage.setItem("legge-checkbox", "true");
-} else {
-  localStorage.setItem("legge-checkbox", "false");
-}
-
-if (selectedTranslations.includes("Ursula K. Le Guin")) {
-  localStorage.setItem("leguin-checkbox", "true");
-} else {
-  localStorage.setItem("leguin-checkbox", "false");
-}
-
-if (selectedTranslations.includes("D. C. Lau")) {
-  localStorage.setItem("lau-checkbox", "true");
-} else {
-  localStorage.setItem("lau-checkbox", "false");
-}
+[
+  { checkBoxId: "mitchell-checkbox", name: "Stephen Mitchell" },
+  { checkBoxId: "fengEnglish-checkbox", name: "Gia-Fu Feng & Jane English" },
+  {
+    checkBoxId: "addissLombardo-checkbox",
+    name: "Stephen Addiss & Stanley Lombardo",
+  },
+  { checkBoxId: "lin-checkbox", name: "Derek Lin" },
+  { checkBoxId: "legge-checkbox", name: "James Legge" },
+  { checkBoxId: "leguin-checkbox", name: "Ursula K. Le Guin" },
+  { checkBoxId: "lau-checkbox", name: "D. C. Lau" },
+].forEach(({ checkBoxId, name }) => {
+  if (selectedTranslations.includes(name)) {
+    localStorage.setItem(checkBoxId, "true");
+  } else {
+    localStorage.setItem(checkBoxId, "false");
+  }
+});
 
 function checkBoxes() {
   var boxes = document.querySelectorAll("input[type='checkbox']");
@@ -492,65 +460,24 @@ function refreshCurrentChapter() {
   displayArea.innerHTML = formatted;
 }
 
-mitchellCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(selectedTranslations, "Stephen Mitchell");
-  refreshCurrentChapter();
-  localStorage.setItem(
-    "selectedTranslations",
-    JSON.stringify(selectedTranslations)
-  );
-});
-
-fengEnglishCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(selectedTranslations, "Gia-Fu Feng & Jane English");
-  refreshCurrentChapter();
-  localStorage.setItem(
-    "selectedTranslations",
-    JSON.stringify(selectedTranslations)
-  );
-});
-
-addissLombardoCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(selectedTranslations, "Stephen Addiss & Stanley Lombardo");
-  refreshCurrentChapter();
-  localStorage.setItem(
-    "selectedTranslations",
-    JSON.stringify(selectedTranslations)
-  );
-});
-
-linCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(selectedTranslations, "Derek Lin");
-  refreshCurrentChapter();
-  localStorage.setItem(
-    "selectedTranslations",
-    JSON.stringify(selectedTranslations)
-  );
-});
-
-leggeCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(selectedTranslations, "James Legge");
-  refreshCurrentChapter();
-  localStorage.setItem(
-    "selectedTranslations",
-    JSON.stringify(selectedTranslations)
-  );
-});
-
-leguinCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(selectedTranslations, "Ursula K. Le Guin");
-  refreshCurrentChapter();
-  localStorage.setItem(
-    "selectedTranslations",
-    JSON.stringify(selectedTranslations)
-  );
-});
-
-lauCheckbox.addEventListener("change", (event) => {
-  toggleArrayItem(selectedTranslations, "D. C. Lau");
-  refreshCurrentChapter();
-  localStorage.setItem(
-    "selectedTranslations",
-    JSON.stringify(selectedTranslations)
-  );
+[
+  { checkBoxId: "mitchell-checkbox", name: "Stephen Mitchell" },
+  { checkBoxId: "fengEnglish-checkbox", name: "Gia-Fu Feng & Jane English" },
+  {
+    checkBoxId: "addissLombardo-checkbox",
+    name: "Stephen Addiss & Stanley Lombardo",
+  },
+  { checkBoxId: "lin-checkbox", name: "Derek Lin" },
+  { checkBoxId: "legge-checkbox", name: "James Legge" },
+  { checkBoxId: "leguin-checkbox", name: "Ursula K. Le Guin" },
+  { checkBoxId: "lau-checkbox", name: "D. C. Lau" },
+].forEach(({ checkBoxId, name }) => {
+  document.getElementById(checkBoxId).addEventListener("change", () => {
+    toggleArrayItem(selectedTranslations, name);
+    refreshCurrentChapter();
+    localStorage.setItem(
+      "selectedTranslations",
+      JSON.stringify(selectedTranslations)
+    );
+  });
 });
