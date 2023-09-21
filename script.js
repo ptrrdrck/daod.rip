@@ -398,6 +398,25 @@ resetUnreadButton.addEventListener("click", () => {
 /**
     Translation control
 **/
+[
+  { checkBoxId: "mitchell-checkbox", name: "Stephen Mitchell" },
+  { checkBoxId: "fengEnglish-checkbox", name: "Gia-Fu Feng & Jane English" },
+  {
+    checkBoxId: "addissLombardo-checkbox",
+    name: "Stephen Addiss & Stanley Lombardo",
+  },
+  { checkBoxId: "lin-checkbox", name: "Derek Lin" },
+  { checkBoxId: "legge-checkbox", name: "James Legge" },
+  { checkBoxId: "leguin-checkbox", name: "Ursula K. Le Guin" },
+  { checkBoxId: "lau-checkbox", name: "D. C. Lau" },
+].forEach(({ checkBoxId, name }) => {
+  if (selectedTranslations.includes(name)) {
+    localStorage.setItem(checkBoxId, "true");
+  } else {
+    localStorage.setItem(checkBoxId, "false");
+  }
+});
+
 function checkBoxes() {
   var boxes = document.querySelectorAll("input[type='checkbox']");
   for (var i = 0; i < boxes.length; i++) {
@@ -463,9 +482,4 @@ function refreshCurrentChapter() {
       JSON.stringify(selectedTranslations)
     );
   });
-  if (selectedTranslations.includes(name)) {
-    localStorage.setItem(checkBoxId, "true");
-  } else {
-    localStorage.setItem(checkBoxId, "false");
-  }
 });
