@@ -409,6 +409,7 @@ resetUnreadButton.addEventListener("click", () => {
   { checkBoxId: "legge-checkbox", name: "James Legge" },
   { checkBoxId: "leguin-checkbox", name: "Ursula K. Le Guin" },
   { checkBoxId: "lau-checkbox", name: "D. C. Lau" },
+  { checkBoxId: "yutang-checkbox", name: "Lin Yutang" },
 ].forEach(({ checkBoxId, name }) => {
   if (selectedTranslations.includes(name)) {
     localStorage.setItem(checkBoxId, "true");
@@ -473,6 +474,7 @@ function refreshCurrentChapter() {
   { checkBoxId: "legge-checkbox", name: "James Legge" },
   { checkBoxId: "leguin-checkbox", name: "Ursula K. Le Guin" },
   { checkBoxId: "lau-checkbox", name: "D. C. Lau" },
+  { checkBoxId: "yutang-checkbox", name: "Lin Yutang" },
 ].forEach(({ checkBoxId, name }) => {
   document.getElementById(checkBoxId).addEventListener("change", () => {
     toggleArrayItem(selectedTranslations, name);
