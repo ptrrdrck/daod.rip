@@ -128,7 +128,10 @@ function activateDarkMode() {
 
 if (
   window.matchMedia &&
-  window.matchMedia("(prefers-color-scheme: dark)").matches
+  window.matchMedia("(prefers-color-scheme: dark)").matches &&
+  localStorage.getItem("theme") != 2 &&
+  localStorage.getItem("theme") != 3 &&
+  localStorage.getItem("theme") != 4
 ) {
   activateDarkMode();
 }
@@ -144,7 +147,10 @@ function activateLightMode() {
 
 if (
   window.matchMedia &&
-  window.matchMedia("(prefers-color-scheme: light)").matches
+  window.matchMedia("(prefers-color-scheme: light)").matches &&
+  localStorage.getItem("theme") != 2 &&
+  localStorage.getItem("theme") != 3 &&
+  localStorage.getItem("theme") != 4
 ) {
   activateLightMode();
 }
