@@ -382,6 +382,13 @@ function viewChapter(chapter) {
   currentChapterIndex = chapter;
 }
 
+chapterSelectInput.onkeydown = function (e) {
+  if (e.keyCode == 13) {
+    selectedChapter = chapterSelectInput.valueAsNumber;
+    viewChapter(selectedChapter - 1);
+  }
+};
+
 chapterSelectButton.addEventListener("click", () => {
   selectedChapter = chapterSelectInput.valueAsNumber;
   viewChapter(selectedChapter - 1);
