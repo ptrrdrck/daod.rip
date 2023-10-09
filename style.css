@@ -45,7 +45,7 @@ html {
   }
   #display {
     font-size: clamp(1rem, calc(1rem + 1vw), 1.5rem);
-    margin: 0 10% 2px;
+    margin: 0 10% 3px;
     padding: 20px;
   }
   .chapter-nav,
@@ -53,7 +53,7 @@ html {
     margin: 0 10% 80px;
   }
   #history-nav {
-    margin: 0 10% 2px;
+    margin: 0 10% 3px;
   }
   #links,
   #history-nav,
@@ -117,7 +117,7 @@ html {
   #display,
   .sources {
     font-size: clamp(1rem, calc(1rem + 1vw), 1.5rem);
-    margin: 0 10% 2px;
+    margin: 0 10% 3px;
     padding: 5%;
   }
   #history-nav,
@@ -139,7 +139,7 @@ html {
     margin: 0 10% 80px;
   }
   #history-nav {
-    margin: 0 10% 2px;
+    margin: 0 10% 3px;
   }
   .reference {
     word-break: break-all;
@@ -176,14 +176,14 @@ html {
   #display,
   .sources {
     font-size: clamp(1.5rem, calc(1.5rem + 1vw), 1.8rem);
-    margin: 0 14% 2px;
+    margin: 0 14% 3px;
   }
   .chapter-nav,
   .sources {
     margin: 0 14% 80px;
   }
   #history-nav {
-    margin: 0 14% 2px;
+    margin: 0 14% 3px;
   }
   #history-nav,
   .chapter-nav {
@@ -399,7 +399,7 @@ input[type="number"]::-webkit-inner-spin-button {
 #display {
   line-height: 1.3;
   letter-spacing: 0.22px;
-  border: none;
+  border: 1px solid var(--borderColor);
   border-radius: 10px;
   background: var(--accentLight);
 }
@@ -429,6 +429,7 @@ input[type="number"]::-webkit-inner-spin-button {
   justify-content: center;
   padding: 20px;
   background: var(--accentLight);
+  border: 1px solid var(--borderColor);
 }
 #history-left,
 #history-center,
@@ -490,11 +491,11 @@ input[type="number"]::-webkit-inner-spin-button {
   display: flex;
   justify-content: space-between;
   border-radius: 10px;
-  gap: 2px;
+  gap: 3px;
 }
 #chapter-nav-top {
   display: flex;
-  gap: 2px;
+  gap: 3px;
 }
 #chapter-nav-bottom,
 #other-controls {
@@ -513,6 +514,7 @@ input[type="number"]::-webkit-inner-spin-button {
   flex-shrink: 1;
   justify-content: center;
   background: var(--accentLight);
+  border: 1px solid var(--borderColor);
 }
 .translation-selection {
   flex-direction: column;
