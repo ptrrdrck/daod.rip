@@ -294,7 +294,7 @@ h1 {
 input {
   background: var(--accentLight);
   height: 42px;
-  width: 50px;
+  width: 54px;
   font-size: 1rem;
   color: var(--fontColor);
   border: 1px solid var(--fontColor);
