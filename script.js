@@ -10,11 +10,9 @@ function getRandomTranslations(arr, num) {
   return shuffled.slice(0, num);
 }
 
-let randomTranslations = getRandomTranslations(allTranslations, 3);
-
 let selectedTranslations =
   JSON.parse(localStorage.getItem("selectedTranslations")) ||
-  randomTranslations;
+  getRandomTranslations(allTranslations, 3);
 
 localStorage.setItem(
   "selectedTranslations",
