@@ -529,6 +529,7 @@ main {
 .select-text {
   align-self: center;
   letter-spacing: 0.32px;
+  font-weight: bold;
 }
 ::selection {
   color: var(--secondaryColor);
