@@ -8,13 +8,28 @@
   --primaryColor: #f2dfce;
   --primaryTrans: #f2dfce2a;
   --secondaryColor: #fff1e0;
-  --accentDark: #000f28;
+  --tertiaryColor: #f2dfce;
+  --accentDark: #001436;
   --accentLight: #fff1e0;
-  --fontColor: #000f28;
-  --shadowColor: #000f2835;
-  --cursorColor: #000f2863;
+  --fontColor: #001436;
+  --borderColor: #fff1e0;
+  --shadowColor: #00143628;
   --filterColor: grayscale(100%) sepia(70%);
 }
+/*
+:root {
+  --primaryColor: #cbe2ff;
+  --primaryTrans: #cbe2ff2a;
+  --secondaryColor: #9dff89;
+  --tertiaryColor: #9dff89;
+  --accentDark: #072348;
+  --accentLight: #aec9ff;
+  --fontColor: #072348;
+  --borderColor: #aec9ff;
+  --shadowColor: #07234828;
+  --filterColor: sepia(100%) hue-rotate(197deg) saturate(150%);
+}
+*/
 html {
   min-height: 100%;
   background: linear-gradient(
