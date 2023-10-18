@@ -206,9 +206,9 @@ function newRandomChapter() {
   const randomChapter = randNumb(totalChapters);
   selectedTranslations.forEach(function (translation) {
     message.push(
-      `<span class="chapter-author">Chapter ${
+      `<div class="translation"><span class="chapter-author">Chapter ${
         randomChapter + 1
-      } by ${translation}:</span> ${dao[translation][randomChapter]}`
+      } by ${translation}:</span> ${dao[translation][randomChapter]}</div>`
     );
   });
   if (localStorage.getItem("shuffle-control") === "true") {
@@ -257,9 +257,9 @@ function getHistoryChapter(chapter) {
   let message = [];
   selectedTranslations.forEach(function (translation) {
     message.push(
-      `<span class="chapter-author">Chapter ${chapter} by ${translation}:</span> ${
+      `<div class="translation"><span class="chapter-author">Chapter ${chapter} by ${translation}:</span> ${
         dao[translation][chapter - 1]
-      }`
+      }</div>`
     );
   });
   let formatted = message.join(
@@ -351,9 +351,9 @@ function viewChapter(chapter) {
   let message = [];
   selectedTranslations.forEach(function (translation) {
     message.push(
-      `<span class="chapter-author">Chapter ${
+      `<div class="translation"><span class="chapter-author">Chapter ${
         chapter + 1
-      } by ${translation}:</span> ${dao[translation][chapter]}`
+      } by ${translation}:</span> ${dao[translation][chapter]}</div>`
     );
   });
   if (localStorage.getItem("shuffle-control") === "true") {
@@ -459,9 +459,11 @@ function refreshCurrentChapter() {
   let message = [];
   selectedTranslations.forEach(function (translation) {
     message.push(
-      `<span class="chapter-author">Chapter ${
+      `<div class="translation"><span class="chapter-author">Chapter ${
         currentChapterIndex + 1
-      } by ${translation}:</span> ${dao[translation][currentChapterIndex]}`
+      } by ${translation}:</span> ${
+        dao[translation][currentChapterIndex]
+      }</div>`
     );
   });
   let formatted = message.join(
