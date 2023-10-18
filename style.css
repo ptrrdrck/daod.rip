@@ -5,8 +5,8 @@
   box-sizing: border-box;
 }
 :root {
-  --primaryColor: #f2dfce;
-  --primaryTrans: #f2dfce2a;
+  --primaryColor: #000f28;
+  --primaryTrans: #ebd7c62a;
   --secondaryColor: #fff1e0;
   --tertiaryColor: #f2dfce;
   --accentDark: #001436;

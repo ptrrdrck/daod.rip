@@ -32,7 +32,7 @@ if (localStorage.getItem("version") !== version) {
 const themes = {
   light: {
     "--primaryColor": "#f2dfce",
-    "--primaryTrans": "#f2dfce2a",
+    "--primaryTrans": "#ebd7c62a",
     "--secondaryColor": "#fff1e0",
     "--tertiaryColor": "#f2dfce",
     "--accentDark": "#001436",
