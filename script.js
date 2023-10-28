@@ -214,9 +214,9 @@ function newRandomChapter() {
         sources[translation][2]
       }</span><br /><a href="${
         sources[translation][0]
-      }" class="trans-link" target="_blank">Source &#x2197;</a><a href="${
+      }" class="trans-link" target="_blank">Source</a><a href="${
         sources[translation][1]
-      }" class="trans-link" target="_blank">Buy &#x2197;</a></div></div>`
+      }" class="trans-link" target="_blank">Buy</a></div></div>`
     );
   });
   if (localStorage.getItem("shuffle-control") === "true") {
@@ -271,9 +271,9 @@ function getHistoryChapter(chapter) {
         sources[translation][2]
       }</span><br /><a href="${
         sources[translation][0]
-      }" class="trans-link" target="_blank">Source &#x2197;</a><a href="${
+      }" class="trans-link" target="_blank">Source</a><a href="${
         sources[translation][1]
-      }" class="trans-link" target="_blank">Buy &#x2197;</a></div></div>`
+      }" class="trans-link" target="_blank">Buy</a></div></div>`
     );
   });
   let formatted = message.join(
@@ -373,9 +373,9 @@ function viewChapter(chapter) {
         sources[translation][2]
       }</span><br /><a href="${
         sources[translation][0]
-      }" class="trans-link" target="_blank">Source &#x2197;</a><a href="${
+      }" class="trans-link" target="_blank">Source</a><a href="${
         sources[translation][1]
-      }" class="trans-link" target="_blank">Buy &#x2197;</a></div></div>`
+      }" class="trans-link" target="_blank">Buy</a></div></div>`
     );
   });
   if (localStorage.getItem("shuffle-control") === "true") {
@@ -489,9 +489,9 @@ function refreshCurrentChapter() {
         sources[translation][2]
       }</span><br /><a href="${
         sources[translation][0]
-      }" class="trans-link" target="_blank">Source &#x2197;</a><a href="${
+      }" class="trans-link" target="_blank">Source</a><a href="${
         sources[translation][1]
-      }" class="trans-link" target="_blank">Buy &#x2197;</a></div></div>`
+      }" class="trans-link" target="_blank">Buy</a></div></div>`
     );
   });
   let formatted = message.join(
