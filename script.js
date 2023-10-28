@@ -208,7 +208,13 @@ function newRandomChapter() {
     message.push(
       `<div class="translation"><span class="chapter-author">Chapter ${
         randomChapter + 1
-      } by ${translation}:</span> ${dao[translation][randomChapter]}</div>`
+      } by ${translation}:</span> ${
+        dao[translation][randomChapter]
+      }<br /><a href="${
+        sources[translation][0]
+      }" class="trans-link" target="_blank">Source &#x2197;</a><a href="${
+        sources[translation][1]
+      }" class="trans-link" target="_blank">Buy &#x2197;</a></div>`
     );
   });
   if (localStorage.getItem("shuffle-control") === "true") {
@@ -259,7 +265,11 @@ function getHistoryChapter(chapter) {
     message.push(
       `<div class="translation"><span class="chapter-author">Chapter ${chapter} by ${translation}:</span> ${
         dao[translation][chapter - 1]
-      }</div>`
+      }<br /><a href="${
+        sources[translation][0]
+      }" class="trans-link" target="_blank">Source &#x2197;</a><a href="${
+        sources[translation][1]
+      }" class="trans-link" target="_blank">Buy &#x2197;</a></div>`
     );
   });
   let formatted = message.join(
@@ -353,7 +363,11 @@ function viewChapter(chapter) {
     message.push(
       `<div class="translation"><span class="chapter-author">Chapter ${
         chapter + 1
-      } by ${translation}:</span> ${dao[translation][chapter]}</div>`
+      } by ${translation}:</span> ${dao[translation][chapter]}<br /><a href="${
+        sources[translation][0]
+      }" class="trans-link" target="_blank">Source &#x2197;</a><a href="${
+        sources[translation][1]
+      }" class="trans-link" target="_blank">Buy &#x2197;</a></div>`
     );
   });
   if (localStorage.getItem("shuffle-control") === "true") {
@@ -463,7 +477,11 @@ function refreshCurrentChapter() {
         currentChapterIndex + 1
       } by ${translation}:</span> ${
         dao[translation][currentChapterIndex]
-      }</div>`
+      }<br /><a href="${
+        sources[translation][0]
+      }" class="trans-link" target="_blank">Source &#x2197;</a><a href="${
+        sources[translation][1]
+      }" class="trans-link" target="_blank">Buy &#x2197;</a></div>`
     );
   });
   let formatted = message.join(
