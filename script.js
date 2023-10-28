@@ -210,11 +210,13 @@ function newRandomChapter() {
         randomChapter + 1
       } by ${translation}:</span> ${
         dao[translation][randomChapter]
-      }<br /><a href="${
+      }<br /><div class="trans-info"><span class="trans-ref">${
+        sources[translation][2]
+      }</span><br /><a href="${
         sources[translation][0]
       }" class="trans-link" target="_blank">Source &#x2197;</a><a href="${
         sources[translation][1]
-      }" class="trans-link" target="_blank">Buy &#x2197;</a></div>`
+      }" class="trans-link" target="_blank">Buy &#x2197;</a></div></div>`
     );
   });
   if (localStorage.getItem("shuffle-control") === "true") {
@@ -265,11 +267,13 @@ function getHistoryChapter(chapter) {
     message.push(
       `<div class="translation"><span class="chapter-author">Chapter ${chapter} by ${translation}:</span> ${
         dao[translation][chapter - 1]
-      }<br /><a href="${
+      }<br /><div class="trans-info"><span class="trans-ref">${
+        sources[translation][2]
+      }</span><br /><a href="${
         sources[translation][0]
       }" class="trans-link" target="_blank">Source &#x2197;</a><a href="${
         sources[translation][1]
-      }" class="trans-link" target="_blank">Buy &#x2197;</a></div>`
+      }" class="trans-link" target="_blank">Buy &#x2197;</a></div></div>`
     );
   });
   let formatted = message.join(
@@ -363,11 +367,15 @@ function viewChapter(chapter) {
     message.push(
       `<div class="translation"><span class="chapter-author">Chapter ${
         chapter + 1
-      } by ${translation}:</span> ${dao[translation][chapter]}<br /><a href="${
+      } by ${translation}:</span> ${
+        dao[translation][chapter]
+      }<br /><div class="trans-info"><span class="trans-ref">${
+        sources[translation][2]
+      }</span><br /><a href="${
         sources[translation][0]
       }" class="trans-link" target="_blank">Source &#x2197;</a><a href="${
         sources[translation][1]
-      }" class="trans-link" target="_blank">Buy &#x2197;</a></div>`
+      }" class="trans-link" target="_blank">Buy &#x2197;</a></div></div>`
     );
   });
   if (localStorage.getItem("shuffle-control") === "true") {
@@ -477,11 +485,13 @@ function refreshCurrentChapter() {
         currentChapterIndex + 1
       } by ${translation}:</span> ${
         dao[translation][currentChapterIndex]
-      }<br /><a href="${
+      }<br /><div class="trans-info"><span class="trans-ref">${
+        sources[translation][2]
+      }</span><br /><a href="${
         sources[translation][0]
       }" class="trans-link" target="_blank">Source &#x2197;</a><a href="${
         sources[translation][1]
-      }" class="trans-link" target="_blank">Buy &#x2197;</a></div>`
+      }" class="trans-link" target="_blank">Buy &#x2197;</a></div></div>`
     );
   });
   let formatted = message.join(

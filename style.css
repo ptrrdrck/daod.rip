@@ -436,9 +436,17 @@ input[type="number"]::-webkit-inner-spin-button {
   justify-content: center;
   margin: 40px 0;
 }
-.trans-link {
+.trans-link,
+.trans-ref {
   font-size: 14px;
   padding-right: 20px;
+}
+.trans-ref {
+  font-style: italic;
+}
+.trans-info {
+  padding-top: 20px;
+  line-height: 14px;
 }
 #history-nav {
   display: flex;

@@ -841,41 +841,51 @@ const sources = {
   "Stephen Mitchell": [
     "https://terebess.hu/english/tao/mitchell.html",
     "https://www.amazon.com/Tao-Te-Ching-Laozi/dp/0060812451/",
+    "Tzu, L. (1988) Tao Te Ching: A New English Version. Translated by S. Mitchell. Harper Perennial.",
   ],
   "Gia-Fu Feng & Jane English": [
     "https://eheart.com/TAO/TTC/TTCchapters-small.pdf",
     "https://www.amazon.com/Tao-Te-Ching-Updated-Photographs/dp/0307949303/",
+    "Tsu, L. (2011) Tao Te Ching. Translated by G.-F. Feng, J. English, and T. Lippe. Vintage Books.",
   ],
   "Stephen Addiss & Stanley Lombardo": [
     "https://terebess.hu/english/tao/Addiss-Lombardo-Watson.pdf",
     "https://www.amazon.com/Tao-Te-Ching-Hackett-Classics/dp/0872202321/",
+    "Tzu, L. (1993) Tao Te Ching. Translated by S. Addiss and S. Lombardo. Hackett Publishing Company, Inc.",
   ],
   "Derek Lin": [
     "https://terebess.hu/english/tao/DerekLin.html",
     "https://www.amazon.com/Tao-Ching-Annotated-Explained-Illuminations/dp/1594732043/",
+    "Tzu, L. (1994) Tao Teh Ching. Translated by D. Lin.",
   ],
   "James Legge": [
     "https://sacred-texts.com/tao/taote.htm",
     "https://www.amazon.com/Ching-Translated-commentary-James-Legge/dp/1420953524/",
+    "Tsu, L. (1891) The Tao Te Ching. Translated by J. Legge.",
   ],
   "Ursula K. Le Guin": [
     "https://terebess.hu/english/tao/LeGuin.pdf",
     "https://www.amazon.com/Lao-Tzu-Ching-about-Power/dp/1611807247/",
+    "Tzu, L. (2011) Tao Te Ching: A Book about the Way and the Power of the Way. Translated by U.K. Le Guin. Shambhala.",
   ],
   "D. C. Lau": [
     "https://terebess.hu/english/tao/lau.html",
     "https://www.amazon.com/Tao-Te-Ching-Lao-Tzu/dp/014044131X",
+    "Tzu, L. (1963) Tao Te Ching. Translated by D.C. Lau. Penguin Classics.",
   ],
   "Lin Yutang": [
     "https://www.zhenhost.net/tao/TaoTehChing.pdf",
     "https://www.amazon.com/Wisdom-Laotse-Laozi/dp/0313211647",
+    "Tse, L. (1948) The Wisdom of Laotse. Translated by L. Yutang. The Modern Library - New York, Random House, Inc.",
   ],
   "Robert G. Henricks": [
     "https://terebess.hu/english/tao/henricks.html",
     "https://www.amazon.com/Lao-Tzu-Translation-Discovered-Ma-wang-tui/dp/0345370996/",
+    "Tzu, L. (1989) Te-Tao Ching: A New Translation Based on the Recently Discovered Ma-wang-tui Texts. Translated by R.G. Henricks. Ballantine Books.",
   ],
   "Red Pine (Bill Porter)": [
     "https://terebess.hu/english/tao/Taoteching_withCommentaries.pdf",
     "https://www.amazon.com/Lao-tzus-Taoteching-Lao-Tzu/dp/1556592906/",
+    "Tzu, L. (1996) Lao-tzu’s Taoteching: Translated by Red Pine, with selected commentaries of the past 2000 years. 1st edn. Translated by B. Porter. Mercury House.",
   ],
 };
