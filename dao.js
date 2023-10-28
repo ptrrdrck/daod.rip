@@ -836,3 +836,46 @@ const dao = {
     "True words aren't beautiful, beautiful words aren't true. The good aren't eloquent, the eloquent aren't good. The wise aren't learned, the learned aren't wise. The sage accumulates nothing, but the more he does for others the greater his existence. The more he gives to others the greater his abundance. The Way of Heaven is to help without harming. The Way of the sage is to act without struggling.",
   ],
 };
+
+const sources = {
+  "Stephen Mitchell": [
+    "https://terebess.hu/english/tao/mitchell.html",
+    "https://www.amazon.com/Tao-Te-Ching-Laozi/dp/0060812451/",
+  ],
+  "Gia-Fu Feng & Jane English": [
+    "https://eheart.com/TAO/TTC/TTCchapters-small.pdf",
+    "https://www.amazon.com/Tao-Te-Ching-Updated-Photographs/dp/0307949303/",
+  ],
+  "Stephen Addiss & Stanley Lombardo": [
+    "https://terebess.hu/english/tao/Addiss-Lombardo-Watson.pdf",
+    "https://www.amazon.com/Tao-Te-Ching-Hackett-Classics/dp/0872202321/",
+  ],
+  "Derek Lin": [
+    "https://terebess.hu/english/tao/DerekLin.html",
+    "https://www.amazon.com/Tao-Ching-Annotated-Explained-Illuminations/dp/1594732043/",
+  ],
+  "James Legge": [
+    "https://sacred-texts.com/tao/taote.htm",
+    "https://www.amazon.com/Ching-Translated-commentary-James-Legge/dp/1420953524/",
+  ],
+  "Ursula K. Le Guin": [
+    "https://terebess.hu/english/tao/LeGuin.pdf",
+    "https://www.amazon.com/Lao-Tzu-Ching-about-Power/dp/1611807247/",
+  ],
+  "D. C. Lau": [
+    "https://terebess.hu/english/tao/lau.html",
+    "https://www.amazon.com/Tao-Te-Ching-Lao-Tzu/dp/014044131X",
+  ],
+  "Lin Yutang": [
+    "https://www.zhenhost.net/tao/TaoTehChing.pdf",
+    "https://www.amazon.com/Wisdom-Laotse-Laozi/dp/0313211647",
+  ],
+  "Robert G. Henricks": [
+    "https://terebess.hu/english/tao/henricks.html",
+    "https://www.amazon.com/Lao-Tzu-Translation-Discovered-Ma-wang-tui/dp/0345370996/",
+  ],
+  "Red Pine (Bill Porter)": [
+    "https://terebess.hu/english/tao/Taoteching_withCommentaries.pdf",
+    "https://www.amazon.com/Lao-tzus-Taoteching-Lao-Tzu/dp/1556592906/",
+  ],
+};
