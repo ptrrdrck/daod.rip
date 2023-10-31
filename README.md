@@ -16,7 +16,14 @@ Dao Drip is a browser application that allows a user to read several English tra
 
 Use the "Drip" buttons to display a new random chapter.
 ![image](./img/readme/drip-button-1.png)
+
 ![image](./img/readme/drip-button-2.png)
+
+Navigate your reading history with the arrow buttons.
+![image](./img/readme/history.png)
+
+Navigate your reading history with the arrow buttons.
+![image](./img/readme/theme-changer.png)
 
 Use the type-in field and arrow buttons to manually "View" a specific chapter (1-81).
 ![image](./img/readme/view-chapter-button.png)
@@ -29,9 +36,6 @@ Use the checkboxes to select your preferred translations and toggle their displa
 
 Translations are displayed in a randomly shuffled order by default. Toggle this setting to have them display in a consistent order.
 ![image](./img/readme/shuffle-control.png)
-
-Navigate your reading history with the arrow buttons.
-![image](./img/readme/history.png)
 
 ## Contributing
 
