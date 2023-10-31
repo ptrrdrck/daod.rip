@@ -12,7 +12,7 @@ document.getElementById("year").innerHTML = new Date().getFullYear();
 /**
  * Version checking
  */
-const version = "7.0.0";
+const version = "8.0.0";
 
 if (
   localStorage.getItem("version") === "undefined" ||
@@ -44,7 +44,7 @@ const themes = {
   },
   dark: {
     "--primaryColor": "#000f28",
-    "--primaryTrans": "#000f282a",
+    "--primaryTrans": "#040d1c2a",
     "--secondaryColor": "#001436",
     "--tertiaryColor": "#000f28",
     "--accentDark": "#fff6eb",
