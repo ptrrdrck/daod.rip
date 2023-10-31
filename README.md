@@ -22,7 +22,7 @@ Use the "Drip" buttons to display a new random chapter.
 Navigate your reading history with the arrow buttons.
 ![image](./img/readme/history.png)
 
-Navigate your reading history with the arrow buttons.
+Choose a new color theme for the site.
 ![image](./img/readme/theme-changer.png)
 
 Use the type-in field and arrow buttons to manually "View" a specific chapter (1-81).
