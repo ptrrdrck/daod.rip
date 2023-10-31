@@ -6,7 +6,7 @@
 }
 :root {
   --primaryColor: #000f28;
-  --primaryTrans: #ebd7c62a;
+  --primaryTrans: #000f282a;
   --secondaryColor: #fff1e0;
   --tertiaryColor: #f2dfce;
   --accentDark: #001436;
@@ -15,21 +15,8 @@
   --borderColor: #fff1e0;
   --shadowColor: #00143628;
   --filterColor: grayscale(100%) sepia(70%);
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-caret-down-fill' viewBox='0 0 16 16' %3E%3Cpath fill='currentColor' d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z' /%3E%3C/svg%3E");
 }
-/*
-:root {
-  --primaryColor: #cbe2ff;
-  --primaryTrans: #cbe2ff2a;
-  --secondaryColor: #9dff89;
-  --tertiaryColor: #9dff89;
-  --accentDark: #072348;
-  --accentLight: #aec9ff;
-  --fontColor: #072348;
-  --borderColor: #aec9ff;
-  --shadowColor: #07234828;
-  --filterColor: sepia(100%) hue-rotate(197deg) saturate(150%);
-}
-*/
 html {
   min-height: 100%;
   background: linear-gradient(
@@ -53,10 +40,6 @@ html {
     right: 12px;
     width: 30px;
     height: 30px;
-  }
-  #tour-button {
-    margin-top: 12px;
-    margin-left: 12px;
   }
   #display {
     font-size: clamp(1rem, calc(1rem + 1vw), 1.5rem);
@@ -124,10 +107,6 @@ html {
     right: 20px;
     width: 42px;
     height: 42px;
-  }
-  #tour-button {
-    margin-top: 20px;
-    margin-left: 20px;
   }
   #display,
   .sources {
@@ -434,7 +413,7 @@ input[type="number"]::-webkit-inner-spin-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 40px 0;
+  margin: 10px 0 40px;
 }
 .trans-link,
 .trans-ref {
@@ -529,6 +508,46 @@ input[type="number"]::-webkit-inner-spin-button {
 #other-controls {
   gap: 20px;
 }
+details {
+  display: flex;
+}
+details summary {
+  cursor: pointer;
+}
+summary {
+  display: flex;
+  list-style-position: outside;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 0;
+  padding: 0;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+summary::after {
+  content: "";
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  mask-image: var(--svg);
+  mask-size: cover;
+  -webkit-mask-image: var(--svg);
+  -webkit-mask-size: cover;
+  background-color: var(--fontColor);
+  transition: 0.2s;
+}
+details[open] > summary::after {
+  transform: rotate(180deg);
+}
+#unread-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#reset-unread-button {
+  margin-top: 10px;
+}
 #other-controls {
   border-radius: 10px;
 }
@@ -556,7 +575,6 @@ main {
 .select-text {
   align-self: center;
   letter-spacing: 0.32px;
-  font-weight: bold;
 }
 ::selection {
   color: var(--secondaryColor);
@@ -587,7 +605,7 @@ main {
   align-self: center;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: -14px;
+  padding-top: 20px;
 }
 #unread-chapters td {
   border: none;
@@ -615,7 +633,8 @@ main {
 .checkbox-container {
   display: flex;
   position: relative;
-  padding-left: 36px;
+  padding-left: 40px;
+  margin: 15px 0;
   min-height: 30px;
   font-size: 24px;
   -webkit-user-select: none;
@@ -682,13 +701,20 @@ main {
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
+#first-translation,
+#first-control {
+  margin-top: 20px;
+}
+#last-translation,
+#first-control {
+  margin-bottom: 0;
+}
 .emoji {
   filter: var(--filterColor);
   -webkit-filter: var(--filterColor);
   -moz-filter: var(--filterColor);
 }
 .emphasis,
-.footer-link:hover,
 p.sources a:hover,
 a:hover {
   font-style: italic;
@@ -722,7 +748,7 @@ footer {
 }
 #links {
   display: flex;
-  gap: 20px;
+  gap: 40px;
 }
 #yin-yang {
   margin: calc(60px + 2vw) auto;
@@ -747,14 +773,28 @@ footer {
   text-align: center;
 }
 .footer-link {
+  cursor: pointer;
   text-decoration: none;
-  color: var(--fontColor);
+  width: auto;
+  height: 42px;
+  border-radius: 20px;
+  background-color: var(--fontColor);
+  color: var(--accentLight);
   font-size: 1rem;
   letter-spacing: 0.32px;
   margin: 0 12px;
-  position: relative;
-  padding-bottom: 2px;
+  padding: 6px 12px 2px;
+  border: 1px solid var(--fontColor);
+  align-self: center;
 }
 .footer-link:hover {
-  text-decoration: underline;
+  font-style: normal;
+  transform: scale(1.03);
+  transition: 0.1s;
+  color: var(--accentLight);
+  background-color: var(--fontColor);
+}
+.footer-link:active {
+  transform: scale(0.97);
+  transition: 0.1s;
 }
