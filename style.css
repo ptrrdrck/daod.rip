@@ -126,7 +126,7 @@ html {
   #chapter-nav-bottom,
   #other-controls,
   .translation-selection {
-    padding: 30px;
+    padding: 20px;
   }
   .chapter-nav,
   .sources {
@@ -520,7 +520,11 @@ summary {
   align-items: center;
   justify-content: space-between;
   margin-left: 0;
-  padding: 0;
+  padding: 10px;
+  border-radius: 8px;
+}
+summary:hover {
+  background-color: var(--primaryTrans);
 }
 summary::-webkit-details-marker {
   display: none;
@@ -609,9 +613,9 @@ main {
 }
 #unread-chapters td {
   border: none;
-  width: 43px;
+  width: 49px;
   height: 25px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   display: flex;
   justify-content: center;
 }
@@ -620,23 +624,24 @@ main {
   align-self: center;
 }
 .chapter-link {
-  padding: 0 1px 1px 0;
+  padding: 0 3px 1px 3px;
+  border-radius: 8px;
   color: var(--fontColor);
 }
 .chapter-link:hover {
-  padding: 0 2px 8px 3px;
   font-style: normal;
   text-decoration: none;
-  color: var(--accentLight);
   background-color: var(--fontColor);
+  color: var(--accentLight);
 }
 .checkbox-container {
   display: flex;
   position: relative;
-  padding-left: 40px;
-  margin: 15px 0;
+  padding: 10px 10px 10px 50px;
+  margin: 5px 0;
   min-height: 30px;
   font-size: 24px;
+  border-radius: 8px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -644,6 +649,7 @@ main {
 }
 .checkbox-container:hover {
   cursor: pointer;
+  background-color: var(--primaryTrans);
 }
 .checkbox-container input {
   position: absolute;
@@ -653,8 +659,8 @@ main {
 }
 .checkmark {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 9px;
+  left: 10px;
   height: 30px;
   width: 30px;
   background-color: var(--accentLight);
@@ -703,7 +709,7 @@ main {
 }
 #first-translation,
 #first-control {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 #last-translation,
 #first-control {
