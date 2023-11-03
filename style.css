@@ -301,6 +301,13 @@ input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   appearance: none;
 }
+input[type="number"]:hover {
+  background-color: var(--primaryTrans);
+}
+
+input[type="number"]:focus {
+  box-shadow: 0 0 0 4px var(--primaryTrans);
+}
 .number-controls {
   display: flex;
   position: relative;
