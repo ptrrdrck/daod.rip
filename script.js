@@ -1,12 +1,13 @@
 /**
-    Dao  Drip © Peter Rodrick.
-    Displays the same random chapter of the Daodejing
-    from characteristically distinct translations.
-**/
+ * Dao Drip © Peter Rodrick.
+ * Displays the same random chapter of the Daodejing
+ * from characteristically distinct translations.
+ */
+
 const allTranslations = Object.keys(dao);
 
 function getRandomTranslations(arr, num) {
-  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  const shuffled = arr.sort(() => 0.5 - Math.random());
   return shuffled.slice(0, num);
 }
 
@@ -28,7 +29,10 @@ const totalChapters = dao[allTranslations[0]].length;
 const tablePlaceholder = document.getElementById("table-placeholder");
 
 function displayUnreadChapters() {
-  document.getElementById("unread-chapters").remove();
+  const unreadChapters = document.getElementById("unread-chapters");
+  if (unreadChapters) {
+    unreadChapters.remove();
+  }
   const root = document.createElement("TABLE");
   root.setAttribute("id", "unread-chapters");
   tablePlaceholder.appendChild(root);
@@ -49,8 +53,9 @@ function displayUnreadChapters() {
 }
 
 /**
-    History control
-**/
+ * History control
+ */
+
 let readOrder = JSON.parse(localStorage.getItem("readOrder")) || [];
 let historyIndex = -1;
 let prevChapter =
@@ -72,45 +77,36 @@ const seekFwdButton = document.getElementById("ch-seek-fwd");
 const historyDisplay = document.getElementById("history-nav");
 
 function hideUndefinedHistory() {
-  var historyChapters = document.getElementsByClassName("history");
-  for (var i = 0; i < historyChapters.length; i++) {
-    var historyChapter = historyChapters[i];
+  const historyChapters = document.getElementsByClassName("history");
+  for (let i = 0; i < historyChapters.length; i++) {
+    const historyChapter = historyChapters[i];
     if (historyChapter.innerText == "undefined") {
       historyChapter.classList.add("history-hide");
     } else {
       historyChapter.classList.remove("history-hide");
     }
   }
-  if (
+  seekBackButton.style.display =
     prevChapter === undefined &&
     prevChapterTwo === undefined &&
     prevChapterThree === undefined
-  ) {
-    seekBackButton.style.display = "none";
-  } else {
-    seekBackButton.style.display = "inline-block";
-  }
-  if (
+      ? "none"
+      : "inline-block";
+  seekFwdButton.style.display =
     nextChapter === undefined &&
     nextChapterTwo === undefined &&
     nextChapterThree === undefined
-  ) {
-    seekFwdButton.style.display = "none";
-  } else {
-    seekFwdButton.style.display = "inline-block";
-  }
-  if (
+      ? "none"
+      : "inline-block";
+  historyDisplay.style.display =
     prevChapter === undefined &&
     prevChapterTwo === undefined &&
     prevChapterThree === undefined &&
     nextChapter === undefined &&
     nextChapterTwo === undefined &&
     nextChapterThree === undefined
-  ) {
-    historyDisplay.style.display = "none";
-  } else {
-    historyDisplay.style.display = "flex";
-  }
+      ? "none"
+      : "flex";
 }
 
 hideUndefinedHistory();
@@ -180,8 +176,9 @@ function updateHistory() {
 }
 
 /**
-    Random chapter selection
-**/
+ * Random chapter selection
+ */
+
 let currentChapterIndex;
 
 const displayArea = document.getElementById("display");
@@ -259,8 +256,9 @@ yinYang.addEventListener("click", () => {
 });
 
 /**
-    History chapter selection
-**/
+ * History chapter selection
+ */
+
 function getHistoryChapter(chapter) {
   let message = [];
   selectedTranslations.forEach(function (translation) {
@@ -308,8 +306,9 @@ seekFwdButton.addEventListener("click", () => {
 });
 
 /**
-    Manual chapter selection
-**/
+ * Manual chapter selection
+ */
+
 let selectedChapter = 1;
 
 const chapterSelectInput = document.getElementById("chapter-select-input");
@@ -423,8 +422,9 @@ resetUnreadButton.addEventListener("click", () => {
 });
 
 /**
-    Translation control
-**/
+ * Translation control
+ */
+
 [
   { checkBoxId: "mitchell-checkbox", name: "Stephen Mitchell" },
   { checkBoxId: "fengEnglish-checkbox", name: "Gia-Fu Feng & Jane English" },
@@ -448,16 +448,16 @@ resetUnreadButton.addEventListener("click", () => {
 });
 
 function checkBoxes() {
-  var boxes = document.querySelectorAll("input[type='checkbox']");
-  for (var i = 0; i < boxes.length; i++) {
-    var box = boxes[i];
+  const boxes = document.querySelectorAll("input[type='checkbox']");
+  for (let i = 0; i < boxes.length; i++) {
+    const box = boxes[i];
     if (box.hasAttribute("store")) {
       setupBox(box);
     }
   }
   function setupBox(box) {
-    var storageId = box.getAttribute("store");
-    var oldVal = localStorage.getItem(storageId);
+    const storageId = box.getAttribute("store");
+    const oldVal = localStorage.getItem(storageId);
     box.checked = oldVal === "true" ? true : false;
 
     box.addEventListener("change", function () {
@@ -469,7 +469,7 @@ function checkBoxes() {
 checkBoxes();
 
 function toggleArrayItem(array, item) {
-  let i = array.indexOf(item);
+  const i = array.indexOf(item);
   if (i === -1) {
     array.push(item);
   } else {
