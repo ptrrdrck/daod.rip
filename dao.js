@@ -1,8 +1,8 @@
-/**
-    Dao  Drip © Peter Rodrick.
-    Displays the same random chapter of the Daodejing
-    from characteristically distinct translations.
-**/
+/* © 2021 Peter Rodrick <pete@lftlc.xyz>
+ * Translation texts are copyrighted by their respective authors and/or
+ * publishers and are reproduced here under provisions 106 and 107 of Public
+ * Law 94-553.
+ */
 
 const dao = {
   "Stephen Mitchell": [

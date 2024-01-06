@@ -1,17 +1,6 @@
-/**
-    Dao  Drip © Peter Rodrick.
-    Displays the same random chapter of the Daodejing
-    from characteristically distinct translations.
-**/
+/* © 2021 Peter Rodrick <pete@lftlc.xyz> */
 
-/**
- * Current year display
- */
-document.getElementById("year").innerHTML = new Date().getFullYear();
-
-/**
- * Version checking
- */
+/* Version checking */
 const version = "8.0.0";
 
 if (
@@ -26,9 +15,7 @@ if (localStorage.getItem("version") !== version) {
   localStorage.setItem("version", version);
 }
 
-/**
- * Theme changing
- */
+/* Theme changing */
 const themes = {
   light: {
     "--primaryColor": "#f2dfce",

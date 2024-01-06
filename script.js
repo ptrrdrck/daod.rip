@@ -1,5 +1,5 @@
-/**
- * Dao Drip © Peter Rodrick.
+/* © 2021 Peter Rodrick <pete@lftlc.xyz>
+ * Dao Drip
  * Displays the same random chapter of the Daodejing
  * from characteristically distinct translations.
  */

@@ -1,3 +1,5 @@
+/* © 2021 Peter Rodrick <pete@lftlc.xyz> */
+
 @charset "UTF-8";
 * {
   margin: 0;
@@ -30,10 +32,6 @@ html {
   font-size: 24px;
   color: var(--fontColor);
 }
-
-/**
-    Media queries
-**/
 @media (max-width: 599px) {
   #change {
     top: 12px;
@@ -97,7 +95,7 @@ html {
   .checkbox-container {
     align-self: unset;
   }
-  #copyright {
+  #madeby {
     width: 300px;
   }
 }
@@ -159,7 +157,7 @@ html {
   .checkbox-container {
     align-self: center;
   }
-  #copyright {
+  #madeby {
     width: 600px;
   }
 }
@@ -204,10 +202,6 @@ html {
     margin-bottom: 5px;
   }
 }
-
-/**
-    Animations
-**/
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -236,7 +230,6 @@ html {
   animation: 0.6s fadeIn;
   opacity: 1;
 }
-
 header {
   display: flex;
   justify-content: center;
@@ -249,10 +242,6 @@ h1 {
   font-size: calc(1.9rem + 1vw);
   margin: 20px calc(10px + 2vw);
 }
-
-/**
-    Buttons/inputs
-**/
 #drip-button {
   background: var(--accentLight);
   color: var(--fontColor);
@@ -395,9 +384,6 @@ input[type="number"]:focus {
   transform: scale(0.97);
   transition: 0.1s;
 }
-/**
-    Misc body
-**/
 #display {
   line-height: 1.3;
   letter-spacing: 0.22px;
@@ -780,7 +766,7 @@ footer {
   transform: scale(0.97);
   transition: 0.1s;
 }
-#copyright {
+#madeby {
   font-size: 0.7rem;
   margin-bottom: 60px;
   text-align: center;
