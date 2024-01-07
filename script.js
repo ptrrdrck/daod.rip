@@ -175,9 +175,7 @@ function updateHistory() {
   hideUndefinedHistory();
 }
 
-/**
- * Random chapter selection
- */
+/* Random chapter selection */
 
 let currentChapterIndex;
 
@@ -210,10 +208,8 @@ function newRandomChapter() {
       }<br /><div class="trans-info"><span class="trans-ref">${
         sources[translation][2]
       }</span><br /><a href="${
-        sources[translation][0]
-      }" class="trans-link" target="_blank">Source</a><a href="${
         sources[translation][1]
-      }" class="trans-link" target="_blank">Buy</a></div></div>`
+      }" class="trans-link" target="_blank">Source</a></div></div>`
     );
   });
   if (localStorage.getItem("shuffle-control") === "true") {
@@ -255,9 +251,7 @@ yinYang.addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-/**
- * History chapter selection
- */
+/* History chapter selection */
 
 function getHistoryChapter(chapter) {
   let message = [];
@@ -268,10 +262,8 @@ function getHistoryChapter(chapter) {
       }<br /><div class="trans-info"><span class="trans-ref">${
         sources[translation][2]
       }</span><br /><a href="${
-        sources[translation][0]
-      }" class="trans-link" target="_blank">Source</a><a href="${
         sources[translation][1]
-      }" class="trans-link" target="_blank">Buy</a></div></div>`
+      }" class="trans-link" target="_blank">Source</a></div></div>`
     );
   });
   let formatted = message.join(
@@ -305,9 +297,7 @@ seekFwdButton.addEventListener("click", () => {
   seekFwd();
 });
 
-/**
- * Manual chapter selection
- */
+/* Manual chapter selection */
 
 let selectedChapter = 1;
 
@@ -371,10 +361,8 @@ function viewChapter(chapter) {
       }<br /><div class="trans-info"><span class="trans-ref">${
         sources[translation][2]
       }</span><br /><a href="${
-        sources[translation][0]
-      }" class="trans-link" target="_blank">Source</a><a href="${
         sources[translation][1]
-      }" class="trans-link" target="_blank">Buy</a></div></div>`
+      }" class="trans-link" target="_blank">Source</a></div></div>`
     );
   });
   if (localStorage.getItem("shuffle-control") === "true") {
@@ -421,9 +409,7 @@ resetUnreadButton.addEventListener("click", () => {
   displayUnreadChapters();
 });
 
-/**
- * Translation control
- */
+/* Translation control */
 
 [
   { checkBoxId: "mitchell-checkbox", name: "Stephen Mitchell" },
@@ -488,10 +474,8 @@ function refreshCurrentChapter() {
       }<br /><div class="trans-info"><span class="trans-ref">${
         sources[translation][2]
       }</span><br /><a href="${
-        sources[translation][0]
-      }" class="trans-link" target="_blank">Source</a><a href="${
         sources[translation][1]
-      }" class="trans-link" target="_blank">Buy</a></div></div>`
+      }" class="trans-link" target="_blank">Source</a></div></div>`
     );
   });
   let formatted = message.join(
