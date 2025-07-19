@@ -1,0 +1,406 @@
+<!-- © 2021 Peter Rodrick <pete@lftlc.xyz> - Optimized Version -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="Read multiple translations of the Daodejing at the same time. Select chapters randomly or intentionally. Optimized for performance and accessibility." />
+    <meta name="keywords" content="Daodejing, Tao Te Ching, philosophy, translations, meditation, wisdom" />
+    <meta name="author" content="Peter Rodrick" />
+    
+    <!-- Performance and SEO meta tags -->
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#001436" />
+    <meta name="color-scheme" content="light dark" />
+    
+    <!-- Preconnect to external domains (if any) -->
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin /> -->
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="./style-optimized.css" as="style" />
+    <link rel="preload" href="./dao-optimized.js" as="script" />
+    <link rel="preload" href="./script-optimized.js" as="script" />
+    
+    <!-- Critical CSS inlined for faster rendering -->
+    <style>
+      /* Critical above-the-fold styles */
+      :root {
+        --primary-color: #000f28;
+        --secondary-color: #fff1e0;
+        --tertiary-color: #f2dfce;
+        --accent-dark: #001436;
+        --accent-light: #fff1e0;
+        --font-color: #001436;
+        --border-color: #fff1e0;
+        --shadow-color: #00143628;
+        --font-family: Arial, Helvetica, sans-serif;
+        --font-size-base: 24px;
+      }
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      html {
+        min-height: 100%;
+        background: linear-gradient(239deg, var(--secondary-color) 0, var(--primary-color) 20%, var(--primary-color) 80%, var(--tertiary-color) 100%);
+        font-family: var(--font-family);
+        font-size: var(--font-size-base);
+        color: var(--font-color);
+        scroll-behavior: smooth;
+      }
+      
+      body {
+        min-height: 100vh;
+      }
+      
+      header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: calc(40px + 2vw);
+        margin-bottom: calc(15px + 2vw);
+      }
+      
+      h1 {
+        font-weight: 400;
+        font-size: calc(1.9rem + 1vw);
+        margin: 20px calc(10px + 2vw);
+      }
+      
+      #drip-button {
+        background: var(--accent-light);
+        color: var(--font-color);
+        border: none;
+        border-radius: 50%;
+        font-size: calc(1.9rem + 1vw);
+        font-weight: 400;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 60px;
+        height: 60px;
+        padding: calc(70px + 1vw);
+        letter-spacing: 1px;
+        margin: 20px;
+        box-shadow: 0 4px 15px var(--shadow-color);
+        cursor: pointer;
+        transition: transform 0.1s ease;
+      }
+      
+      #drip-button:hover {
+        transform: scale(1.03);
+      }
+      
+      #display {
+        line-height: 1.3;
+        letter-spacing: 0.22px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        background: var(--accent-light);
+        font-size: clamp(1rem, calc(1rem + 1vw), 1.5rem);
+        margin: 0 10% 3px;
+        padding: 5%;
+      }
+      
+      .loading {
+        text-align: center;
+        padding: 40px;
+        font-size: 1.2rem;
+        color: var(--font-color);
+      }
+    </style>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%92%A7%3C%2Ftext%3E%3C%2Fsvg%3E" type="image/svg+xml" />
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="./manifest.json" />
+    
+    <!-- iOS Safari meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Dao Drip" />
+    
+    <title>Dao Drip - Optimized</title>
+    
+    <!-- Non-critical CSS loaded asynchronously -->
+    <link href="./style-optimized.css" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="./style-optimized.css" rel="stylesheet" /></noscript>
+  </head>
+  <body>
+    <!-- Skip to content link for accessibility -->
+    <a href="#main-content" class="skip-to-content" tabindex="1">Skip to main content</a>
+    
+    <!-- Theme change button -->
+    <button id="change" title="Change theme" aria-label="Change theme"></button>
+    
+    <header>
+      <h1>dao</h1>
+      <button id="drip-button" type="button" aria-label="Get random chapter">drip</button>
+    </header>
+    
+    <main id="main-content">
+      <!-- History navigation -->
+      <nav id="history-nav" class="fade-in" aria-label="Chapter history navigation">
+        <div id="history-left">
+          <span class="history" id="prev-ch-3" aria-hidden="true"></span>
+          <span class="history" id="prev-ch-2" aria-hidden="true"></span>
+          <span class="history" id="prev-ch" aria-hidden="true"></span>
+          <button class="button" id="ch-seek-back" aria-label="Go to previous chapter">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-caret-left-fill" viewBox="0 0 16 16" aria-hidden="true">
+              <path fill="currentColor" d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z" />
+            </svg>
+          </button>
+        </div>
+        <div id="history-center"></div>
+        <div id="history-right">
+          <button class="button" id="ch-seek-fwd" aria-label="Go to next chapter">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16" aria-hidden="true">
+              <path fill="currentColor" d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
+            </svg>
+          </button>
+          <span class="history" id="next-ch" aria-hidden="true"></span>
+          <span class="history" id="next-ch-2" aria-hidden="true"></span>
+          <span class="history" id="next-ch-3" aria-hidden="true"></span>
+        </div>
+      </nav>
+      
+      <!-- Main content display area -->
+      <section id="display" class="fade-in" role="main" aria-live="polite" aria-label="Chapter translations">
+        <div class="loading">Loading translations...</div>
+      </section>
+      
+      <!-- Chapter navigation controls -->
+      <section class="chapter-nav" aria-label="Chapter navigation">
+        <div id="chapter-nav-top">
+          <div id="chapter-nav-left">
+            <button class="button" id="drip-again-button">Drip Again</button>
+          </div>
+          <div id="chapter-nav-right">
+            <div class="selection-area">
+              <div class="input-area">
+                <label for="chapter-select-input" class="sr-only">Chapter number</label>
+                <input id="chapter-select-input" type="number" value="1" min="1" max="81" aria-label="Chapter number" />
+                <div class="number-controls">
+                  <button class="button plus" id="add-button" title="Increase chapter number" aria-label="Increase chapter number">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16" aria-hidden="true">
+                      <path fill="currentColor" d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
+                    </svg>
+                  </button>
+                  <button class="button minus" id="subtract-button" title="Decrease chapter number" aria-label="Decrease chapter number" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16" aria-hidden="true">
+                      <path fill="currentColor" d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <button class="button" id="chapter-select-button">View</button>
+            </div>
+          </div>
+        </div>
+        
+        <div id="chapter-nav-bottom">
+          <details>
+            <summary>
+              <span class="select-text">Unread Chapters</span>
+            </summary>
+            <div id="unread-details">
+              <div id="table-placeholder" role="region" aria-label="Unread chapters">
+                <table id="unread-chapters"></table>
+              </div>
+              <button class="button" id="reset-unread-button">Reset</button>
+            </div>
+          </details>
+        </div>
+        
+        <div class="translation-selection">
+          <details id="translations">
+            <summary>
+              <span class="select-text">Translations</span>
+            </summary>
+            <fieldset>
+              <legend class="sr-only">Select translations to display</legend>
+              <label id="first-translation" for="addissLombardo-checkbox" class="checkbox-container">
+                Stephen Addiss & Stanley Lombardo
+                <input id="addissLombardo-checkbox" type="checkbox" store="addissLombardo-checkbox" checked />
+                <span class="checkmark"></span>
+              </label>
+              <label for="fengEnglish-checkbox" class="checkbox-container">
+                Gia-Fu Feng & Jane English
+                <input id="fengEnglish-checkbox" type="checkbox" store="fengEnglish-checkbox" checked />
+                <span class="checkmark"></span>
+              </label>
+              <label for="henricks-checkbox" class="checkbox-container">
+                Robert G. Henricks
+                <input id="henricks-checkbox" type="checkbox" store="henricks-checkbox" checked />
+                <span class="checkmark"></span>
+              </label>
+              <label for="lau-checkbox" class="checkbox-container">
+                D. C. Lau
+                <input id="lau-checkbox" type="checkbox" store="lau-checkbox" checked />
+                <span class="checkmark"></span>
+              </label>
+              <label for="legge-checkbox" class="checkbox-container">
+                James Legge
+                <input id="legge-checkbox" type="checkbox" store="legge-checkbox" checked />
+                <span class="checkmark"></span>
+              </label>
+              <label for="leguin-checkbox" class="checkbox-container">
+                Ursula K. Le Guin
+                <input id="leguin-checkbox" type="checkbox" store="leguin-checkbox" checked />
+                <span class="checkmark"></span>
+              </label>
+              <label for="lin-checkbox" class="checkbox-container">
+                Derek Lin
+                <input id="lin-checkbox" type="checkbox" store="lin-checkbox" checked />
+                <span class="checkmark"></span>
+              </label>
+              <label for="mitchell-checkbox" class="checkbox-container">
+                Stephen Mitchell
+                <input id="mitchell-checkbox" type="checkbox" store="mitchell-checkbox" checked />
+                <span class="checkmark"></span>
+              </label>
+              <label for="redpine-checkbox" class="checkbox-container">
+                Red Pine (Bill Porter)
+                <input id="redpine-checkbox" type="checkbox" store="redpine-checkbox" checked />
+                <span class="checkmark"></span>
+              </label>
+              <label id="last-translation" for="yutang-checkbox" class="checkbox-container">
+                Lin Yutang
+                <input id="yutang-checkbox" type="checkbox" store="yutang-checkbox" checked />
+                <span class="checkmark"></span>
+              </label>
+            </fieldset>
+          </details>
+        </div>
+        
+        <div id="other-controls">
+          <details>
+            <summary>
+              <span class="select-text">Other Controls</span>
+            </summary>
+            <fieldset>
+              <legend class="sr-only">Additional options</legend>
+              <label id="first-control" for="shuffle-control" class="checkbox-container">
+                Shuffle translation display order
+                <input id="shuffle-control" type="checkbox" store="shuffle-control" checked />
+                <span class="checkmark"></span>
+              </label>
+            </fieldset>
+          </details>
+        </div>
+      </section>
+    </main>
+    
+    <footer class="fade-in">
+      <div id="links">
+        <a class="footer-link" href="./about.html">About</a>
+      </div>
+      <svg id="yin-yang" aria-hidden="true" role="button" tabindex="0" title="Get random chapter" data-prefix="fas" data-icon="yin-yang" class="svg-inline--fa fa-yin-yang fa-w-16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
+        <path fill="currentColor" d="M248 8C111.03 8 0 119.03 0 256s111.03 248 248 248 248-111.03 248-248S384.97 8 248 8zm0 376c-17.67 0-32-14.33-32-32s14.33-32 32-32 32 14.33 32 32-14.33 32-32 32zm0-128c-53.02 0-96 42.98-96 96s42.98 96 96 96c-106.04 0-192-85.96-192-192S141.96 64 248 64c53.02 0 96 42.98 96 96s-42.98 96-96 96zm0-128c-17.67 0-32 14.33-32 32s14.33 32 32 32 32-14.33 32-32-14.33-32-32-32z" />
+      </svg>
+      <div id="madeby">
+        The quotations on this page are printed here under provisions 106 and 107 of
+        <a href="https://babel.hathitrust.org/cgi/pt?id=uiug.30112104077042&view=1up&seq=6" target="_blank" rel="noopener">Public Law 94-553</a>
+        permitting limited reproduction of copyrighted materials for educational purposes or in the context of scholarship or research.<br /><br />
+        Made by <a href="https://lftlc.xyz" target="_blank" rel="noopener">lftlc.xyz</a>.
+      </div>
+    </footer>
+    
+    <!-- Screen reader only styles -->
+    <style>
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      
+      .skip-to-content {
+        position: absolute;
+        top: -40px;
+        left: 6px;
+        background: var(--accent-dark);
+        color: var(--accent-light);
+        padding: 8px;
+        text-decoration: none;
+        border-radius: 4px;
+        z-index: 1000;
+        transition: top 0.3s;
+      }
+      
+      .skip-to-content:focus {
+        top: 6px;
+      }
+    </style>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      // Register service worker for caching and offline functionality
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', async () => {
+          try {
+            const registration = await navigator.serviceWorker.register('./sw.js');
+            console.log('SW registered: ', registration);
+            
+            // Listen for updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New version available
+                  if (confirm('New version available! Reload to update?')) {
+                    window.location.reload();
+                  }
+                }
+              });
+            });
+          } catch (error) {
+            console.log('SW registration failed: ', error);
+          }
+        });
+      }
+      
+      // Performance monitoring
+      window.addEventListener('load', () => {
+        if ('performance' in window) {
+          const perfData = performance.getEntriesByType('navigation')[0];
+          console.log('Page load time:', perfData.loadEventEnd - perfData.loadEventStart);
+          console.log('DOM content loaded:', perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart);
+          console.log('First paint:', performance.getEntriesByType('paint')[0]?.startTime);
+        }
+      });
+    </script>
+    
+    <!-- Scripts loaded with optimal strategy -->
+    <script src="./util.js" defer></script>
+    <script src="./dao-optimized.js" defer></script>
+    <script src="./script-optimized.js" defer></script>
+    
+    <!-- Web Vitals monitoring (optional) -->
+    <script>
+      // Simplified web vitals monitoring
+      function reportWebVitals() {
+        if ('web-vital' in window) {
+          // This would typically use the web-vitals library
+          console.log('Web Vitals monitoring enabled');
+        }
+      }
+      
+      // Report on page visibility change
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          reportWebVitals();
+        }
+      });
+    </script>
+  </body>
+</html>
