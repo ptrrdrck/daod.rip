@@ -54,17 +54,14 @@ html {
   #links,
   #history-nav,
   .chapter-nav,
-  #chapter-nav-bottom,
-  #other-controls,
+  .details-container,
   #chapter-nav-top {
     flex-direction: column;
   }
   .sources,
   #chapter-nav-left,
   #chapter-nav-right,
-  #chapter-nav-bottom,
-  #other-controls,
-  .translation-selection {
+  .details-container {
     padding: 20px;
   }
   #prev-ch-3,
@@ -80,11 +77,9 @@ html {
     border-bottom-left-radius: unset;
   }
   #chapter-nav-right {
-    border-top-right-radius: unset;
-  }
-  #chapter-nav-bottom {
-    border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: unset;
   }
   #add-button svg {
     margin-bottom: 7px;
@@ -114,16 +109,13 @@ html {
   }
   #history-nav,
   .chapter-nav,
-  #chapter-nav-bottom,
-  #other-controls,
+  .details-container,
   #chapter-nav-top {
     flex-direction: column;
   }
   #chapter-nav-left,
   #chapter-nav-right,
-  #chapter-nav-bottom,
-  #other-controls,
-  .translation-selection {
+  .details-container {
     padding: 20px;
   }
   .chapter-nav,
@@ -142,11 +134,9 @@ html {
     border-bottom-left-radius: unset;
   }
   #chapter-nav-right {
-    border-top-right-radius: unset;
-  }
-  #chapter-nav-bottom {
-    border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: unset;
   }
   #add-button svg {
     margin-bottom: 7px;
@@ -190,10 +180,12 @@ html {
   }
   #chapter-nav-left {
     border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
     border-top-right-radius: unset;
   }
   #chapter-nav-right {
     border-top-right-radius: 10px;
+    border-bottom-left-radius: unset;
   }
   #add-button svg {
     margin-bottom: 6px;
@@ -395,9 +387,7 @@ input[type="number"]:focus {
   margin: 0;
   border-radius: 8px;
 }
-.translation:hover {
-  background: var(--primaryTrans);
-}
+
 .chapter-author {
   text-decoration: underline;
   margin: 0;
@@ -497,24 +487,23 @@ input[type="number"]:focus {
   display: flex;
   gap: 3px;
 }
-#chapter-nav-bottom,
-#other-controls {
-  gap: 20px;
-}
+
 details {
-  display: flex;
+  display: block;
 }
 details summary {
   cursor: pointer;
 }
 summary {
   display: flex;
+  width: 100%;
   list-style-position: outside;
   align-items: center;
   justify-content: space-between;
   margin-left: 0;
   padding: 10px;
   border-radius: 8px;
+  box-sizing: border-box;
 }
 summary:hover {
   background-color: var(--primaryTrans);
@@ -545,14 +534,8 @@ details[open] > summary::after {
 #reset-unread-button {
   margin-top: 10px;
 }
-#other-controls {
-  border-radius: 10px;
-}
 #chapter-nav-left,
-#chapter-nav-right,
-#chapter-nav-bottom,
-#other-controls,
-.translation-selection {
+#chapter-nav-right {
   display: flex;
   flex-grow: 1;
   flex-shrink: 1;
@@ -560,10 +543,16 @@ details[open] > summary::after {
   background: var(--accentLight);
   border: 1px solid var(--borderColor);
 }
-.translation-selection {
+.details-container {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: center;
+  background: var(--accentLight);
+  border: 1px solid var(--borderColor);
   flex-direction: column;
-  border-radius: 10px;
   gap: 20px;
+  border-radius: 10px;
 }
 main {
   display: flex;
