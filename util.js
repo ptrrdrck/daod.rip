@@ -42,7 +42,31 @@ const themes = {
     "--filterColor":
       "sepia(100%) brightness(88%) hue-rotate(170deg) saturate(150%)",
   },
-  grayscale: {
+  white: {
+    "--primaryColor": "#fff",
+    "--primaryTrans": "#ffffff2a",
+    "--secondaryColor": "#fff",
+    "--tertiaryColor": "#fff",
+    "--accentDark": "#000",
+    "--accentLight": "#fff",
+    "--fontColor": "#000",
+    "--borderColor": "#fff",
+    "--shadowColor": "#00000028",
+    "--filterColor": "grayscale(100%)",
+  },
+  black: {
+    "--primaryColor": "#000",
+    "--primaryTrans": "#0000002a",
+    "--secondaryColor": "#000",
+    "--tertiaryColor": "#000",
+    "--accentDark": "#fff",
+    "--accentLight": "#000",
+    "--fontColor": "#fff",
+    "--borderColor": "#000",
+    "--shadowColor": "#ffffff28",
+    "--filterColor": "grayscale(100%)",
+  },
+  gray: {
     "--primaryColor": "#606060",
     "--primaryTrans": "#6060602a",
     "--secondaryColor": "#808080",
@@ -54,17 +78,53 @@ const themes = {
     "--shadowColor": "#fbfbfb28",
     "--filterColor": "grayscale(100%)",
   },
-  blackwhite: {
-    "--primaryColor": "#fff",
-    "--primaryTrans": "#ffffff2a",
-    "--secondaryColor": "#fff",
-    "--tertiaryColor": "#fff",
-    "--accentDark": "#000",
-    "--accentLight": "#fff",
-    "--fontColor": "#000",
-    "--borderColor": "#000",
-    "--shadowColor": "#00000028",
-    "--filterColor": "grayscale(100%)",
+  ocean: {
+    "--primaryColor": "#e0f2f1",
+    "--primaryTrans": "#4dd0e12a",
+    "--secondaryColor": "#b2dfdb",
+    "--tertiaryColor": "#b2dfdb",
+    "--accentDark": "#004d40",
+    "--accentLight": "#80cbc4",
+    "--fontColor": "#004d40",
+    "--borderColor": "#4db6ac",
+    "--shadowColor": "#004d4028",
+    "--filterColor": "sepia(100%) hue-rotate(140deg) saturate(120%)",
+  },
+  forest: {
+    "--primaryColor": "#e8f5e8",
+    "--primaryTrans": "#4caf502a",
+    "--secondaryColor": "#c8e6c9",
+    "--tertiaryColor": "#c8e6c9",
+    "--accentDark": "#1b5e20",
+    "--accentLight": "#81c784",
+    "--fontColor": "#1b5e20",
+    "--borderColor": "#66bb6a",
+    "--shadowColor": "#1b5e2028",
+    "--filterColor": "sepia(100%) hue-rotate(90deg) saturate(140%)",
+  },
+  sunset: {
+    "--primaryColor": "#fff3e0",
+    "--primaryTrans": "#ff98022a",
+    "--secondaryColor": "#ffe0b2",
+    "--tertiaryColor": "#ffe0b2",
+    "--accentDark": "#e65100",
+    "--accentLight": "#ffab40",
+    "--fontColor": "#e65100",
+    "--borderColor": "#ff8f00",
+    "--shadowColor": "#e6510028",
+    "--filterColor": "sepia(100%) hue-rotate(30deg) saturate(160%)",
+  },
+  lavender: {
+    "--primaryColor": "#f3e5f5",
+    "--primaryTrans": "#ba68c82a",
+    "--secondaryColor": "#e1bee7",
+    "--tertiaryColor": "#e1bee7",
+    "--accentDark": "#4a148c",
+    "--accentLight": "#ce93d8",
+    "--fontColor": "#4a148c",
+    "--borderColor": "#ab47bc",
+    "--shadowColor": "#4a148c28",
+    "--filterColor": "sepia(100%) hue-rotate(270deg) saturate(130%)",
   },
   color: {
     "--primaryColor": "#e3cbff",
@@ -130,7 +190,12 @@ if (
   window.matchMedia("(prefers-color-scheme: dark)").matches &&
   localStorage.getItem("theme") != 2 &&
   localStorage.getItem("theme") != 3 &&
-  localStorage.getItem("theme") != 4
+  localStorage.getItem("theme") != 4 &&
+  localStorage.getItem("theme") != 5 &&
+  localStorage.getItem("theme") != 6 &&
+  localStorage.getItem("theme") != 7 &&
+  localStorage.getItem("theme") != 8 &&
+  localStorage.getItem("theme") != 9
 ) {
   activateDarkMode();
 }
@@ -149,7 +214,12 @@ if (
   window.matchMedia("(prefers-color-scheme: light)").matches &&
   localStorage.getItem("theme") != 2 &&
   localStorage.getItem("theme") != 3 &&
-  localStorage.getItem("theme") != 4
+  localStorage.getItem("theme") != 4 &&
+  localStorage.getItem("theme") != 5 &&
+  localStorage.getItem("theme") != 6 &&
+  localStorage.getItem("theme") != 7 &&
+  localStorage.getItem("theme") != 8 &&
+  localStorage.getItem("theme") != 9
 ) {
   activateLightMode();
 }
