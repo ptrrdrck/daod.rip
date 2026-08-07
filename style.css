@@ -39,6 +39,12 @@ html {
     width: 30px;
     height: 30px;
   }
+  #top-share-button {
+    top: 12px;
+    left: 12px;
+    width: 30px;
+    height: 30px;
+  }
   #display {
     font-size: clamp(1rem, calc(1rem + 1vw), 1.5rem);
     margin: 0 10% 3px;
@@ -98,6 +104,12 @@ html {
   #change {
     top: 20px;
     right: 20px;
+    width: 42px;
+    height: 42px;
+  }
+  #top-share-button {
+    top: 20px;
+    left: 20px;
     width: 42px;
     height: 42px;
   }
@@ -373,6 +385,27 @@ input[type="number"]:focus {
   transition: 0.1s;
 }
 #change:active {
+  transform: scale(0.97);
+  transition: 0.1s;
+}
+#top-share-button {
+  position: fixed;
+  border-radius: 50%;
+  background-color: var(--accentDark);
+  border: none;
+  font-size: 1rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+#top-share-button:hover {
+  cursor: pointer;
+  transform: scale(1.03);
+  transition: 0.1s;
+}
+#top-share-button:active {
   transform: scale(0.97);
   transition: 0.1s;
 }

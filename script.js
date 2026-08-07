@@ -11,7 +11,49 @@ function getRandomTranslations(arr, num) {
   return shuffled.slice(0, num);
 }
 
+const translationCheckboxes = [
+  { checkBoxId: "mitchell-checkbox", name: "Stephen Mitchell" },
+  { checkBoxId: "fengEnglish-checkbox", name: "Gia-Fu Feng & Jane English" },
+  {
+    checkBoxId: "addissLombardo-checkbox",
+    name: "Stephen Addiss & Stanley Lombardo",
+  },
+  { checkBoxId: "lin-checkbox", name: "Derek Lin" },
+  { checkBoxId: "legge-checkbox", name: "James Legge" },
+  { checkBoxId: "leguin-checkbox", name: "Ursula K. Le Guin" },
+  { checkBoxId: "lau-checkbox", name: "D. C. Lau" },
+  { checkBoxId: "yutang-checkbox", name: "Lin Yutang" },
+  { checkBoxId: "henricks-checkbox", name: "Robert G. Henricks" },
+  { checkBoxId: "redpine-checkbox", name: "Red Pine (Bill Porter)" },
+];
+
+const slugToName = Object.fromEntries(
+  translationCheckboxes.map(({ checkBoxId, name }) => [
+    checkBoxId.replace("-checkbox", ""),
+    name,
+  ])
+);
+const nameToSlug = Object.fromEntries(
+  translationCheckboxes.map(({ checkBoxId, name }) => [
+    name,
+    checkBoxId.replace("-checkbox", ""),
+  ])
+);
+
+function getSharedTranslationsFromUrl() {
+  const t = new URLSearchParams(window.location.search).get("t");
+  if (!t) {
+    return null;
+  }
+  const names = t
+    .split(",")
+    .map((slug) => slugToName[slug])
+    .filter(Boolean);
+  return names.length ? names : null;
+}
+
 let selectedTranslations =
+  getSharedTranslationsFromUrl() ||
   JSON.parse(localStorage.getItem("selectedTranslations")) ||
   getRandomTranslations(allTranslations, 3);
 
@@ -27,6 +69,13 @@ let readChapters = JSON.parse(localStorage.getItem("readChapters")) || [];
 
 const totalChapters = dao[allTranslations[0]].length;
 const tablePlaceholder = document.getElementById("table-placeholder");
+
+function getSharedChapterFromUrl() {
+  const ch = parseInt(new URLSearchParams(window.location.search).get("ch"), 10);
+  return Number.isInteger(ch) && ch >= 1 && ch <= totalChapters ? ch : null;
+}
+
+const sharedChapter = getSharedChapterFromUrl();
 
 function displayUnreadChapters() {
   const unreadChapters = document.getElementById("unread-chapters");
@@ -235,7 +284,11 @@ function newRandomChapter() {
   currentChapterIndex = randomChapter;
 }
 
-newRandomChapter();
+if (sharedChapter !== null) {
+  viewChapter(sharedChapter - 1);
+} else {
+  newRandomChapter();
+}
 
 dripButton.addEventListener("click", () => {
   newRandomChapter();
@@ -319,6 +372,12 @@ const handleValueChange = (value) => {
   }
 };
 
+if (sharedChapter !== null) {
+  chapterSelectInput.value = sharedChapter;
+  selectedChapter = sharedChapter;
+  handleValueChange(sharedChapter);
+}
+
 addButton.addEventListener("click", () => {
   chapterSelectInput.value = +chapterSelectInput.value + 1;
   selectedChapter = chapterSelectInput.valueAsNumber;
@@ -401,6 +460,36 @@ chapterSelectButton.addEventListener("click", () => {
   viewChapter(selectedChapter - 1);
 });
 
+/* Share link */
+
+const shareButton = document.getElementById("share-button");
+const topShareButton = document.getElementById("top-share-button");
+
+async function copyShareLink(feedbackEl, copiedText, restoreText) {
+  const params = new URLSearchParams();
+  params.set("ch", currentChapterIndex + 1);
+  params.set(
+    "t",
+    selectedTranslations.map((name) => nameToSlug[name]).join(",")
+  );
+  const shareUrl = `${location.origin}${location.pathname}?${params.toString()}`;
+
+  try {
+    await navigator.clipboard.writeText(shareUrl);
+    feedbackEl.textContent = copiedText;
+    setTimeout(() => (feedbackEl.textContent = restoreText), 1500);
+  } catch {
+    window.prompt("Copy this link:", shareUrl);
+  }
+}
+
+shareButton.addEventListener("click", () =>
+  copyShareLink(shareButton, "Copied!", "Share")
+);
+topShareButton.addEventListener("click", () =>
+  copyShareLink(topShareButton, "✅", "🔗")
+);
+
 const resetUnreadButton = document.getElementById("reset-unread-button");
 
 resetUnreadButton.addEventListener("click", () => {
@@ -411,21 +500,7 @@ resetUnreadButton.addEventListener("click", () => {
 
 /* Translation control */
 
-[
-  { checkBoxId: "mitchell-checkbox", name: "Stephen Mitchell" },
-  { checkBoxId: "fengEnglish-checkbox", name: "Gia-Fu Feng & Jane English" },
-  {
-    checkBoxId: "addissLombardo-checkbox",
-    name: "Stephen Addiss & Stanley Lombardo",
-  },
-  { checkBoxId: "lin-checkbox", name: "Derek Lin" },
-  { checkBoxId: "legge-checkbox", name: "James Legge" },
-  { checkBoxId: "leguin-checkbox", name: "Ursula K. Le Guin" },
-  { checkBoxId: "lau-checkbox", name: "D. C. Lau" },
-  { checkBoxId: "yutang-checkbox", name: "Lin Yutang" },
-  { checkBoxId: "henricks-checkbox", name: "Robert G. Henricks" },
-  { checkBoxId: "redpine-checkbox", name: "Red Pine (Bill Porter)" },
-].forEach(({ checkBoxId, name }) => {
+translationCheckboxes.forEach(({ checkBoxId, name }) => {
   if (selectedTranslations.includes(name)) {
     localStorage.setItem(checkBoxId, "true");
   } else {
@@ -484,21 +559,7 @@ function refreshCurrentChapter() {
   displayArea.innerHTML = formatted;
 }
 
-[
-  { checkBoxId: "mitchell-checkbox", name: "Stephen Mitchell" },
-  { checkBoxId: "fengEnglish-checkbox", name: "Gia-Fu Feng & Jane English" },
-  {
-    checkBoxId: "addissLombardo-checkbox",
-    name: "Stephen Addiss & Stanley Lombardo",
-  },
-  { checkBoxId: "lin-checkbox", name: "Derek Lin" },
-  { checkBoxId: "legge-checkbox", name: "James Legge" },
-  { checkBoxId: "leguin-checkbox", name: "Ursula K. Le Guin" },
-  { checkBoxId: "lau-checkbox", name: "D. C. Lau" },
-  { checkBoxId: "yutang-checkbox", name: "Lin Yutang" },
-  { checkBoxId: "henricks-checkbox", name: "Robert G. Henricks" },
-  { checkBoxId: "redpine-checkbox", name: "Red Pine (Bill Porter)" },
-].forEach(({ checkBoxId, name }) => {
+translationCheckboxes.forEach(({ checkBoxId, name }) => {
   document.getElementById(checkBoxId).addEventListener("change", () => {
     toggleArrayItem(selectedTranslations, name);
     refreshCurrentChapter();
