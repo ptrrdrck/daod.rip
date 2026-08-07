@@ -462,10 +462,9 @@ chapterSelectButton.addEventListener("click", () => {
 
 /* Share link */
 
-const shareButton = document.getElementById("share-button");
 const topShareButton = document.getElementById("top-share-button");
 
-async function copyShareLink(feedbackEl, copiedText, restoreText) {
+topShareButton.addEventListener("click", async () => {
   const params = new URLSearchParams();
   params.set("ch", currentChapterIndex + 1);
   params.set(
@@ -476,19 +475,12 @@ async function copyShareLink(feedbackEl, copiedText, restoreText) {
 
   try {
     await navigator.clipboard.writeText(shareUrl);
-    feedbackEl.textContent = copiedText;
-    setTimeout(() => (feedbackEl.textContent = restoreText), 1500);
+    topShareButton.textContent = "✅";
+    setTimeout(() => (topShareButton.textContent = "🔗"), 1500);
   } catch {
     window.prompt("Copy this link:", shareUrl);
   }
-}
-
-shareButton.addEventListener("click", () =>
-  copyShareLink(shareButton, "Copied!", "Share")
-);
-topShareButton.addEventListener("click", () =>
-  copyShareLink(topShareButton, "✅", "🔗")
-);
+});
 
 const resetUnreadButton = document.getElementById("reset-unread-button");
 
