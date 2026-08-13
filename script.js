@@ -463,6 +463,7 @@ chapterSelectButton.addEventListener("click", () => {
 /* Share link */
 
 const topShareButton = document.getElementById("top-share-button");
+const topShareButtonIcon = topShareButton.innerHTML;
 
 topShareButton.addEventListener("click", async () => {
   const params = new URLSearchParams();
@@ -476,7 +477,7 @@ topShareButton.addEventListener("click", async () => {
   try {
     await navigator.clipboard.writeText(shareUrl);
     topShareButton.textContent = "✅";
-    setTimeout(() => (topShareButton.textContent = "🔗"), 1500);
+    setTimeout(() => (topShareButton.innerHTML = topShareButtonIcon), 1500);
   } catch {
     window.prompt("Copy this link:", shareUrl);
   }
