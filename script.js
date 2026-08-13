@@ -463,6 +463,9 @@ chapterSelectButton.addEventListener("click", () => {
 /* Share link */
 
 const topShareButton = document.getElementById("top-share-button");
+const topShareButtonIcon = topShareButton.innerHTML;
+const topShareButtonCheckIcon =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" /></svg>';
 
 topShareButton.addEventListener("click", async () => {
   const params = new URLSearchParams();
@@ -475,8 +478,8 @@ topShareButton.addEventListener("click", async () => {
 
   try {
     await navigator.clipboard.writeText(shareUrl);
-    topShareButton.textContent = "✅";
-    setTimeout(() => (topShareButton.textContent = "🔗"), 1500);
+    topShareButton.innerHTML = topShareButtonCheckIcon;
+    setTimeout(() => (topShareButton.innerHTML = topShareButtonIcon), 1500);
   } catch {
     window.prompt("Copy this link:", shareUrl);
   }
