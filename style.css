@@ -404,6 +404,7 @@ input[type="number"]:focus {
 #top-share-button svg {
   width: 55%;
   height: 55%;
+  transform: translateX(-6%);
 }
 #top-share-button:hover {
   cursor: pointer;
