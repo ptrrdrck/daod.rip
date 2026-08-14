@@ -227,3 +227,48 @@ if (
 window
   .matchMedia("(prefers-color-scheme: light)")
   .addEventListener("change", (e) => e.matches && activateLightMode());
+
+/* Font size */
+const fontSizeScales = [0.85, 1, 1.15, 1.3];
+const fontSizeLabels = ["Small", "Normal", "Large", "X-Large"];
+var fontSizeIndex = 1;
+
+const fontSizeDecreaseButton = document.getElementById(
+  "font-size-decrease-button"
+);
+const fontSizeIncreaseButton = document.getElementById(
+  "font-size-increase-button"
+);
+const fontSizeLabelEl = document.getElementById("font-size-label");
+
+function changeFontSize(index) {
+  document
+    .querySelector(":root")
+    .style.setProperty("--fontSizeScale", fontSizeScales[index]);
+  fontSizeLabelEl.textContent = fontSizeLabels[index];
+  fontSizeDecreaseButton.disabled = index <= 0;
+  fontSizeIncreaseButton.disabled = index >= fontSizeScales.length - 1;
+}
+
+if (localStorage.getItem("fontSizeIndex")) {
+  fontSizeIndex = parseInt(localStorage.getItem("fontSizeIndex"), 10);
+} else {
+  localStorage.setItem("fontSizeIndex", fontSizeIndex);
+}
+changeFontSize(fontSizeIndex);
+
+fontSizeDecreaseButton.addEventListener("click", () => {
+  if (fontSizeIndex > 0) {
+    fontSizeIndex--;
+    changeFontSize(fontSizeIndex);
+    localStorage.setItem("fontSizeIndex", fontSizeIndex);
+  }
+});
+
+fontSizeIncreaseButton.addEventListener("click", () => {
+  if (fontSizeIndex < fontSizeScales.length - 1) {
+    fontSizeIndex++;
+    changeFontSize(fontSizeIndex);
+    localStorage.setItem("fontSizeIndex", fontSizeIndex);
+  }
+});

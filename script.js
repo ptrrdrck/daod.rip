@@ -485,6 +485,26 @@ topShareButton.addEventListener("click", async () => {
   }
 });
 
+/* Settings modal */
+
+const settingsButton = document.getElementById("settings-button");
+const settingsModal = document.getElementById("settings-modal");
+const settingsCloseButton = document.getElementById("settings-close-button");
+
+settingsButton.addEventListener("click", () => {
+  settingsModal.showModal();
+});
+
+settingsCloseButton.addEventListener("click", () => {
+  settingsModal.close();
+});
+
+settingsModal.addEventListener("click", (e) => {
+  if (e.target === settingsModal) {
+    settingsModal.close();
+  }
+});
+
 const resetUnreadButton = document.getElementById("reset-unread-button");
 
 resetUnreadButton.addEventListener("click", () => {
