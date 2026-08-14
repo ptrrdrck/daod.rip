@@ -378,6 +378,14 @@ input[type="number"]:focus {
   position: fixed;
   border-radius: 50%;
   background-color: var(--accentDark);
+  color: var(--accentLight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#change svg {
+  width: 55%;
+  height: 55%;
 }
 #change:hover {
   cursor: pointer;
