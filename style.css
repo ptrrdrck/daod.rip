@@ -405,6 +405,9 @@ input[type="number"]:focus {
   width: 55%;
   height: 55%;
 }
+#top-share-button svg.share-icon {
+  transform: translateX(-6%);
+}
 #top-share-button:hover {
   cursor: pointer;
   transform: scale(1.03);
