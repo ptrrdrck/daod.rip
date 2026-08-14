@@ -37,20 +37,24 @@ html {
   #change {
     top: 12px;
     right: 12px;
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
   }
   #top-share-button {
     top: 12px;
     left: 12px;
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
   }
   #settings-button {
     bottom: 12px;
     right: 12px;
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
+  }
+  #settings-close-button {
+    width: 36px;
+    height: 36px;
   }
   #display {
     font-size: clamp(
@@ -115,20 +119,24 @@ html {
   #change {
     top: 20px;
     right: 20px;
-    width: 42px;
-    height: 42px;
+    width: 46px;
+    height: 46px;
   }
   #top-share-button {
     top: 20px;
     left: 20px;
-    width: 42px;
-    height: 42px;
+    width: 46px;
+    height: 46px;
   }
   #settings-button {
     bottom: 20px;
     right: 20px;
-    width: 42px;
-    height: 42px;
+    width: 46px;
+    height: 46px;
+  }
+  #settings-close-button {
+    width: 46px;
+    height: 46px;
   }
   #display,
   .sources {
@@ -688,8 +696,6 @@ details[open] > summary::after {
   background: transparent;
   border: none;
   color: var(--fontColor);
-  width: 30px;
-  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -712,7 +718,12 @@ details[open] > summary::after {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  row-gap: 8px;
   padding: 10px 10px 10px 20px;
+}
+.setting-row .select-text {
+  white-space: nowrap;
 }
 .font-size-buttons {
   display: flex;
