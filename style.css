@@ -719,7 +719,7 @@ details[open] > summary::after {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  row-gap: 8px;
+  gap: 10px;
   padding: 10px 10px 10px 20px;
 }
 .setting-row .select-text {
@@ -731,7 +731,7 @@ details[open] > summary::after {
   gap: 10px;
 }
 #font-size-label {
-  min-width: 70px;
+  min-width: 82px;
   text-align: center;
   font-size: 0.9rem;
 }
