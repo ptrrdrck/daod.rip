@@ -62,15 +62,14 @@ html {
       calc((1rem + 1vw) * var(--fontSizeScale)),
       calc(1.5rem * var(--fontSizeScale))
     );
-    margin: 0 10% 3px;
-    padding: 20px;
+    margin: 0 5% 3px;
   }
   .chapter-nav,
   .sources {
-    margin: 0 10% 80px;
+    margin: 0 5% 80px;
   }
   #history-nav {
-    margin: 0 10% 3px;
+    margin: 0 5% 3px;
   }
   #links,
   #history-nav,
@@ -145,8 +144,7 @@ html {
       calc((1rem + 1vw) * var(--fontSizeScale)),
       calc(1.5rem * var(--fontSizeScale))
     );
-    margin: 0 10% 3px;
-    padding: 5%;
+    margin: 0 6% 3px;
   }
   #history-nav,
   .chapter-nav,
@@ -161,10 +159,10 @@ html {
   }
   .chapter-nav,
   .sources {
-    margin: 0 10% 80px;
+    margin: 0 6% 80px;
   }
   #history-nav {
-    margin: 0 10% 3px;
+    margin: 0 6% 3px;
   }
   .reference {
     word-break: break-all;
@@ -200,14 +198,14 @@ html {
       calc((1.5rem + 1vw) * var(--fontSizeScale)),
       calc(1.8rem * var(--fontSizeScale))
     );
-    margin: 0 14% 3px;
+    margin: 0 4% 3px;
   }
   .chapter-nav,
   .sources {
-    margin: 0 14% 80px;
+    margin: 0 4% 80px;
   }
   #history-nav {
-    margin: 0 14% 3px;
+    margin: 0 4% 3px;
   }
   #history-nav,
   .chapter-nav {
@@ -499,7 +497,6 @@ input[type="number"]:focus {
   border-radius: 10px;
   background: var(--accentLight);
   border: 1px solid var(--borderColor);
-  box-shadow: 0 4px 15px var(--shadowColor);
 }
 .translation-header {
   display: flex;
