@@ -730,6 +730,17 @@ details[open] > summary::after {
   align-items: center;
   gap: 10px;
 }
+.font-size-buttons .button {
+  width: 42px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.font-size-buttons .button svg {
+  width: 45%;
+  height: 45%;
+}
 #font-size-label {
   min-width: 82px;
   text-align: center;
