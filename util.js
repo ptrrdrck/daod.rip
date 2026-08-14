@@ -272,3 +272,38 @@ fontSizeIncreaseButton.addEventListener("click", () => {
     localStorage.setItem("fontSizeIndex", fontSizeIndex);
   }
 });
+
+/* View mode */
+var viewMode = "grid";
+
+const viewGridButton = document.getElementById("view-grid-button");
+const viewStackedButton = document.getElementById("view-stacked-button");
+const displayEl = document.getElementById("display");
+
+function changeViewMode(mode) {
+  displayEl.classList.remove("view-grid", "view-stacked");
+  displayEl.classList.add("view-" + mode);
+  viewGridButton.classList.toggle("active", mode === "grid");
+  viewGridButton.setAttribute("aria-pressed", mode === "grid");
+  viewStackedButton.classList.toggle("active", mode === "stacked");
+  viewStackedButton.setAttribute("aria-pressed", mode === "stacked");
+}
+
+if (localStorage.getItem("viewMode")) {
+  viewMode = localStorage.getItem("viewMode");
+} else {
+  localStorage.setItem("viewMode", viewMode);
+}
+changeViewMode(viewMode);
+
+viewGridButton.addEventListener("click", () => {
+  viewMode = "grid";
+  changeViewMode(viewMode);
+  localStorage.setItem("viewMode", viewMode);
+});
+
+viewStackedButton.addEventListener("click", () => {
+  viewMode = "stacked";
+  changeViewMode(viewMode);
+  localStorage.setItem("viewMode", viewMode);
+});

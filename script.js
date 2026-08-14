@@ -245,32 +245,34 @@ function shuffle(array) {
   return array;
 }
 
+function buildTranslationCard(translation, chapterIndex) {
+  return (
+    `<div class="translation">` +
+    `<div class="translation-header">` +
+    `<span class="chapter-number">Chapter ${chapterIndex + 1}</span>` +
+    `<span class="chapter-translator">${translation}</span>` +
+    `</div>` +
+    `<p class="translation-text">${dao[translation][chapterIndex]}</p>` +
+    `<div class="trans-info">` +
+    `<span class="trans-ref">${sources[translation][2]}</span><br />` +
+    `<a href="${sources[translation][1]}" class="trans-link" target="_blank">Source</a>` +
+    `</div>` +
+    `</div>`
+  );
+}
+
 function newRandomChapter() {
   let message = [];
   const randomChapter = randNumb(totalChapters);
   selectedTranslations.forEach(function (translation) {
-    message.push(
-      `<div class="translation"><span class="chapter-author">Chapter ${
-        randomChapter + 1
-      } by ${translation}:</span> ${
-        dao[translation][randomChapter]
-      }<br /><div class="trans-info"><span class="trans-ref">${
-        sources[translation][2]
-      }</span><br /><a href="${
-        sources[translation][1]
-      }" class="trans-link" target="_blank">Source</a></div></div>`
-    );
+    message.push(buildTranslationCard(translation, randomChapter));
   });
   if (localStorage.getItem("shuffle-control") === "true") {
     let shuffled = shuffle(message);
-    let formatted = shuffled.join(
-      '<br /><span class="chapter-separator">&bull;</span>'
-    );
+    let formatted = shuffled.join("");
     displayArea.innerHTML = formatted;
   } else if (localStorage.getItem("shuffle-control") === "false") {
-    let formatted = message.join(
-      '<br /><span class="chapter-separator">&bull;</span>'
-    );
+    let formatted = message.join("");
     displayArea.innerHTML = formatted;
   }
   if (readChapters.indexOf(randomChapter + 1) === -1) {
@@ -309,19 +311,9 @@ yinYang.addEventListener("click", () => {
 function getHistoryChapter(chapter) {
   let message = [];
   selectedTranslations.forEach(function (translation) {
-    message.push(
-      `<div class="translation"><span class="chapter-author">Chapter ${chapter} by ${translation}:</span> ${
-        dao[translation][chapter - 1]
-      }<br /><div class="trans-info"><span class="trans-ref">${
-        sources[translation][2]
-      }</span><br /><a href="${
-        sources[translation][1]
-      }" class="trans-link" target="_blank">Source</a></div></div>`
-    );
+    message.push(buildTranslationCard(translation, chapter - 1));
   });
-  let formatted = message.join(
-    '<br /><span class="chapter-separator">&bull;</span>'
-  );
+  let formatted = message.join("");
   displayArea.innerHTML = formatted;
   currentChapterIndex = chapter - 1;
 }
@@ -412,28 +404,14 @@ chapterSelectInput.addEventListener("change", function (e) {
 function viewChapter(chapter) {
   let message = [];
   selectedTranslations.forEach(function (translation) {
-    message.push(
-      `<div class="translation"><span class="chapter-author">Chapter ${
-        chapter + 1
-      } by ${translation}:</span> ${
-        dao[translation][chapter]
-      }<br /><div class="trans-info"><span class="trans-ref">${
-        sources[translation][2]
-      }</span><br /><a href="${
-        sources[translation][1]
-      }" class="trans-link" target="_blank">Source</a></div></div>`
-    );
+    message.push(buildTranslationCard(translation, chapter));
   });
   if (localStorage.getItem("shuffle-control") === "true") {
     let shuffled = shuffle(message);
-    let formatted = shuffled.join(
-      '<br /><span class="chapter-separator">&bull;</span>'
-    );
+    let formatted = shuffled.join("");
     displayArea.innerHTML = formatted;
   } else if (localStorage.getItem("shuffle-control") === "false") {
-    let formatted = message.join(
-      '<br /><span class="chapter-separator">&bull;</span>'
-    );
+    let formatted = message.join("");
     displayArea.innerHTML = formatted;
   }
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -556,21 +534,9 @@ function toggleArrayItem(array, item) {
 function refreshCurrentChapter() {
   let message = [];
   selectedTranslations.forEach(function (translation) {
-    message.push(
-      `<div class="translation"><span class="chapter-author">Chapter ${
-        currentChapterIndex + 1
-      } by ${translation}:</span> ${
-        dao[translation][currentChapterIndex]
-      }<br /><div class="trans-info"><span class="trans-ref">${
-        sources[translation][2]
-      }</span><br /><a href="${
-        sources[translation][1]
-      }" class="trans-link" target="_blank">Source</a></div></div>`
-    );
+    message.push(buildTranslationCard(translation, currentChapterIndex));
   });
-  let formatted = message.join(
-    '<br /><span class="chapter-separator">&bull;</span>'
-  );
+  let formatted = message.join("");
   displayArea.innerHTML = formatted;
 }
 

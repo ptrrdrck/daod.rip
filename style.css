@@ -193,9 +193,6 @@ html {
   }
 }
 @media (min-width: 1024px) {
-  .translation {
-    padding: 10px;
-  }
   #display,
   .sources {
     font-size: clamp(
@@ -487,24 +484,40 @@ input[type="number"]:focus {
 #display {
   line-height: 1.3;
   letter-spacing: 0.22px;
-  border: 1px solid var(--borderColor);
-  border-radius: 10px;
-  background: var(--accentLight);
+  display: grid;
+  gap: 20px;
+}
+.view-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
+}
+.view-stacked {
+  grid-template-columns: 1fr;
 }
 .translation {
   margin: 0;
-  border-radius: 8px;
+  padding: 20px;
+  border-radius: 10px;
+  background: var(--accentLight);
+  border: 1px solid var(--borderColor);
+  box-shadow: 0 4px 15px var(--shadowColor);
 }
-
-.chapter-author {
-  text-decoration: underline;
-  margin: 0;
-}
-.chapter-separator {
+.translation-header {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px 0 40px;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+.chapter-number {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  opacity: 0.65;
+  color: var(--fontColor);
+}
+.chapter-translator {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--fontColor);
 }
 .trans-link,
 .trans-ref {
@@ -740,6 +753,20 @@ details[open] > summary::after {
 .font-size-buttons .button svg {
   width: 45%;
   height: 45%;
+}
+.view-mode-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.view-mode-buttons .button {
+  background-color: transparent;
+  color: var(--fontColor);
+  border: 1px solid var(--borderColor);
+}
+.view-mode-buttons .button.active {
+  background-color: var(--fontColor);
+  color: var(--accentLight);
 }
 #font-size-label {
   min-width: 82px;
