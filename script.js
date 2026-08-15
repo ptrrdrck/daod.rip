@@ -217,8 +217,9 @@ function updateNextChapters() {
   nextChapterThreeDisplay.innerHTML = nextChapterThree;
 }
 
-function updateHistory() {
-  historyIndex = -1;
+function updateHistory(index = -1) {
+  historyIndex = index;
+  localStorage.setItem("historyIndex", historyIndex);
   updatePreviousChapters();
   updateNextChapters();
   hideUndefinedHistory();
@@ -303,7 +304,10 @@ function resumeChapter(chapter) {
   currentChapterIndex = chapter;
   localStorage.setItem("lastChapterIndex", chapter);
   displayUnreadChapters();
-  updateHistory();
+  const storedHistoryIndex = localStorage.getItem("historyIndex");
+  const restoredHistoryIndex =
+    storedHistoryIndex !== null ? parseInt(storedHistoryIndex, 10) : -1;
+  updateHistory(restoredHistoryIndex);
 }
 
 const storedLastChapterIndex = localStorage.getItem("lastChapterIndex");
@@ -347,6 +351,7 @@ function getHistoryChapter(chapter) {
 
 function seekBack() {
   historyIndex--;
+  localStorage.setItem("historyIndex", historyIndex);
   updatePreviousChapters();
   updateNextChapters();
   hideUndefinedHistory();
@@ -354,6 +359,7 @@ function seekBack() {
 
 function seekFwd() {
   historyIndex++;
+  localStorage.setItem("historyIndex", historyIndex);
   updatePreviousChapters();
   updateNextChapters();
   hideUndefinedHistory();
