@@ -72,7 +72,7 @@ html {
   }
   .chapter-nav,
   .sources {
-    margin: 0 5% 80px;
+    margin: 30px 5% 80px;
   }
   #history-nav {
     margin: 0 5% 3px;
@@ -171,7 +171,7 @@ html {
   }
   .chapter-nav,
   .sources {
-    margin: 0 6% 80px;
+    margin: 30px 6% 80px;
   }
   #history-nav {
     margin: 0 6% 3px;
@@ -214,7 +214,7 @@ html {
   }
   .chapter-nav,
   .sources {
-    margin: 0 4% 80px;
+    margin: 30px 4% 80px;
   }
   #history-nav {
     margin: 0 4% 3px;
@@ -544,14 +544,12 @@ input[type="number"]:focus {
 }
 .chapter-number {
   font-size: 0.75rem;
-  text-transform: uppercase;
   letter-spacing: 0.6px;
-  opacity: 0.65;
   color: var(--fontColor);
 }
 .chapter-translator {
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--fontColor);
 }
 .trans-link,
@@ -574,8 +572,10 @@ input[type="number"]:focus {
   gap: 2px;
   justify-content: center;
   padding: 20px;
+  /*
   background: var(--accentLight);
   border: 1px solid var(--borderColor);
+  */
 }
 #history-left,
 #history-center,
@@ -719,7 +719,7 @@ details[open] > summary::after {
   padding: 0;
   width: 90%;
   max-width: 420px;
-  box-shadow: 0 4px 15px var(--shadowColor);
+  /*box-shadow: 0 4px 15px var(--shadowColor);*/
 }
 .modal::backdrop {
   background: var(--primaryColor);
@@ -815,7 +815,7 @@ details[open] > summary::after {
   font-weight: 400;
 }
 .search-snippet {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   line-height: 1.4;
 }
 .search-snippet .snippet-translator {
