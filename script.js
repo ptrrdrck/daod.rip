@@ -287,6 +287,25 @@ function newRandomChapter() {
   localStorage.setItem("lastChapterIndex", randomChapter);
 }
 
+function resumeChapter(chapter) {
+  let message = [];
+  selectedTranslations.forEach(function (translation) {
+    message.push(buildTranslationCard(translation, chapter));
+  });
+  if (localStorage.getItem("shuffle-control") === "true") {
+    let shuffled = shuffle(message);
+    let formatted = shuffled.join("");
+    displayArea.innerHTML = formatted;
+  } else if (localStorage.getItem("shuffle-control") === "false") {
+    let formatted = message.join("");
+    displayArea.innerHTML = formatted;
+  }
+  currentChapterIndex = chapter;
+  localStorage.setItem("lastChapterIndex", chapter);
+  displayUnreadChapters();
+  updateHistory();
+}
+
 const storedLastChapterIndex = localStorage.getItem("lastChapterIndex");
 if (sharedChapter !== null) {
   viewChapter(sharedChapter - 1);
@@ -294,7 +313,7 @@ if (sharedChapter !== null) {
   localStorage.getItem("landingMode") === "resume" &&
   storedLastChapterIndex !== null
 ) {
-  viewChapter(parseInt(storedLastChapterIndex, 10));
+  resumeChapter(parseInt(storedLastChapterIndex, 10));
 } else {
   newRandomChapter();
 }
