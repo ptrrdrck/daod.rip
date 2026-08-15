@@ -88,7 +88,7 @@
         </div>
         <div class="setting-row">
           <span class="select-text">View</span>
-          <div class="view-mode-buttons" role="group" aria-label="View mode">
+          <div class="segmented-buttons" role="group" aria-label="View mode">
             <button
               class="button"
               id="view-grid-button"
@@ -106,6 +106,29 @@
               aria-pressed="false"
             >
               Stacked
+            </button>
+          </div>
+        </div>
+        <div class="setting-row">
+          <span class="select-text">Landing</span>
+          <div class="segmented-buttons" role="group" aria-label="Landing chapter">
+            <button
+              class="button"
+              id="landing-random-button"
+              title="Random chapter on load"
+              aria-label="Random chapter on load"
+              aria-pressed="true"
+            >
+              Random
+            </button>
+            <button
+              class="button"
+              id="landing-resume-button"
+              title="Resume last chapter on load"
+              aria-label="Resume last chapter on load"
+              aria-pressed="false"
+            >
+              Resume
             </button>
           </div>
         </div>

@@ -284,10 +284,17 @@ function newRandomChapter() {
   localStorage.setItem("readOrder", JSON.stringify(readOrder));
   updateHistory();
   currentChapterIndex = randomChapter;
+  localStorage.setItem("lastChapterIndex", randomChapter);
 }
 
+const storedLastChapterIndex = localStorage.getItem("lastChapterIndex");
 if (sharedChapter !== null) {
   viewChapter(sharedChapter - 1);
+} else if (
+  localStorage.getItem("landingMode") === "resume" &&
+  storedLastChapterIndex !== null
+) {
+  viewChapter(parseInt(storedLastChapterIndex, 10));
 } else {
   newRandomChapter();
 }
@@ -316,6 +323,7 @@ function getHistoryChapter(chapter) {
   let formatted = message.join("");
   displayArea.innerHTML = formatted;
   currentChapterIndex = chapter - 1;
+  localStorage.setItem("lastChapterIndex", chapter - 1);
 }
 
 function seekBack() {
@@ -424,6 +432,7 @@ function viewChapter(chapter) {
   localStorage.setItem("readOrder", JSON.stringify(readOrder));
   updateHistory();
   currentChapterIndex = chapter;
+  localStorage.setItem("lastChapterIndex", chapter);
 }
 
 chapterSelectInput.onkeydown = function (e) {

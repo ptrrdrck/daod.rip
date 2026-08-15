@@ -751,17 +751,17 @@ details[open] > summary::after {
   width: 45%;
   height: 45%;
 }
-.view-mode-buttons {
+.segmented-buttons {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-.view-mode-buttons .button {
+.segmented-buttons .button {
   background-color: transparent;
   color: var(--fontColor);
   border: 1px solid var(--borderColor);
 }
-.view-mode-buttons .button.active {
+.segmented-buttons .button.active {
   background-color: var(--fontColor);
   color: var(--accentLight);
 }

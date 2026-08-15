@@ -307,3 +307,35 @@ viewStackedButton.addEventListener("click", () => {
   changeViewMode(viewMode);
   localStorage.setItem("viewMode", viewMode);
 });
+
+/* Landing mode */
+var landingMode = "random";
+
+const landingRandomButton = document.getElementById("landing-random-button");
+const landingResumeButton = document.getElementById("landing-resume-button");
+
+function changeLandingMode(mode) {
+  landingRandomButton.classList.toggle("active", mode === "random");
+  landingRandomButton.setAttribute("aria-pressed", mode === "random");
+  landingResumeButton.classList.toggle("active", mode === "resume");
+  landingResumeButton.setAttribute("aria-pressed", mode === "resume");
+}
+
+if (localStorage.getItem("landingMode")) {
+  landingMode = localStorage.getItem("landingMode");
+} else {
+  localStorage.setItem("landingMode", landingMode);
+}
+changeLandingMode(landingMode);
+
+landingRandomButton.addEventListener("click", () => {
+  landingMode = "random";
+  changeLandingMode(landingMode);
+  localStorage.setItem("landingMode", landingMode);
+});
+
+landingResumeButton.addEventListener("click", () => {
+  landingMode = "resume";
+  changeLandingMode(landingMode);
+  localStorage.setItem("landingMode", landingMode);
+});
