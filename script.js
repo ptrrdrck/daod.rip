@@ -262,6 +262,54 @@ function buildTranslationCard(translation, chapterIndex) {
   );
 }
 
+/* Search */
+
+const SEARCH_MIN_LENGTH = 2;
+const SEARCH_SNIPPET_RADIUS = 40;
+
+function escapeHtml(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function extractSnippet(text, query) {
+  const lowerText = text.toLowerCase();
+  const lowerQuery = query.toLowerCase();
+  const matchIndex = lowerText.indexOf(lowerQuery);
+  if (matchIndex === -1) return null;
+
+  const start = Math.max(0, matchIndex - SEARCH_SNIPPET_RADIUS);
+  const end = Math.min(
+    text.length,
+    matchIndex + query.length + SEARCH_SNIPPET_RADIUS
+  );
+
+  const before = escapeHtml(text.slice(start, matchIndex));
+  const matched = escapeHtml(text.slice(matchIndex, matchIndex + query.length));
+  const after = escapeHtml(text.slice(matchIndex + query.length, end));
+
+  const prefix = start > 0 ? "…" : "";
+  const suffix = end < text.length ? "…" : "";
+
+  return `${prefix}${before}<mark>${matched}</mark>${after}${suffix}`;
+}
+
+function searchTranslations(query) {
+  const results = [];
+  for (let chapterIndex = 0; chapterIndex < totalChapters; chapterIndex++) {
+    const matches = [];
+    allTranslations.forEach((translation) => {
+      const snippet = extractSnippet(dao[translation][chapterIndex], query);
+      if (snippet !== null) {
+        matches.push({ translation, snippet });
+      }
+    });
+    if (matches.length > 0) {
+      results.push({ chapterIndex, matches });
+    }
+  }
+  return results;
+}
+
 function newRandomChapter() {
   let message = [];
   const randomChapter = randNumb(totalChapters);
@@ -516,6 +564,135 @@ settingsModal.addEventListener("click", (e) => {
     settingsModal.close();
   }
 });
+
+/* Search modal */
+
+const searchButton = document.getElementById("search-button");
+const searchModal = document.getElementById("search-modal");
+const searchCloseButton = document.getElementById("search-close-button");
+const searchInput = document.getElementById("search-input");
+const searchResults = document.getElementById("search-results");
+
+function renderSearchStatus(message) {
+  searchResults.innerHTML = `<div class="search-status">${message}</div>`;
+}
+
+function renderSearchResults(results, query) {
+  if (results.length === 0) {
+    renderSearchStatus(`No chapters mention "${escapeHtml(query)}".`);
+    return;
+  }
+  const html = results
+    .map(({ chapterIndex, matches }) => {
+      const snippetsHtml = matches
+        .map(
+          ({ translation, snippet }) =>
+            `<div class="search-snippet"><span class="snippet-translator">${escapeHtml(
+              translation
+            )}:</span>${snippet}</div>`
+        )
+        .join("");
+      return (
+        `<div class="search-result" data-chapter-index="${chapterIndex}" tabindex="0" role="button">` +
+        `<div class="search-result-header">` +
+        `<span>Chapter ${chapterIndex + 1}</span>` +
+        `<span class="search-result-count">${matches.length} of ${allTranslations.length} translations</span>` +
+        `</div>` +
+        snippetsHtml +
+        `</div>`
+      );
+    })
+    .join("");
+  searchResults.innerHTML = html;
+}
+
+let lastSearchResults = [];
+
+function runSearch() {
+  const query = searchInput.value.trim();
+  if (query.length < SEARCH_MIN_LENGTH) {
+    lastSearchResults = [];
+    renderSearchStatus("Type at least 2 characters to search.");
+    return;
+  }
+  lastSearchResults = searchTranslations(query);
+  renderSearchResults(lastSearchResults, query);
+}
+
+let searchDebounceTimer;
+searchInput.addEventListener("input", () => {
+  clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(runSearch, 180);
+});
+
+function ensureTranslationsSelected(translations) {
+  let selectionChanged = false;
+  translations.forEach((translation) => {
+    if (selectedTranslations.includes(translation)) return;
+    selectedTranslations.push(translation);
+    const checkbox = document.getElementById(
+      nameToSlug[translation] + "-checkbox"
+    );
+    if (checkbox) checkbox.checked = true;
+    selectionChanged = true;
+  });
+  if (selectionChanged) {
+    localStorage.setItem(
+      "selectedTranslations",
+      JSON.stringify(selectedTranslations)
+    );
+  }
+}
+
+function jumpToSearchResult(resultEl) {
+  const chapterIndex = parseInt(resultEl.getAttribute("data-chapter-index"), 10);
+  const result = lastSearchResults.find((r) => r.chapterIndex === chapterIndex);
+  if (result) {
+    ensureTranslationsSelected(result.matches.map((m) => m.translation));
+  }
+  viewChapter(chapterIndex);
+  searchModal.close();
+}
+
+searchResults.addEventListener("click", (e) => {
+  const result = e.target.closest(".search-result");
+  if (result) jumpToSearchResult(result);
+});
+
+searchResults.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const result = e.target.closest(".search-result");
+  if (!result) return;
+  e.preventDefault();
+  jumpToSearchResult(result);
+});
+
+function resetSearchModal() {
+  searchInput.value = "";
+  lastSearchResults = [];
+  renderSearchStatus("Search across all 10 translations.");
+}
+
+searchButton.addEventListener("click", () => {
+  searchModal.showModal();
+  searchInput.focus();
+});
+
+searchCloseButton.addEventListener("click", () => {
+  searchModal.close();
+});
+
+searchModal.addEventListener("click", (e) => {
+  if (e.target === searchModal) {
+    searchModal.close();
+  }
+});
+
+searchModal.addEventListener("close", () => {
+  resetSearchModal();
+});
+
+resetSearchModal();
 
 const resetUnreadButton = document.getElementById("reset-unread-button");
 
