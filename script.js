@@ -625,30 +625,23 @@ searchInput.addEventListener("input", () => {
   searchDebounceTimer = setTimeout(runSearch, 180);
 });
 
-function ensureTranslationsSelected(translations) {
-  let selectionChanged = false;
-  translations.forEach((translation) => {
-    if (selectedTranslations.includes(translation)) return;
-    selectedTranslations.push(translation);
-    const checkbox = document.getElementById(
-      nameToSlug[translation] + "-checkbox"
-    );
-    if (checkbox) checkbox.checked = true;
-    selectionChanged = true;
+function selectOnlyMatchedTranslations(translations) {
+  translationCheckboxes.forEach(({ checkBoxId, name }) => {
+    const checkbox = document.getElementById(checkBoxId);
+    if (checkbox) checkbox.checked = translations.includes(name);
   });
-  if (selectionChanged) {
-    localStorage.setItem(
-      "selectedTranslations",
-      JSON.stringify(selectedTranslations)
-    );
-  }
+  selectedTranslations = translations.slice();
+  localStorage.setItem(
+    "selectedTranslations",
+    JSON.stringify(selectedTranslations)
+  );
 }
 
 function jumpToSearchResult(resultEl) {
   const chapterIndex = parseInt(resultEl.getAttribute("data-chapter-index"), 10);
   const result = lastSearchResults.find((r) => r.chapterIndex === chapterIndex);
   if (result) {
-    ensureTranslationsSelected(result.matches.map((m) => m.translation));
+    selectOnlyMatchedTranslations(result.matches.map((m) => m.translation));
   }
   viewChapter(chapterIndex);
   searchModal.close();
