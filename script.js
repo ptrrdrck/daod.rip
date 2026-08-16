@@ -108,7 +108,7 @@ function renderChapterList() {
     empty.classList.add("chapter-list-empty");
     empty.textContent =
       chapterListFilter === "bookmarked"
-        ? "No bookmarked chapters yet. Tap the star while reading to bookmark a chapter."
+        ? "No starred chapters yet. Tap the star while reading to star a chapter."
         : "You've read every chapter. Nice.";
     chapterListPlaceholder.appendChild(empty);
     return;
@@ -289,9 +289,9 @@ function buildTranslationCard(translation, chapterIndex) {
     }" ` +
     `aria-pressed="${isBookmarked}" ` +
     `aria-label="${
-      isBookmarked ? "Remove bookmark" : "Bookmark this chapter"
+      isBookmarked ? "Remove star" : "Star this chapter"
     }" ` +
-    `title="${isBookmarked ? "Remove bookmark" : "Bookmark this chapter"}">` +
+    `title="${isBookmarked ? "Remove star" : "Star this chapter"}">` +
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">` +
     `<path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />` +
     `</svg></button>` +
@@ -780,7 +780,7 @@ displayArea.addEventListener("click", (e) => {
   document.querySelectorAll("#display .bookmark-toggle").forEach((btn) => {
     btn.classList.toggle("bookmarked", nowBookmarked);
     btn.setAttribute("aria-pressed", nowBookmarked);
-    const label = nowBookmarked ? "Remove bookmark" : "Bookmark this chapter";
+    const label = nowBookmarked ? "Remove star" : "Star this chapter";
     btn.setAttribute("aria-label", label);
     btn.setAttribute("title", label);
   });
