@@ -119,10 +119,7 @@ function renderChapterList() {
   chapterListPlaceholder.appendChild(root);
   chapters.forEach((n) => {
     const link = document.createElement("A");
-    link.setAttribute(
-      "href",
-      `javascript:selectedChapter = ${n}; viewChapter(${n} - 1);`
-    );
+    link.setAttribute("href", `javascript:viewChapter(${n} - 1);`);
     link.classList.add("chapter-link");
     link.innerText = `${n}`;
     const cell = document.createElement("TD");
@@ -261,7 +258,6 @@ let currentChapterIndex;
 
 const displayArea = document.getElementById("display");
 const dripButton = document.getElementById("drip-button");
-const dripAgainButton = document.getElementById("drip-again-button");
 const yinYang = document.getElementById("yin-yang");
 
 function randNumb(num) {
@@ -410,10 +406,20 @@ dripButton.addEventListener("click", () => {
   newRandomChapter();
 });
 
-dripAgainButton.addEventListener("click", () => {
-  newRandomChapter();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
+const heroTitle = document.getElementById("hero-title");
+let heroTitleFaded = false;
+
+window.addEventListener(
+  "scroll",
+  () => {
+    const shouldFade = window.scrollY > 20;
+    if (shouldFade !== heroTitleFaded) {
+      heroTitleFaded = shouldFade;
+      heroTitle.classList.toggle("faded", shouldFade);
+    }
+  },
+  { passive: true }
+);
 
 yinYang.addEventListener("click", () => {
   newRandomChapter();
@@ -454,65 +460,6 @@ seekFwdButton.addEventListener("click", () => {
   seekFwd();
 });
 
-/* Manual chapter selection */
-
-let selectedChapter = 1;
-
-const chapterSelectInput = document.getElementById("chapter-select-input");
-const chapterSelectButton = document.getElementById("chapter-select-button");
-const addButton = document.getElementById("add-button");
-const subtractButton = document.getElementById("subtract-button");
-
-const handleValueChange = (value) => {
-  if (value <= 1) {
-    subtractButton.setAttribute("disabled", true);
-  } else if (value < 81) {
-    subtractButton.removeAttribute("disabled");
-    addButton.removeAttribute("disabled");
-  } else if ((value = 81)) {
-    addButton.setAttribute("disabled", true);
-  } else {
-    subtractButton.setAttribute("disabled", true);
-  }
-};
-
-if (sharedChapter !== null) {
-  chapterSelectInput.value = sharedChapter;
-  selectedChapter = sharedChapter;
-  handleValueChange(sharedChapter);
-}
-
-addButton.addEventListener("click", () => {
-  chapterSelectInput.value = +chapterSelectInput.value + 1;
-  selectedChapter = chapterSelectInput.valueAsNumber;
-  handleValueChange(chapterSelectInput.value);
-});
-
-subtractButton.addEventListener("click", () => {
-  chapterSelectInput.value = +chapterSelectInput.value - 1;
-  selectedChapter = chapterSelectInput.valueAsNumber;
-  handleValueChange(chapterSelectInput.value);
-});
-
-chapterSelectInput.addEventListener("click", function (e) {
-  chapterSelectInput.value = "";
-});
-
-chapterSelectInput.addEventListener("input", function (e) {
-  if (this.value > 81) {
-    this.value = 81;
-  }
-  if (this.value < 1) {
-    this.value = 1;
-  }
-  selectedChapter = e.target.valueAsNumber;
-  handleValueChange(e.target.value);
-});
-
-chapterSelectInput.addEventListener("change", function (e) {
-  selectedChapter = e.target.valueAsNumber;
-});
-
 function viewChapter(chapter) {
   renderTranslationCards(chapter, true);
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -527,18 +474,6 @@ function viewChapter(chapter) {
   currentChapterIndex = chapter;
   localStorage.setItem("lastChapterIndex", chapter);
 }
-
-chapterSelectInput.onkeydown = function (e) {
-  if (e.keyCode == 13) {
-    selectedChapter = chapterSelectInput.valueAsNumber;
-    viewChapter(selectedChapter - 1);
-  }
-};
-
-chapterSelectButton.addEventListener("click", () => {
-  selectedChapter = chapterSelectInput.valueAsNumber;
-  viewChapter(selectedChapter - 1);
-});
 
 /* Share link */
 
