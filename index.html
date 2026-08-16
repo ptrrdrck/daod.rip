@@ -154,6 +154,22 @@
           />
           <span class="checkmark"></span>
         </label>
+        <div class="setting-row">
+          <span class="select-text">Reset Session</span>
+          <button class="button button-danger" id="clear-storage-button">Clear Local Storage</button>
+        </div>
+        <div id="clear-storage-confirm" class="clear-storage-confirm" hidden>
+          <span class="clear-storage-confirm-text"
+            >This clears your saved theme, reading history, translation selections, and all other
+            settings. This can't be undone.</span
+          >
+          <div class="button-row">
+            <button class="button" id="clear-storage-cancel-button">Cancel</button>
+            <button class="button button-danger" id="clear-storage-confirm-button">
+              Yes, clear everything
+            </button>
+          </div>
+        </div>
       </div>
     </dialog>
     <dialog id="search-modal" class="modal" aria-labelledby="search-modal-title">

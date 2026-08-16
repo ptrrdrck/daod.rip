@@ -585,6 +585,34 @@ settingsModal.addEventListener("click", (e) => {
   }
 });
 
+const clearStorageButton = document.getElementById("clear-storage-button");
+const clearStorageConfirm = document.getElementById("clear-storage-confirm");
+const clearStorageCancelButton = document.getElementById(
+  "clear-storage-cancel-button"
+);
+const clearStorageConfirmButton = document.getElementById(
+  "clear-storage-confirm-button"
+);
+
+function resetClearStorageConfirm() {
+  clearStorageConfirm.hidden = true;
+  clearStorageButton.hidden = false;
+}
+
+clearStorageButton.addEventListener("click", () => {
+  clearStorageButton.hidden = true;
+  clearStorageConfirm.hidden = false;
+});
+
+clearStorageCancelButton.addEventListener("click", resetClearStorageConfirm);
+
+clearStorageConfirmButton.addEventListener("click", () => {
+  localStorage.clear();
+  location.reload();
+});
+
+settingsModal.addEventListener("close", resetClearStorageConfirm);
+
 /* Search modal */
 
 const searchButton = document.getElementById("search-button");
