@@ -152,7 +152,9 @@ const themes = {
   },
 };
 
+var themeKeys = Object.keys(themes);
 var themesIndex = 0;
+var themeSwatchesEl = document.getElementById("theme-swatches");
 
 function change(theme) {
   for (let prop in theme) {
@@ -160,29 +162,61 @@ function change(theme) {
   }
 }
 
-var theme = themes[Object.keys(themes)[themesIndex]];
-change(theme);
+function humanizeThemeName(key) {
+  return key
+    .replace(/([a-z])([0-9])/g, "$1 $2")
+    .replace(/^./, (c) => c.toUpperCase());
+}
 
-document.getElementById("change").addEventListener("click", function () {
-  themesIndex++;
-  var themeCount = Object.keys(themes).length;
-  themesIndex = themesIndex <= themeCount - 1 ? themesIndex : 0;
-  var theme = themes[Object.keys(themes)[themesIndex]];
-  change(theme);
+function updateActiveSwatch() {
+  if (!themeSwatchesEl) return;
+  themeSwatchesEl.querySelectorAll(".theme-swatch").forEach(function (btn) {
+    var isActive = Number(btn.dataset.themeIndex) === themesIndex;
+    btn.classList.toggle("active", isActive);
+    btn.setAttribute("aria-pressed", String(isActive));
+  });
+}
+
+function setTheme(index) {
+  var themeCount = themeKeys.length;
+  themesIndex = ((Number(index) % themeCount) + themeCount) % themeCount;
+  change(themes[themeKeys[themesIndex]]);
   localStorage.setItem("theme", themesIndex);
-});
+  updateActiveSwatch();
+}
+
+if (themeSwatchesEl) {
+  themeKeys.forEach(function (key, index) {
+    var t = themes[key];
+    var label = humanizeThemeName(key);
+    var swatch = document.createElement("button");
+    swatch.type = "button";
+    swatch.className = "theme-swatch";
+    swatch.dataset.themeIndex = String(index);
+    swatch.title = label;
+    swatch.setAttribute("aria-label", label + " theme");
+    swatch.setAttribute("aria-pressed", "false");
+    swatch.style.background =
+      "linear-gradient(135deg, " +
+      t["--primaryColor"] +
+      " 50%, " +
+      t["--accentDark"] +
+      " 50%)";
+    swatch.addEventListener("click", function () {
+      setTheme(index);
+    });
+    themeSwatchesEl.appendChild(swatch);
+  });
+}
 
 if (localStorage.getItem("theme")) {
-  themesIndex = localStorage.getItem("theme");
-  var theme = themes[Object.keys(themes)[themesIndex]];
-  change(theme);
+  setTheme(parseInt(localStorage.getItem("theme"), 10));
 } else {
-  localStorage.setItem("theme", themesIndex);
+  setTheme(themesIndex);
 }
 
 function activateDarkMode() {
-  change(themes[Object.keys(themes)[1]]);
-  localStorage.setItem("theme", 1);
+  setTheme(1);
 }
 
 if (
@@ -205,8 +239,7 @@ window
   .addEventListener("change", (e) => e.matches && activateDarkMode());
 
 function activateLightMode() {
-  change(themes[Object.keys(themes)[0]]);
-  localStorage.setItem("theme", 0);
+  setTheme(0);
 }
 
 if (
