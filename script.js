@@ -66,9 +66,14 @@ localStorage.getItem("shuffle-control") ||
   localStorage.setItem("shuffle-control", "true");
 
 let readChapters = JSON.parse(localStorage.getItem("readChapters")) || [];
+let bookmarkedChapters =
+  JSON.parse(localStorage.getItem("bookmarkedChapters")) || [];
 
 const totalChapters = dao[allTranslations[0]].length;
-const tablePlaceholder = document.getElementById("table-placeholder");
+const chapterListPlaceholder = document.getElementById(
+  "chapter-list-placeholder"
+);
+let chapterListFilter = "unread";
 
 function getSharedChapterFromUrl() {
   const ch = parseInt(new URLSearchParams(window.location.search).get("ch"), 10);
@@ -77,28 +82,53 @@ function getSharedChapterFromUrl() {
 
 const sharedChapter = getSharedChapterFromUrl();
 
-function displayUnreadChapters() {
-  const unreadChapters = document.getElementById("unread-chapters");
-  if (unreadChapters) {
-    unreadChapters.remove();
-  }
-  const root = document.createElement("TABLE");
-  root.setAttribute("id", "unread-chapters");
-  tablePlaceholder.appendChild(root);
-  for (let unreadChapter = 1; unreadChapter <= totalChapters; unreadChapter++) {
-    if (!readChapters.includes(unreadChapter)) {
-      const w = document.createElement("A");
-      w.setAttribute(
-        "href",
-        `javascript:selectedChapter = ${unreadChapter}; viewChapter(${unreadChapter} - 1);`
-      );
-      w.classList.add("chapter-link");
-      w.innerText = `${unreadChapter}`;
-      const y = document.createElement("TD");
-      y.appendChild(w);
-      root.appendChild(y);
+function renderChapterList() {
+  const existingTable = document.getElementById("chapter-list");
+  if (existingTable) existingTable.remove();
+  const existingEmpty =
+    chapterListPlaceholder.querySelector(".chapter-list-empty");
+  if (existingEmpty) existingEmpty.remove();
+
+  const chapters = [];
+  for (let n = 1; n <= totalChapters; n++) {
+    if (chapterListFilter === "all") {
+      chapters.push(n);
+    } else if (chapterListFilter === "unread" && !readChapters.includes(n)) {
+      chapters.push(n);
+    } else if (
+      chapterListFilter === "bookmarked" &&
+      bookmarkedChapters.includes(n)
+    ) {
+      chapters.push(n);
     }
   }
+
+  if (chapters.length === 0) {
+    const empty = document.createElement("P");
+    empty.classList.add("chapter-list-empty");
+    empty.textContent =
+      chapterListFilter === "bookmarked"
+        ? "No bookmarked chapters yet. Tap the star while reading to bookmark a chapter."
+        : "You've read every chapter. Nice.";
+    chapterListPlaceholder.appendChild(empty);
+    return;
+  }
+
+  const root = document.createElement("TABLE");
+  root.setAttribute("id", "chapter-list");
+  chapterListPlaceholder.appendChild(root);
+  chapters.forEach((n) => {
+    const link = document.createElement("A");
+    link.setAttribute(
+      "href",
+      `javascript:selectedChapter = ${n}; viewChapter(${n} - 1);`
+    );
+    link.classList.add("chapter-link");
+    link.innerText = `${n}`;
+    const cell = document.createElement("TD");
+    cell.appendChild(link);
+    root.appendChild(cell);
+  });
 }
 
 /**
@@ -247,12 +277,24 @@ function shuffle(array) {
 }
 
 function buildTranslationCard(translation, chapterIndex) {
+  const isBookmarked = bookmarkedChapters.includes(chapterIndex + 1);
   return (
     `<div class="translation">` +
     `<div class="translation-header">` +
     `<span class="chapter-number">Chapter ${chapterIndex + 1}</span>` +
     `<span class="chapter-translator">${translation}</span>` +
     `</div>` +
+    `<button type="button" class="bookmark-toggle${
+      isBookmarked ? " bookmarked" : ""
+    }" ` +
+    `aria-pressed="${isBookmarked}" ` +
+    `aria-label="${
+      isBookmarked ? "Remove bookmark" : "Bookmark this chapter"
+    }" ` +
+    `title="${isBookmarked ? "Remove bookmark" : "Bookmark this chapter"}">` +
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">` +
+    `<path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />` +
+    `</svg></button>` +
     `<p class="translation-text">${dao[translation][chapterIndex]}</p>` +
     `<div class="trans-info">` +
     `<span class="trans-ref">${sources[translation][2]}</span><br />` +
@@ -260,6 +302,22 @@ function buildTranslationCard(translation, chapterIndex) {
     `</div>` +
     `</div>`
   );
+}
+
+function renderTranslationCards(chapterIndex, shuffleCards) {
+  if (selectedTranslations.length === 0) {
+    displayArea.innerHTML =
+      '<p class="empty-state">No translations selected — pick some in the Library.</p>';
+    return;
+  }
+  let message = [];
+  selectedTranslations.forEach(function (translation) {
+    message.push(buildTranslationCard(translation, chapterIndex));
+  });
+  if (shuffleCards && localStorage.getItem("shuffle-control") === "true") {
+    message = shuffle(message);
+  }
+  displayArea.innerHTML = message.join("");
 }
 
 /* Search */
@@ -311,24 +369,13 @@ function searchTranslations(query) {
 }
 
 function newRandomChapter() {
-  let message = [];
   const randomChapter = randNumb(totalChapters);
-  selectedTranslations.forEach(function (translation) {
-    message.push(buildTranslationCard(translation, randomChapter));
-  });
-  if (localStorage.getItem("shuffle-control") === "true") {
-    let shuffled = shuffle(message);
-    let formatted = shuffled.join("");
-    displayArea.innerHTML = formatted;
-  } else if (localStorage.getItem("shuffle-control") === "false") {
-    let formatted = message.join("");
-    displayArea.innerHTML = formatted;
-  }
+  renderTranslationCards(randomChapter, true);
   if (readChapters.indexOf(randomChapter + 1) === -1) {
     readChapters.push(randomChapter + 1);
   }
   localStorage.setItem("readChapters", JSON.stringify(readChapters));
-  displayUnreadChapters();
+  renderChapterList();
   readOrder.push(randomChapter + 1);
   localStorage.setItem("readOrder", JSON.stringify(readOrder));
   updateHistory();
@@ -337,21 +384,10 @@ function newRandomChapter() {
 }
 
 function resumeChapter(chapter) {
-  let message = [];
-  selectedTranslations.forEach(function (translation) {
-    message.push(buildTranslationCard(translation, chapter));
-  });
-  if (localStorage.getItem("shuffle-control") === "true") {
-    let shuffled = shuffle(message);
-    let formatted = shuffled.join("");
-    displayArea.innerHTML = formatted;
-  } else if (localStorage.getItem("shuffle-control") === "false") {
-    let formatted = message.join("");
-    displayArea.innerHTML = formatted;
-  }
+  renderTranslationCards(chapter, true);
   currentChapterIndex = chapter;
   localStorage.setItem("lastChapterIndex", chapter);
-  displayUnreadChapters();
+  renderChapterList();
   const storedHistoryIndex = localStorage.getItem("historyIndex");
   const restoredHistoryIndex =
     storedHistoryIndex !== null ? parseInt(storedHistoryIndex, 10) : -1;
@@ -387,12 +423,7 @@ yinYang.addEventListener("click", () => {
 /* History chapter selection */
 
 function getHistoryChapter(chapter) {
-  let message = [];
-  selectedTranslations.forEach(function (translation) {
-    message.push(buildTranslationCard(translation, chapter - 1));
-  });
-  let formatted = message.join("");
-  displayArea.innerHTML = formatted;
+  renderTranslationCards(chapter - 1, false);
   currentChapterIndex = chapter - 1;
   localStorage.setItem("lastChapterIndex", chapter - 1);
 }
@@ -483,24 +514,13 @@ chapterSelectInput.addEventListener("change", function (e) {
 });
 
 function viewChapter(chapter) {
-  let message = [];
-  selectedTranslations.forEach(function (translation) {
-    message.push(buildTranslationCard(translation, chapter));
-  });
-  if (localStorage.getItem("shuffle-control") === "true") {
-    let shuffled = shuffle(message);
-    let formatted = shuffled.join("");
-    displayArea.innerHTML = formatted;
-  } else if (localStorage.getItem("shuffle-control") === "false") {
-    let formatted = message.join("");
-    displayArea.innerHTML = formatted;
-  }
+  renderTranslationCards(chapter, true);
   window.scrollTo({ top: 0, behavior: "smooth" });
   if (readChapters.indexOf(chapter + 1) === -1) {
     readChapters.push(chapter + 1);
   }
   localStorage.setItem("readChapters", JSON.stringify(readChapters));
-  displayUnreadChapters();
+  renderChapterList();
   readOrder.push(chapter + 1);
   localStorage.setItem("readOrder", JSON.stringify(readOrder));
   updateHistory();
@@ -625,7 +645,7 @@ searchInput.addEventListener("input", () => {
   searchDebounceTimer = setTimeout(runSearch, 180);
 });
 
-function selectOnlyMatchedTranslations(translations) {
+function setSelectedTranslations(translations) {
   translationCheckboxes.forEach(({ checkBoxId, name }) => {
     const checkbox = document.getElementById(checkBoxId);
     if (checkbox) checkbox.checked = translations.includes(name);
@@ -635,6 +655,10 @@ function selectOnlyMatchedTranslations(translations) {
     "selectedTranslations",
     JSON.stringify(selectedTranslations)
   );
+}
+
+function selectOnlyMatchedTranslations(translations) {
+  setSelectedTranslations(translations);
 }
 
 function jumpToSearchResult(resultEl) {
@@ -687,14 +711,6 @@ searchModal.addEventListener("close", () => {
 
 resetSearchModal();
 
-const resetUnreadButton = document.getElementById("reset-unread-button");
-
-resetUnreadButton.addEventListener("click", () => {
-  localStorage.removeItem("readChapters");
-  readChapters = [];
-  displayUnreadChapters();
-});
-
 /* Translation control */
 
 translationCheckboxes.forEach(({ checkBoxId, name }) => {
@@ -736,12 +752,7 @@ function toggleArrayItem(array, item) {
 }
 
 function refreshCurrentChapter() {
-  let message = [];
-  selectedTranslations.forEach(function (translation) {
-    message.push(buildTranslationCard(translation, currentChapterIndex));
-  });
-  let formatted = message.join("");
-  displayArea.innerHTML = formatted;
+  renderTranslationCards(currentChapterIndex, false);
 }
 
 translationCheckboxes.forEach(({ checkBoxId, name }) => {
@@ -753,4 +764,136 @@ translationCheckboxes.forEach(({ checkBoxId, name }) => {
       JSON.stringify(selectedTranslations)
     );
   });
+});
+
+/* Bookmarks */
+
+displayArea.addEventListener("click", (e) => {
+  const toggle = e.target.closest(".bookmark-toggle");
+  if (!toggle) return;
+  toggleArrayItem(bookmarkedChapters, currentChapterIndex + 1);
+  localStorage.setItem(
+    "bookmarkedChapters",
+    JSON.stringify(bookmarkedChapters)
+  );
+  const nowBookmarked = bookmarkedChapters.includes(currentChapterIndex + 1);
+  document.querySelectorAll("#display .bookmark-toggle").forEach((btn) => {
+    btn.classList.toggle("bookmarked", nowBookmarked);
+    btn.setAttribute("aria-pressed", nowBookmarked);
+    const label = nowBookmarked ? "Remove bookmark" : "Bookmark this chapter";
+    btn.setAttribute("aria-label", label);
+    btn.setAttribute("title", label);
+  });
+  renderChapterList();
+});
+
+/* Library modal */
+
+const libraryButton = document.getElementById("library-button");
+const libraryModal = document.getElementById("library-modal");
+const libraryCloseButton = document.getElementById("library-close-button");
+const libraryTabTranslations = document.getElementById(
+  "library-tab-translations"
+);
+const libraryTabChapters = document.getElementById("library-tab-chapters");
+const libraryPanelTranslations = document.getElementById(
+  "library-panel-translations"
+);
+const libraryPanelChapters = document.getElementById(
+  "library-panel-chapters"
+);
+const selectAllTranslationsButton = document.getElementById(
+  "select-all-translations-button"
+);
+const deselectAllTranslationsButton = document.getElementById(
+  "deselect-all-translations-button"
+);
+
+function setLibraryTab(tab) {
+  const isTranslations = tab === "translations";
+  libraryTabTranslations.classList.toggle("active", isTranslations);
+  libraryTabTranslations.setAttribute("aria-selected", isTranslations);
+  libraryTabChapters.classList.toggle("active", !isTranslations);
+  libraryTabChapters.setAttribute("aria-selected", !isTranslations);
+  libraryPanelTranslations.hidden = !isTranslations;
+  libraryPanelChapters.hidden = isTranslations;
+  if (!isTranslations) renderChapterList();
+}
+
+libraryTabTranslations.addEventListener("click", () =>
+  setLibraryTab("translations")
+);
+libraryTabChapters.addEventListener("click", () => setLibraryTab("chapters"));
+
+selectAllTranslationsButton.addEventListener("click", () => {
+  setSelectedTranslations(allTranslations);
+  refreshCurrentChapter();
+});
+
+deselectAllTranslationsButton.addEventListener("click", () => {
+  setSelectedTranslations([]);
+  refreshCurrentChapter();
+});
+
+libraryButton.addEventListener("click", () => {
+  libraryModal.showModal();
+});
+
+libraryCloseButton.addEventListener("click", () => {
+  libraryModal.close();
+});
+
+libraryModal.addEventListener("click", (e) => {
+  if (e.target === libraryModal) {
+    libraryModal.close();
+  }
+});
+
+libraryModal.addEventListener("close", () => {
+  setLibraryTab("translations");
+});
+
+/* Chapter filter (Chapters tab) */
+
+const chapterFilterAllButton = document.getElementById("chapter-filter-all");
+const chapterFilterUnreadButton = document.getElementById(
+  "chapter-filter-unread"
+);
+const chapterFilterBookmarkedButton = document.getElementById(
+  "chapter-filter-bookmarked"
+);
+const resetUnreadButton = document.getElementById("reset-unread-button");
+
+function setChapterListFilter(filter) {
+  chapterListFilter = filter;
+  chapterFilterAllButton.classList.toggle("active", filter === "all");
+  chapterFilterAllButton.setAttribute("aria-pressed", filter === "all");
+  chapterFilterUnreadButton.classList.toggle("active", filter === "unread");
+  chapterFilterUnreadButton.setAttribute("aria-pressed", filter === "unread");
+  chapterFilterBookmarkedButton.classList.toggle(
+    "active",
+    filter === "bookmarked"
+  );
+  chapterFilterBookmarkedButton.setAttribute(
+    "aria-pressed",
+    filter === "bookmarked"
+  );
+  resetUnreadButton.hidden = filter !== "unread";
+  renderChapterList();
+}
+
+chapterFilterAllButton.addEventListener("click", () =>
+  setChapterListFilter("all")
+);
+chapterFilterUnreadButton.addEventListener("click", () =>
+  setChapterListFilter("unread")
+);
+chapterFilterBookmarkedButton.addEventListener("click", () =>
+  setChapterListFilter("bookmarked")
+);
+
+resetUnreadButton.addEventListener("click", () => {
+  localStorage.removeItem("readChapters");
+  readChapters = [];
+  renderChapterList();
 });

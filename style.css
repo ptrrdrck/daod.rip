@@ -18,7 +18,6 @@
   --shadowColor: #00143628;
   --filterColor: grayscale(100%) sepia(70%);
   --fontSizeScale: 1;
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-caret-down-fill' viewBox='0 0 16 16' %3E%3Cpath fill='currentColor' d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z' /%3E%3C/svg%3E");
 }
 html {
   min-height: 100%;
@@ -52,8 +51,14 @@ html {
     width: 36px;
     height: 36px;
   }
-  #search-button {
+  #library-button {
     bottom: 58px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+  }
+  #search-button {
+    bottom: 104px;
     right: 12px;
     width: 36px;
     height: 36px;
@@ -80,14 +85,12 @@ html {
   #links,
   #history-nav,
   .chapter-nav,
-  .details-container,
   #chapter-nav-top {
     flex-direction: column;
   }
   .sources,
   #chapter-nav-left,
-  #chapter-nav-right,
-  .details-container {
+  #chapter-nav-right {
     padding: 20px;
   }
   #prev-ch-3,
@@ -139,8 +142,14 @@ html {
     width: 46px;
     height: 46px;
   }
-  #search-button {
+  #library-button {
     bottom: 76px;
+    right: 20px;
+    width: 46px;
+    height: 46px;
+  }
+  #search-button {
+    bottom: 132px;
     right: 20px;
     width: 46px;
     height: 46px;
@@ -160,13 +169,11 @@ html {
   }
   #history-nav,
   .chapter-nav,
-  .details-container,
   #chapter-nav-top {
     flex-direction: column;
   }
   #chapter-nav-left,
-  #chapter-nav-right,
-  .details-container {
+  #chapter-nav-right {
     padding: 20px;
   }
   .chapter-nav,
@@ -416,6 +423,7 @@ input[type="number"]:focus {
 }
 #change {
   position: fixed;
+  z-index: 10;
   border-radius: 50%;
   background-color: var(--accentDark);
   color: var(--accentLight);
@@ -438,6 +446,7 @@ input[type="number"]:focus {
 }
 #top-share-button {
   position: fixed;
+  z-index: 10;
   border-radius: 50%;
   background-color: var(--accentDark);
   color: var(--accentLight);
@@ -467,6 +476,7 @@ input[type="number"]:focus {
 }
 #settings-button {
   position: fixed;
+  z-index: 10;
   border-radius: 50%;
   background-color: var(--accentDark);
   color: var(--accentLight);
@@ -493,6 +503,7 @@ input[type="number"]:focus {
 }
 #search-button {
   position: fixed;
+  z-index: 10;
   border-radius: 50%;
   background-color: var(--accentDark);
   color: var(--accentLight);
@@ -517,6 +528,33 @@ input[type="number"]:focus {
   transform: scale(0.97);
   transition: 0.1s;
 }
+#library-button {
+  position: fixed;
+  z-index: 10;
+  border-radius: 50%;
+  background-color: var(--accentDark);
+  color: var(--accentLight);
+  border: none;
+  font-size: 1rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+#library-button svg {
+  width: 55%;
+  height: 55%;
+}
+#library-button:hover {
+  cursor: pointer;
+  transform: scale(1.03);
+  transition: 0.1s;
+}
+#library-button:active {
+  transform: scale(0.97);
+  transition: 0.1s;
+}
 #display {
   line-height: 1.3;
   letter-spacing: 0.22px;
@@ -529,7 +567,14 @@ input[type="number"]:focus {
 .view-stacked {
   grid-template-columns: 1fr;
 }
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  opacity: 0.7;
+}
 .translation {
+  position: relative;
   margin: 0;
   padding: 20px;
   border-radius: 10px;
@@ -541,6 +586,7 @@ input[type="number"]:focus {
   flex-direction: column;
   gap: 2px;
   margin-bottom: 10px;
+  padding-right: 36px;
 }
 .chapter-number {
   font-size: 0.75rem;
@@ -563,6 +609,45 @@ input[type="number"]:focus {
 .trans-info {
   padding-top: 20px;
   line-height: 14px;
+}
+.bookmark-toggle {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--fontColor);
+  opacity: 0.45;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bookmark-toggle svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+.bookmark-toggle:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+  transition: 0.1s;
+}
+.bookmark-toggle:active {
+  transform: scale(0.95);
+  transition: 0.1s;
+}
+.bookmark-toggle.bookmarked {
+  opacity: 1;
+}
+.bookmark-toggle.bookmarked svg {
+  fill: currentColor;
+  stroke: none;
 }
 #history-nav {
   display: flex;
@@ -644,49 +729,6 @@ input[type="number"]:focus {
   gap: 3px;
 }
 
-details {
-  display: block;
-}
-details summary {
-  cursor: pointer;
-}
-summary {
-  display: flex;
-  width: 100%;
-  list-style-position: outside;
-  align-items: center;
-  justify-content: space-between;
-  margin-left: 0;
-  padding: 10px;
-  border-radius: 8px;
-  box-sizing: border-box;
-}
-summary:hover {
-  background-color: var(--primaryTrans);
-}
-summary::-webkit-details-marker {
-  display: none;
-}
-summary::after {
-  content: "";
-  width: 18px;
-  height: 18px;
-  display: inline-block;
-  mask-image: var(--svg);
-  mask-size: cover;
-  -webkit-mask-image: var(--svg);
-  -webkit-mask-size: cover;
-  background-color: var(--fontColor);
-  transition: 0.2s;
-}
-details[open] > summary::after {
-  transform: rotate(180deg);
-}
-#unread-details {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
 #reset-unread-button {
   margin-top: 10px;
 }
@@ -698,17 +740,6 @@ details[open] > summary::after {
   justify-content: center;
   background: var(--accentLight);
   border: 1px solid var(--borderColor);
-}
-.details-container {
-  display: flex;
-  flex-grow: 1;
-  flex-shrink: 1;
-  justify-content: center;
-  background: var(--accentLight);
-  border: 1px solid var(--borderColor);
-  flex-direction: column;
-  gap: 20px;
-  border-radius: 10px;
 }
 .modal {
   margin: auto;
@@ -761,6 +792,23 @@ details[open] > summary::after {
 .modal-close-button:active {
   transform: scale(0.97);
   transition: 0.1s;
+}
+.library-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.library-panel[hidden] {
+  display: none;
+}
+.button-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+#library-tabs .button {
+  flex: 1;
+  text-align: center;
 }
 #search-input {
   width: 100%;
@@ -911,20 +959,26 @@ main {
   border-radius: 10px;
   gap: 36px;
 }
-#unread-chapters {
+#chapter-list {
   display: flex;
   align-self: center;
   flex-wrap: wrap;
   justify-content: center;
   padding-top: 20px;
 }
-#unread-chapters td {
+#chapter-list td {
   border: none;
   width: 49px;
   height: 25px;
   margin-bottom: 16px;
   display: flex;
   justify-content: center;
+}
+.chapter-list-empty {
+  text-align: center;
+  opacity: 0.7;
+  padding: 20px 10px;
+  font-size: 0.9rem;
 }
 .chapter-numbers {
   justify-self: center;
