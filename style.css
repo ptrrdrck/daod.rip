@@ -35,15 +35,16 @@ html {
 @media (max-width: 599px) {
   header {
     padding-top: 24px;
-    margin-bottom: 64px;
+    margin-bottom: 100px;
   }
   h1 {
     font-size: 1.1rem;
   }
   #drip-button {
-    top: 62px;
-    width: 48px;
-    height: 48px;
+    top: 64px;
+    width: 20px;
+    height: 20px;
+    padding: 36px;
     font-size: 1rem;
   }
   #top-share-button {
@@ -110,16 +111,17 @@ html {
 @media (min-width: 600px) {
   header {
     padding-top: 30px;
-    margin-bottom: 74px;
+    margin-bottom: 116px;
   }
   h1 {
     font-size: 1.25rem;
   }
   #drip-button {
-    top: 72px;
-    width: 58px;
-    height: 58px;
-    font-size: 1.15rem;
+    top: 76px;
+    width: 24px;
+    height: 24px;
+    padding: 42px;
+    font-size: 1.1rem;
   }
   #top-share-button {
     top: 20px;
@@ -180,16 +182,17 @@ html {
 @media (min-width: 1024px) {
   header {
     padding-top: 36px;
-    margin-bottom: 82px;
+    margin-bottom: 132px;
   }
   h1 {
     font-size: 1.35rem;
   }
   #drip-button {
-    top: 82px;
-    width: 66px;
-    height: 66px;
-    font-size: 1.25rem;
+    top: 86px;
+    width: 28px;
+    height: 28px;
+    padding: 48px;
+    font-size: 1.2rem;
   }
   #display,
   .sources {
@@ -252,10 +255,6 @@ header {
 h1 {
   font-weight: 400;
   margin: 0;
-  transition: opacity 0.15s ease;
-}
-h1.faded {
-  opacity: 0;
 }
 #drip-button {
   position: fixed;

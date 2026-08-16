@@ -404,22 +404,18 @@ if (sharedChapter !== null) {
 
 dripButton.addEventListener("click", () => {
   newRandomChapter();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
 const heroTitle = document.getElementById("hero-title");
-let heroTitleFaded = false;
+const HERO_FADE_DISTANCE = 150;
 
-window.addEventListener(
-  "scroll",
-  () => {
-    const shouldFade = window.scrollY > 20;
-    if (shouldFade !== heroTitleFaded) {
-      heroTitleFaded = shouldFade;
-      heroTitle.classList.toggle("faded", shouldFade);
-    }
-  },
-  { passive: true }
-);
+function updateHeroTitleOpacity() {
+  const opacity = Math.min(1, Math.max(0, 1 - window.scrollY / HERO_FADE_DISTANCE));
+  heroTitle.style.opacity = opacity;
+}
+
+window.addEventListener("scroll", updateHeroTitleOpacity, { passive: true });
 
 yinYang.addEventListener("click", () => {
   newRandomChapter();
