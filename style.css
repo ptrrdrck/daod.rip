@@ -81,7 +81,7 @@ html {
       calc((1rem + 1vw) * var(--fontSizeScale)),
       calc(1.5rem * var(--fontSizeScale))
     );
-    margin: 0 5% 80px;
+    margin: 0 5%;
   }
   .sources {
     margin: 30px 5% 80px;
@@ -158,7 +158,7 @@ html {
       calc((1rem + 1vw) * var(--fontSizeScale)),
       calc(1.5rem * var(--fontSizeScale))
     );
-    margin: 0 6% 80px;
+    margin: 0 6%;
   }
   #history-nav {
     flex-direction: column;
@@ -201,7 +201,7 @@ html {
       calc((1.5rem + 1vw) * var(--fontSizeScale)),
       calc(1.8rem * var(--fontSizeScale))
     );
-    margin: 0 4% 80px;
+    margin: 0 4%;
   }
   .sources {
     margin: 30px 4% 80px;

@@ -1,5 +1,5 @@
 <!-- © 2021 Peter Rodrick <pete@lftlc.xyz> -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -18,7 +18,11 @@
   </head>
   <body>
     <div class="cursor"></div>
-    <button id="top-share-button" title="Copy share link" aria-label="Copy share link">
+    <button
+      id="top-share-button"
+      title="Copy share link"
+      aria-label="Copy share link"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
@@ -31,27 +35,43 @@
       </svg>
     </button>
     <button id="settings-button" title="Settings" aria-label="Settings">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
         <path
           d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
         />
       </svg>
     </button>
     <button id="search-button" title="Search" aria-label="Search">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
         <path
           d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
         />
       </svg>
     </button>
     <button id="library-button" title="Library" aria-label="Library">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
         <path
           d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"
         />
       </svg>
     </button>
-    <dialog id="settings-modal" class="modal" aria-labelledby="settings-modal-title">
+    <dialog
+      id="settings-modal"
+      class="modal"
+      aria-labelledby="settings-modal-title"
+    >
       <div class="modal-content">
         <div class="modal-header">
           <h2 id="settings-modal-title">Settings</h2>
@@ -61,7 +81,11 @@
             title="Close settings"
             aria-label="Close settings"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
               <path
                 d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
               />
@@ -70,7 +94,12 @@
         </div>
         <div class="setting-row">
           <span class="select-text">Theme</span>
-          <div id="theme-swatches" class="theme-swatches" role="group" aria-label="Theme"></div>
+          <div
+            id="theme-swatches"
+            class="theme-swatches"
+            role="group"
+            aria-label="Theme"
+          ></div>
         </div>
         <div class="setting-row">
           <span class="select-text">Font size</span>
@@ -81,7 +110,11 @@
               title="Decrease font size"
               aria-label="Decrease font size"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
                 <path d="M19 13H5v-2h14v2z" />
               </svg>
             </button>
@@ -92,7 +125,11 @@
               title="Increase font size"
               aria-label="Increase font size"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
               </svg>
             </button>
@@ -123,7 +160,11 @@
         </div>
         <div class="setting-row">
           <span class="select-text">Landing</span>
-          <div class="segmented-buttons" role="group" aria-label="Landing chapter">
+          <div
+            class="segmented-buttons"
+            role="group"
+            aria-label="Landing chapter"
+          >
             <button
               class="button"
               id="landing-random-button"
@@ -144,7 +185,10 @@
             </button>
           </div>
         </div>
-        <label id="first-control" for="shuffle-control" class="checkbox-container"
+        <label
+          id="first-control"
+          for="shuffle-control"
+          class="checkbox-container"
           >Shuffle translation display order
           <input
             id="shuffle-control"
@@ -156,23 +200,34 @@
         </label>
         <div class="setting-row">
           <span class="select-text">Reset Session</span>
-          <button class="button button-danger" id="clear-storage-button">Clear Local Storage</button>
+          <button class="button button-danger" id="clear-storage-button">
+            Clear Local Storage
+          </button>
         </div>
         <div id="clear-storage-confirm" class="clear-storage-confirm" hidden>
           <span class="clear-storage-confirm-text"
-            >This clears your saved theme, reading history, translation selections, and all other
-            settings. This can't be undone.</span
+            >This clears your saved theme, reading history, translation
+            selections, and all other settings. This can't be undone.</span
           >
           <div class="button-row">
-            <button class="button" id="clear-storage-cancel-button">Cancel</button>
-            <button class="button button-danger" id="clear-storage-confirm-button">
+            <button class="button" id="clear-storage-cancel-button">
+              Cancel
+            </button>
+            <button
+              class="button button-danger"
+              id="clear-storage-confirm-button"
+            >
               Yes, clear everything
             </button>
           </div>
         </div>
       </div>
     </dialog>
-    <dialog id="search-modal" class="modal" aria-labelledby="search-modal-title">
+    <dialog
+      id="search-modal"
+      class="modal"
+      aria-labelledby="search-modal-title"
+    >
       <div class="modal-content">
         <div class="modal-header">
           <h2 id="search-modal-title">Search</h2>
@@ -182,7 +237,11 @@
             title="Close search"
             aria-label="Close search"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
               <path
                 d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
               />
@@ -199,7 +258,11 @@
         <div id="search-results"></div>
       </div>
     </dialog>
-    <dialog id="library-modal" class="modal" aria-labelledby="library-modal-title">
+    <dialog
+      id="library-modal"
+      class="modal"
+      aria-labelledby="library-modal-title"
+    >
       <div class="modal-content">
         <div class="modal-header">
           <h2 id="library-modal-title">Library</h2>
@@ -209,14 +272,23 @@
             title="Close library"
             aria-label="Close library"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
               <path
                 d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
               />
             </svg>
           </button>
         </div>
-        <div class="segmented-buttons" id="library-tabs" role="tablist" aria-label="Library sections">
+        <div
+          class="segmented-buttons"
+          id="library-tabs"
+          role="tablist"
+          aria-label="Library sections"
+        >
           <button
             class="button active"
             id="library-tab-translations"
@@ -243,8 +315,12 @@
           aria-labelledby="library-tab-translations"
         >
           <div class="button-row">
-            <button class="button" id="select-all-translations-button">Select All</button>
-            <button class="button" id="deselect-all-translations-button">Deselect All</button>
+            <button class="button" id="select-all-translations-button">
+              Select All
+            </button>
+            <button class="button" id="deselect-all-translations-button">
+              Deselect All
+            </button>
           </div>
           <label
             id="first-translation"
@@ -360,10 +436,29 @@
           role="tabpanel"
           aria-labelledby="library-tab-chapters"
         >
-          <div class="segmented-buttons" id="chapter-filter-buttons" role="group" aria-label="Chapter filter">
-            <button class="button" id="chapter-filter-all" aria-pressed="false">All</button>
-            <button class="button active" id="chapter-filter-unread" aria-pressed="true">Unread</button>
-            <button class="button" id="chapter-filter-bookmarked" aria-pressed="false">Starred</button>
+          <div
+            class="segmented-buttons"
+            id="chapter-filter-buttons"
+            role="group"
+            aria-label="Chapter filter"
+          >
+            <button class="button" id="chapter-filter-all" aria-pressed="false">
+              All
+            </button>
+            <button
+              class="button active"
+              id="chapter-filter-unread"
+              aria-pressed="true"
+            >
+              Unread
+            </button>
+            <button
+              class="button"
+              id="chapter-filter-bookmarked"
+              aria-pressed="false"
+            >
+              Starred
+            </button>
           </div>
           <div id="chapter-list-placeholder">
             <table id="chapter-list"></table>
@@ -422,9 +517,6 @@
       <div id="display" class="fade-in">Fetching translations...</div>
     </main>
     <footer class="fade-in">
-      <div id="links">
-        <a class="footer-link" href="./about.html">About</a>
-      </div>
       <svg
         id="yin-yang"
         aria-hidden="true"
@@ -449,8 +541,7 @@
         >
         permitting limited reproduction of copyrighted materials for educational
         purposes or in the context of scholarship or research.<br /><br />
-        Made by
-        <a href="https://lftlc.xyz" target="_blank">lftlc.xyz</a>.
+        <a href="./about.html">About</a>
       </div>
     </footer>
     <script src="./util.js" defer type="text/javascript"></script>
