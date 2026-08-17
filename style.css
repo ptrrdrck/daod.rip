@@ -35,17 +35,17 @@ html {
 @media (max-width: 599px) {
   header {
     padding-top: 24px;
-    margin-bottom: 100px;
+    margin-bottom: 160px;
   }
   h1 {
     font-size: 1.1rem;
   }
   #drip-button {
-    top: 64px;
+    top: 60px;
     width: 20px;
     height: 20px;
-    padding: 36px;
-    font-size: 1rem;
+    padding: 44px;
+    font-size: 1.1rem;
   }
   #top-share-button {
     top: 12px;
@@ -111,17 +111,17 @@ html {
 @media (min-width: 600px) {
   header {
     padding-top: 30px;
-    margin-bottom: 116px;
+    margin-bottom: 186px;
   }
   h1 {
     font-size: 1.25rem;
   }
   #drip-button {
-    top: 76px;
+    top: 70px;
     width: 24px;
     height: 24px;
-    padding: 42px;
-    font-size: 1.1rem;
+    padding: 52px;
+    font-size: 1.25rem;
   }
   #top-share-button {
     top: 20px;
@@ -182,17 +182,17 @@ html {
 @media (min-width: 1024px) {
   header {
     padding-top: 36px;
-    margin-bottom: 132px;
+    margin-bottom: 206px;
   }
   h1 {
     font-size: 1.35rem;
   }
   #drip-button {
-    top: 86px;
+    top: 78px;
     width: 28px;
     height: 28px;
-    padding: 48px;
-    font-size: 1.2rem;
+    padding: 58px;
+    font-size: 1.35rem;
   }
   #display,
   .sources {

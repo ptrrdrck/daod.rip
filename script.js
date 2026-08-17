@@ -410,12 +410,22 @@ dripButton.addEventListener("click", () => {
 const heroTitle = document.getElementById("hero-title");
 const HERO_FADE_DISTANCE = 150;
 
-function updateHeroTitleOpacity() {
-  const opacity = Math.min(1, Math.max(0, 1 - window.scrollY / HERO_FADE_DISTANCE));
-  heroTitle.style.opacity = opacity;
+function getScrollY() {
+  return (
+    window.pageYOffset ||
+    document.documentElement.scrollTop ||
+    document.body.scrollTop ||
+    0
+  );
 }
 
-window.addEventListener("scroll", updateHeroTitleOpacity, { passive: true });
+function updateHeroTitleOpacity() {
+  const opacity = Math.min(1, Math.max(0, 1 - getScrollY() / HERO_FADE_DISTANCE));
+  heroTitle.style.opacity = opacity;
+  requestAnimationFrame(updateHeroTitleOpacity);
+}
+
+requestAnimationFrame(updateHeroTitleOpacity);
 
 yinYang.addEventListener("click", () => {
   newRandomChapter();
