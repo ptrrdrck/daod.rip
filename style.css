@@ -35,17 +35,17 @@ html {
 @media (max-width: 599px) {
   header {
     padding-top: 24px;
-    margin-bottom: 160px;
+    margin-bottom: 100px;
   }
   h1 {
     font-size: 1.1rem;
   }
   #drip-button {
-    top: 60px;
+    top: 64px;
     width: 20px;
     height: 20px;
     padding: 41px 44px 47px;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
   #top-share-button {
     top: 12px;
@@ -111,17 +111,17 @@ html {
 @media (min-width: 600px) {
   header {
     padding-top: 30px;
-    margin-bottom: 186px;
+    margin-bottom: 116px;
   }
   h1 {
     font-size: 1.25rem;
   }
   #drip-button {
-    top: 70px;
+    top: 76px;
     width: 24px;
     height: 24px;
     padding: 48px 52px 56px;
-    font-size: 1.25rem;
+    font-size: 1.3rem;
   }
   #top-share-button {
     top: 20px;
@@ -182,17 +182,17 @@ html {
 @media (min-width: 1024px) {
   header {
     padding-top: 36px;
-    margin-bottom: 206px;
+    margin-bottom: 128px;
   }
   h1 {
     font-size: 1.35rem;
   }
   #drip-button {
-    top: 78px;
+    top: 82px;
     width: 28px;
     height: 28px;
     padding: 54px 58px 62px;
-    font-size: 1.35rem;
+    font-size: 1.4rem;
   }
   #display,
   .sources {
@@ -261,8 +261,8 @@ h1 {
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-  background: var(--accentLight);
-  color: var(--fontColor);
+  background: var(--fontColor);
+  color: var(--accentLight);
   border: none;
   border-radius: 50%;
   font-weight: 400;
@@ -605,7 +605,6 @@ input {
   padding: 0;
   width: 90%;
   max-width: 420px;
-  /*box-shadow: 0 4px 15px var(--shadowColor);*/
 }
 .modal::backdrop {
   background: var(--primaryColor);
@@ -805,7 +804,7 @@ input {
 .theme-swatches {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 8px;
 }
 .theme-swatch {
@@ -891,7 +890,7 @@ main {
   display: flex;
   position: relative;
   padding: 10px 10px 10px 50px;
-  margin: 5px 0;
+  margin: 0;
   min-height: 30px;
   font-size: 24px;
   border-radius: 8px;
