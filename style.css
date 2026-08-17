@@ -44,7 +44,7 @@ html {
     top: 60px;
     width: 20px;
     height: 20px;
-    padding: 44px;
+    padding: 41px 44px 47px;
     font-size: 1.1rem;
   }
   #top-share-button {
@@ -120,7 +120,7 @@ html {
     top: 70px;
     width: 24px;
     height: 24px;
-    padding: 52px;
+    padding: 48px 52px 56px;
     font-size: 1.25rem;
   }
   #top-share-button {
@@ -191,7 +191,7 @@ html {
     top: 78px;
     width: 28px;
     height: 28px;
-    padding: 58px;
+    padding: 54px 58px 62px;
     font-size: 1.35rem;
   }
   #display,
