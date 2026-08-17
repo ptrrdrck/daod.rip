@@ -151,6 +151,7 @@ const nextChapterThreeDisplay = document.getElementById("next-ch-3");
 const seekBackButton = document.getElementById("ch-seek-back");
 const seekFwdButton = document.getElementById("ch-seek-fwd");
 const historyDisplay = document.getElementById("history-nav");
+const displayArea = document.getElementById("display");
 
 function hideUndefinedHistory() {
   const historyChapters = document.getElementsByClassName("history");
@@ -174,15 +175,24 @@ function hideUndefinedHistory() {
     nextChapterThree === undefined
       ? "none"
       : "inline-block";
-  historyDisplay.style.display =
+  const hasHistory = !(
     prevChapter === undefined &&
     prevChapterTwo === undefined &&
     prevChapterThree === undefined &&
     nextChapter === undefined &&
     nextChapterTwo === undefined &&
     nextChapterThree === undefined
-      ? "none"
-      : "flex";
+  );
+  historyDisplay.style.display = hasHistory ? "flex" : "none";
+  if (hasHistory) {
+    document.documentElement.style.setProperty(
+      "--history-nav-height",
+      `${historyDisplay.offsetHeight}px`
+    );
+    displayArea.classList.remove("history-collapsed");
+  } else {
+    displayArea.classList.add("history-collapsed");
+  }
 }
 
 hideUndefinedHistory();
@@ -256,7 +266,6 @@ function updateHistory(index = -1) {
 
 let currentChapterIndex;
 
-const displayArea = document.getElementById("display");
 const dripButton = document.getElementById("drip-button");
 const yinYang = document.getElementById("yin-yang");
 

@@ -436,6 +436,9 @@ input {
   display: grid;
   gap: 20px;
 }
+#display.history-collapsed {
+  margin-top: var(--history-nav-height, 82px);
+}
 .view-grid {
   grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
 }
