@@ -35,14 +35,13 @@ html {
 @media (max-width: 599px) {
   header {
     padding-top: 24px;
-    margin-bottom: 100px;
+    margin-bottom: 10px;
   }
   h1 {
     font-size: 1.1rem;
   }
   #drip-button {
-    top: 64px;
-    --drip-lift: -52px;
+    top: 12px;
     width: 20px;
     height: 20px;
     padding: 41px 44px 47px;
@@ -112,14 +111,13 @@ html {
 @media (min-width: 600px) {
   header {
     padding-top: 30px;
-    margin-bottom: 116px;
+    margin-bottom: 10px;
   }
   h1 {
     font-size: 1.25rem;
   }
   #drip-button {
-    top: 76px;
-    --drip-lift: -56px;
+    top: 20px;
     width: 24px;
     height: 24px;
     padding: 48px 52px 56px;
@@ -184,14 +182,13 @@ html {
 @media (min-width: 1024px) {
   header {
     padding-top: 36px;
-    margin-bottom: 128px;
+    margin-bottom: 10px;
   }
   h1 {
     font-size: 1.35rem;
   }
   #drip-button {
-    top: 82px;
-    --drip-lift: -62px;
+    top: 20px;
     width: 28px;
     height: 28px;
     padding: 54px 58px 62px;
@@ -260,9 +257,10 @@ h1 {
   margin: 0;
 }
 #drip-button {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%) translateY(calc(var(--drip-lift, 0px) * var(--drip-scroll-progress, 0)));
+  /* Scrolls with the page, then sticks at the same top offset as
+     #top-share-button — keep the two in step per breakpoint. */
+  position: sticky;
+  margin: 0 auto;
   z-index: 10;
   background: var(--fontColor);
   color: var(--accentLight);
@@ -277,11 +275,11 @@ h1 {
 }
 #drip-button:hover {
   cursor: pointer;
-  transform: translateX(-50%) translateY(calc(var(--drip-lift, 0px) * var(--drip-scroll-progress, 0))) scale(1.03);
+  transform: scale(1.03);
   transition: 0.1s;
 }
 #drip-button:active {
-  transform: translateX(-50%) translateY(calc(var(--drip-lift, 0px) * var(--drip-scroll-progress, 0))) scale(0.97);
+  transform: scale(0.97);
   transition: 0.1s;
   box-shadow: unset;
 }

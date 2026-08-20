@@ -416,41 +416,6 @@ dripButton.addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-const heroTitle = document.getElementById("hero-title");
-const HERO_FADE_DISTANCE = 150;
-const DRIP_LIFT_DISTANCE = 150;
-
-function getScrollY() {
-  return (
-    window.pageYOffset ||
-    document.documentElement.scrollTop ||
-    document.body.scrollTop ||
-    0
-  );
-}
-
-let lastDripProgress = null;
-
-function updateScrollEffects() {
-  const scrollY = getScrollY();
-  heroTitle.style.opacity = Math.min(
-    1,
-    Math.max(0, 1 - scrollY / HERO_FADE_DISTANCE)
-  );
-
-  /* Lift the drip button until its top edge meets the share button's,
-     then leave it floating there. */
-  const dripProgress = Math.min(1, Math.max(0, scrollY / DRIP_LIFT_DISTANCE));
-  if (dripProgress !== lastDripProgress) {
-    dripButton.style.setProperty("--drip-scroll-progress", dripProgress);
-    lastDripProgress = dripProgress;
-  }
-
-  requestAnimationFrame(updateScrollEffects);
-}
-
-requestAnimationFrame(updateScrollEffects);
-
 yinYang.addEventListener("click", () => {
   newRandomChapter();
   window.scrollTo({ top: 0, behavior: "smooth" });
