@@ -278,6 +278,7 @@ function changeFontSize(index) {
   document
     .querySelector(":root")
     .style.setProperty("--fontSizeScale", fontSizeScales[index]);
+  if (!fontSizeLabelEl) return;
   fontSizeLabelEl.textContent = fontSizeLabels[index];
   fontSizeDecreaseButton.disabled = index <= 0;
   fontSizeIncreaseButton.disabled = index >= fontSizeScales.length - 1;
@@ -290,21 +291,23 @@ if (localStorage.getItem("fontSizeIndex")) {
 }
 changeFontSize(fontSizeIndex);
 
-fontSizeDecreaseButton.addEventListener("click", () => {
-  if (fontSizeIndex > 0) {
-    fontSizeIndex--;
-    changeFontSize(fontSizeIndex);
-    localStorage.setItem("fontSizeIndex", fontSizeIndex);
-  }
-});
+if (fontSizeDecreaseButton && fontSizeIncreaseButton) {
+  fontSizeDecreaseButton.addEventListener("click", () => {
+    if (fontSizeIndex > 0) {
+      fontSizeIndex--;
+      changeFontSize(fontSizeIndex);
+      localStorage.setItem("fontSizeIndex", fontSizeIndex);
+    }
+  });
 
-fontSizeIncreaseButton.addEventListener("click", () => {
-  if (fontSizeIndex < fontSizeScales.length - 1) {
-    fontSizeIndex++;
-    changeFontSize(fontSizeIndex);
-    localStorage.setItem("fontSizeIndex", fontSizeIndex);
-  }
-});
+  fontSizeIncreaseButton.addEventListener("click", () => {
+    if (fontSizeIndex < fontSizeScales.length - 1) {
+      fontSizeIndex++;
+      changeFontSize(fontSizeIndex);
+      localStorage.setItem("fontSizeIndex", fontSizeIndex);
+    }
+  });
+}
 
 /* View mode */
 var viewMode = "grid";
@@ -314,6 +317,7 @@ const viewStackedButton = document.getElementById("view-stacked-button");
 const displayEl = document.getElementById("display");
 
 function changeViewMode(mode) {
+  if (!displayEl || !viewGridButton || !viewStackedButton) return;
   displayEl.classList.remove("view-grid", "view-stacked");
   displayEl.classList.add("view-" + mode);
   viewGridButton.classList.toggle("active", mode === "grid");
@@ -329,17 +333,19 @@ if (localStorage.getItem("viewMode")) {
 }
 changeViewMode(viewMode);
 
-viewGridButton.addEventListener("click", () => {
-  viewMode = "grid";
-  changeViewMode(viewMode);
-  localStorage.setItem("viewMode", viewMode);
-});
+if (viewGridButton && viewStackedButton) {
+  viewGridButton.addEventListener("click", () => {
+    viewMode = "grid";
+    changeViewMode(viewMode);
+    localStorage.setItem("viewMode", viewMode);
+  });
 
-viewStackedButton.addEventListener("click", () => {
-  viewMode = "stacked";
-  changeViewMode(viewMode);
-  localStorage.setItem("viewMode", viewMode);
-});
+  viewStackedButton.addEventListener("click", () => {
+    viewMode = "stacked";
+    changeViewMode(viewMode);
+    localStorage.setItem("viewMode", viewMode);
+  });
+}
 
 /* Landing mode */
 var landingMode = "random";
@@ -348,6 +354,7 @@ const landingRandomButton = document.getElementById("landing-random-button");
 const landingResumeButton = document.getElementById("landing-resume-button");
 
 function changeLandingMode(mode) {
+  if (!landingRandomButton || !landingResumeButton) return;
   landingRandomButton.classList.toggle("active", mode === "random");
   landingRandomButton.setAttribute("aria-pressed", mode === "random");
   landingResumeButton.classList.toggle("active", mode === "resume");
@@ -361,14 +368,16 @@ if (localStorage.getItem("landingMode")) {
 }
 changeLandingMode(landingMode);
 
-landingRandomButton.addEventListener("click", () => {
-  landingMode = "random";
-  changeLandingMode(landingMode);
-  localStorage.setItem("landingMode", landingMode);
-});
+if (landingRandomButton && landingResumeButton) {
+  landingRandomButton.addEventListener("click", () => {
+    landingMode = "random";
+    changeLandingMode(landingMode);
+    localStorage.setItem("landingMode", landingMode);
+  });
 
-landingResumeButton.addEventListener("click", () => {
-  landingMode = "resume";
-  changeLandingMode(landingMode);
-  localStorage.setItem("landingMode", landingMode);
-});
+  landingResumeButton.addEventListener("click", () => {
+    landingMode = "resume";
+    changeLandingMode(landingMode);
+    localStorage.setItem("landingMode", landingMode);
+  });
+}
