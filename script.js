@@ -418,6 +418,7 @@ dripButton.addEventListener("click", () => {
 
 const heroTitle = document.getElementById("hero-title");
 const HERO_FADE_DISTANCE = 150;
+const DRIP_LIFT_DISTANCE = 150;
 
 function getScrollY() {
   return (
@@ -428,13 +429,27 @@ function getScrollY() {
   );
 }
 
-function updateHeroTitleOpacity() {
-  const opacity = Math.min(1, Math.max(0, 1 - getScrollY() / HERO_FADE_DISTANCE));
-  heroTitle.style.opacity = opacity;
-  requestAnimationFrame(updateHeroTitleOpacity);
+let lastDripProgress = null;
+
+function updateScrollEffects() {
+  const scrollY = getScrollY();
+  heroTitle.style.opacity = Math.min(
+    1,
+    Math.max(0, 1 - scrollY / HERO_FADE_DISTANCE)
+  );
+
+  /* Lift the drip button until its top edge meets the share button's,
+     then leave it floating there. */
+  const dripProgress = Math.min(1, Math.max(0, scrollY / DRIP_LIFT_DISTANCE));
+  if (dripProgress !== lastDripProgress) {
+    dripButton.style.setProperty("--drip-scroll-progress", dripProgress);
+    lastDripProgress = dripProgress;
+  }
+
+  requestAnimationFrame(updateScrollEffects);
 }
 
-requestAnimationFrame(updateHeroTitleOpacity);
+requestAnimationFrame(updateScrollEffects);
 
 yinYang.addEventListener("click", () => {
   newRandomChapter();

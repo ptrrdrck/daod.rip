@@ -42,6 +42,7 @@ html {
   }
   #drip-button {
     top: 64px;
+    --drip-lift: -52px;
     width: 20px;
     height: 20px;
     padding: 41px 44px 47px;
@@ -118,6 +119,7 @@ html {
   }
   #drip-button {
     top: 76px;
+    --drip-lift: -56px;
     width: 24px;
     height: 24px;
     padding: 48px 52px 56px;
@@ -189,6 +191,7 @@ html {
   }
   #drip-button {
     top: 82px;
+    --drip-lift: -62px;
     width: 28px;
     height: 28px;
     padding: 54px 58px 62px;
@@ -259,7 +262,7 @@ h1 {
 #drip-button {
   position: fixed;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(calc(var(--drip-lift, 0px) * var(--drip-scroll-progress, 0)));
   z-index: 10;
   background: var(--fontColor);
   color: var(--accentLight);
@@ -274,11 +277,11 @@ h1 {
 }
 #drip-button:hover {
   cursor: pointer;
-  transform: translateX(-50%) scale(1.03);
+  transform: translateX(-50%) translateY(calc(var(--drip-lift, 0px) * var(--drip-scroll-progress, 0))) scale(1.03);
   transition: 0.1s;
 }
 #drip-button:active {
-  transform: translateX(-50%) scale(0.97);
+  transform: translateX(-50%) translateY(calc(var(--drip-lift, 0px) * var(--drip-scroll-progress, 0))) scale(0.97);
   transition: 0.1s;
   box-shadow: unset;
 }
