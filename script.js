@@ -7,8 +7,7 @@
 const allTranslations = Object.keys(dao);
 
 function getRandomTranslations(arr, num) {
-  const shuffled = arr.sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, num);
+  return shuffle(arr.slice()).slice(0, num);
 }
 
 const translationCheckboxes = [
