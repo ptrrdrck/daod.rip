@@ -71,6 +71,9 @@ be synced to this one.
   anywhere: opening a search result switches your selection to the translators
   that matched, and opening a shared link replaces your saved translation
   selection with the one in the link.
+- The version number in the footer is no longer dimmed to 60% opacity. It names
+  the version a reader is looking at, so it should be as legible as the text
+  around it.
 
 ## 1.0.1 — 2026-08-21
 
