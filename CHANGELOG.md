@@ -28,6 +28,53 @@ It counts how many times the shape of stored data has changed, and changing it
 wipes every reader's saved state. It is not a release version and should never
 be synced to this one.
 
+## 1.0.2 — 2026-08-21
+
+### Fixed
+
+- Three typos in the text readers see. The Lin Yutang chapter 4 line read
+  "whose Son it it"; the Red Pine chapter 57 line read "simplifY"; and the empty
+  state under the Starred filter said "Tap the star while reading to star a
+  chapter", which named the action without saying where the chapter ends up. It
+  now reads "save a chapter to this list".
+- Twenty-one typos in the translation texts themselves, across eighteen
+  chapters, found by running the whole of `dao.js` through a spellcheck plus
+  checks for doubled words, stray capitals and unbalanced punctuation. Twelve
+  of those chapters are Robert G. Henricks, which suggests that source was
+  transcribed by OCR: "the So of Heaven" for "the Son of Heaven" and "salture
+  them which disks of jade" for "salute them with" in chapter 62, "compassions
+  of death" for "companions of death" and "Whey they die" in chapter 76,
+  "loard" for "lord", "thw" for "the", "crafy" for "crafty", and similar. The
+  rest were "the the block" (Mitchell 28), "the the thousand things" (Henricks
+  5), "Is is not true" (Yutang 39), "sick-mindness" (Yutang 71), "excresences"
+  (Lau 24), "straighforward" (Lau 58) and "stay hidde" (Red Pine 15).
+  Only unambiguous mechanical errors were corrected. Readings that could be a
+  translator's own choice were left alone, among them Red Pine's "lost for a
+  long long time" (58) and "encharged with the world" (13).
+
+### Changed
+
+- The About page keeps its introduction and drops the closing request for
+  feedback, which pointed at an issue tracker rather than telling a reader
+  anything about the app. In its place it now explains what the four buttons
+  across the top of the reading page do, what the star and the history arrows
+  are for, and that saved state lives in the reader's own browser with no
+  account behind it. The controls had no explanation anywhere before this.
+- `README.md` rewritten against the app as it now is. The old one documented a
+  UI that no longer exists — a type-in field for viewing a chapter, a standalone
+  theme changer, chapter links loose on the page — and illustrated it with eight
+  screenshots that had gone stale. The screenshots are gone (`img/readme/` with
+  them, since nothing else referenced it) and the user guide is now written out
+  in text: what drip does, the star, the history strip, search, both library
+  tabs, every setting, what a shared link carries, and what is kept in
+  `localStorage`. It also records two behaviours that were not written down
+  anywhere: opening a search result switches your selection to the translators
+  that matched, and opening a shared link replaces your saved translation
+  selection with the one in the link.
+- The version number in the footer is no longer dimmed to 60% opacity. It names
+  the version a reader is looking at, so it should be as legible as the text
+  around it.
+
 ## 1.0.1 — 2026-08-21
 
 ### Added
