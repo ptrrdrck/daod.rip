@@ -4,7 +4,7 @@
  * Law 94-553.
  */
 
-const dao = {
+export const dao = {
   "Stephen Mitchell": [
     "The tao that can be told is not the eternal Tao, the name that can be named is not the eternal Name. The unnamable is the eternally real. Naming is the origin of all material things. Free from desire, you realize the mystery. Caught in desire, you see only the manifestations. Yet mystery and manifestations arise from the same source. This source is called darkness. Darkness within darkness. The gateway to all understanding.",
     "When people see some things as beautiful, other things become ugly. When people see some things as good, other things become bad. Being and non-being create each other. Difficult and easy support each other. Long and short define each other. High and low depend on each other. Before and after follow each other. Therefore the Master acts without doing anything and teaches without saying anything. Things arise and she lets them come; things disappear and she lets them go. She has but doesn't possess, acts but doesn't expect. When her work is done, she forgets it. That is why it lasts forever.",
@@ -837,7 +837,7 @@ const dao = {
   ],
 };
 
-const sources = {
+export const sources = {
   "Stephen Mitchell": [
     "https://terebess.hu/english/tao/mitchell.html",
     "https://www.amazon.com/Tao-Te-Ching-Laozi/dp/0060812451/",

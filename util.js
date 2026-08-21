@@ -1,7 +1,18 @@
 /* © 2021 Peter Rodrick <pete@lftlc.xyz> */
 
-/* Version checking */
-const version = "8.0.0";
+/* Storage schema version, not a release number. It has only ever meant one
+ * thing: when this string changes, everything the reader has saved is
+ * discarded. So bump it only when a change makes previously stored data
+ * invalid or unreadable, and never for ordinary feature or bug work.
+ *
+ * 9.0.0 retires the per-checkbox "<name>-checkbox" keys, which nothing reads
+ * any more, and introduces themeSource, which decides whether the system
+ * colour scheme may override a chosen theme.
+ *
+ * The localStorage key below stays "version" deliberately. Renaming it would
+ * leave returning readers with no stored value, which reads as a first visit
+ * and skips the very clear this bump exists to perform. */
+const version = "9.0.0";
 
 if (
   localStorage.getItem("version") === "undefined" ||
@@ -152,13 +163,19 @@ const themes = {
   },
 };
 
-var themeKeys = Object.keys(themes);
-var themesIndex = 0;
-var themeSwatchesEl = document.getElementById("theme-swatches");
+const themeKeys = Object.keys(themes);
+let themesIndex = 0;
+const themeSwatchesEl = document.getElementById("theme-swatches");
 
-function change(theme) {
-  for (let prop in theme) {
-    document.querySelector(":root").style.setProperty(prop, theme[prop]);
+/* Set to "user" as soon as a swatch is picked; until then the system colour
+ * scheme drives the theme. Previously this was inferred by listing which
+ * theme indices counted as a deliberate choice, and that list went stale
+ * every time a theme was added. */
+const THEME_SOURCE_KEY = "themeSource";
+
+function applyThemeVariables(theme) {
+  for (const prop in theme) {
+    document.documentElement.style.setProperty(prop, theme[prop]);
   }
 }
 
@@ -171,25 +188,28 @@ function humanizeThemeName(key) {
 function updateActiveSwatch() {
   if (!themeSwatchesEl) return;
   themeSwatchesEl.querySelectorAll(".theme-swatch").forEach(function (btn) {
-    var isActive = Number(btn.dataset.themeIndex) === themesIndex;
+    const isActive = Number(btn.dataset.themeIndex) === themesIndex;
     btn.classList.toggle("active", isActive);
     btn.setAttribute("aria-pressed", String(isActive));
   });
 }
 
-function setTheme(index) {
-  var themeCount = themeKeys.length;
+function setTheme(index, source) {
+  const themeCount = themeKeys.length;
   themesIndex = ((Number(index) % themeCount) + themeCount) % themeCount;
-  change(themes[themeKeys[themesIndex]]);
+  applyThemeVariables(themes[themeKeys[themesIndex]]);
   localStorage.setItem("theme", themesIndex);
+  if (source) {
+    localStorage.setItem(THEME_SOURCE_KEY, source);
+  }
   updateActiveSwatch();
 }
 
 if (themeSwatchesEl) {
   themeKeys.forEach(function (key, index) {
-    var t = themes[key];
-    var label = humanizeThemeName(key);
-    var swatch = document.createElement("button");
+    const t = themes[key];
+    const label = humanizeThemeName(key);
+    const swatch = document.createElement("button");
     swatch.type = "button";
     swatch.className = "theme-swatch";
     swatch.dataset.themeIndex = String(index);
@@ -203,68 +223,53 @@ if (themeSwatchesEl) {
       t["--accentDark"] +
       " 50%)";
     swatch.addEventListener("click", function () {
-      setTheme(index);
+      setTheme(index, "user");
     });
     themeSwatchesEl.appendChild(swatch);
   });
 }
 
-if (localStorage.getItem("theme")) {
-  setTheme(parseInt(localStorage.getItem("theme"), 10));
+function prefersDarkScheme() {
+  return Boolean(
+    window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+}
+
+function applySystemTheme() {
+  setTheme(prefersDarkScheme() ? 1 : 0, "system");
+}
+
+/* A theme stored before THEME_SOURCE_KEY existed is whatever the reader last
+ * saw, so keep honouring it instead of overwriting it on this one load. */
+if (
+  localStorage.getItem("theme") !== null &&
+  localStorage.getItem(THEME_SOURCE_KEY) === null
+) {
+  localStorage.setItem(THEME_SOURCE_KEY, "user");
+}
+
+const storedTheme = localStorage.getItem("theme");
+if (localStorage.getItem(THEME_SOURCE_KEY) === "user" && storedTheme !== null) {
+  setTheme(parseInt(storedTheme, 10));
 } else {
-  setTheme(themesIndex);
+  applySystemTheme();
 }
 
-function activateDarkMode() {
-  setTheme(1);
+if (window.matchMedia) {
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", function () {
+      if (localStorage.getItem(THEME_SOURCE_KEY) !== "user") {
+        applySystemTheme();
+      }
+    });
 }
-
-if (
-  window.matchMedia &&
-  window.matchMedia("(prefers-color-scheme: dark)").matches &&
-  localStorage.getItem("theme") != 2 &&
-  localStorage.getItem("theme") != 3 &&
-  localStorage.getItem("theme") != 4 &&
-  localStorage.getItem("theme") != 5 &&
-  localStorage.getItem("theme") != 6 &&
-  localStorage.getItem("theme") != 7 &&
-  localStorage.getItem("theme") != 8 &&
-  localStorage.getItem("theme") != 9
-) {
-  activateDarkMode();
-}
-
-window
-  .matchMedia("(prefers-color-scheme: dark)")
-  .addEventListener("change", (e) => e.matches && activateDarkMode());
-
-function activateLightMode() {
-  setTheme(0);
-}
-
-if (
-  window.matchMedia &&
-  window.matchMedia("(prefers-color-scheme: light)").matches &&
-  localStorage.getItem("theme") != 2 &&
-  localStorage.getItem("theme") != 3 &&
-  localStorage.getItem("theme") != 4 &&
-  localStorage.getItem("theme") != 5 &&
-  localStorage.getItem("theme") != 6 &&
-  localStorage.getItem("theme") != 7 &&
-  localStorage.getItem("theme") != 8 &&
-  localStorage.getItem("theme") != 9
-) {
-  activateLightMode();
-}
-
-window
-  .matchMedia("(prefers-color-scheme: light)")
-  .addEventListener("change", (e) => e.matches && activateLightMode());
 
 /* Font size */
 const fontSizeScales = [0.85, 1, 1.15, 1.3];
 const fontSizeLabels = ["Small", "Normal", "Large", "X-Large"];
-var fontSizeIndex = 1;
+let fontSizeIndex = 1;
 
 const fontSizeDecreaseButton = document.getElementById(
   "font-size-decrease-button"
@@ -275,9 +280,10 @@ const fontSizeIncreaseButton = document.getElementById(
 const fontSizeLabelEl = document.getElementById("font-size-label");
 
 function changeFontSize(index) {
-  document
-    .querySelector(":root")
-    .style.setProperty("--fontSizeScale", fontSizeScales[index]);
+  document.documentElement.style.setProperty(
+    "--fontSizeScale",
+    fontSizeScales[index]
+  );
   if (!fontSizeLabelEl) return;
   fontSizeLabelEl.textContent = fontSizeLabels[index];
   fontSizeDecreaseButton.disabled = index <= 0;
@@ -291,93 +297,79 @@ if (localStorage.getItem("fontSizeIndex")) {
 }
 changeFontSize(fontSizeIndex);
 
+function stepFontSize(delta) {
+  const next = fontSizeIndex + delta;
+  if (next < 0 || next >= fontSizeScales.length) return;
+  fontSizeIndex = next;
+  changeFontSize(fontSizeIndex);
+  localStorage.setItem("fontSizeIndex", fontSizeIndex);
+}
+
 if (fontSizeDecreaseButton && fontSizeIncreaseButton) {
-  fontSizeDecreaseButton.addEventListener("click", () => {
-    if (fontSizeIndex > 0) {
-      fontSizeIndex--;
-      changeFontSize(fontSizeIndex);
-      localStorage.setItem("fontSizeIndex", fontSizeIndex);
-    }
+  fontSizeDecreaseButton.addEventListener("click", () => stepFontSize(-1));
+  fontSizeIncreaseButton.addEventListener("click", () => stepFontSize(1));
+}
+
+/* Settings that are a choice between two buttons. View mode and landing mode
+ * differ only in which buttons they own, what they store, and whether picking
+ * a value does anything beyond marking its button active. */
+function setupChoiceSetting({ storageKey, fallback, choices, apply }) {
+  const buttons = choices.map((choice) => ({
+    value: choice.value,
+    el: document.getElementById(choice.buttonId),
+  }));
+  /* about.html has none of these controls. */
+  if (buttons.some((button) => !button.el)) return;
+
+  let value = localStorage.getItem(storageKey);
+  if (!choices.some((choice) => choice.value === value)) {
+    value = fallback;
+    localStorage.setItem(storageKey, value);
+  }
+
+  function render() {
+    buttons.forEach((button) => {
+      const isActive = button.value === value;
+      button.el.classList.toggle("active", isActive);
+      button.el.setAttribute("aria-pressed", isActive);
+    });
+    if (apply) apply(value);
+  }
+
+  buttons.forEach((button) => {
+    button.el.addEventListener("click", () => {
+      value = button.value;
+      localStorage.setItem(storageKey, value);
+      render();
+    });
   });
 
-  fontSizeIncreaseButton.addEventListener("click", () => {
-    if (fontSizeIndex < fontSizeScales.length - 1) {
-      fontSizeIndex++;
-      changeFontSize(fontSizeIndex);
-      localStorage.setItem("fontSizeIndex", fontSizeIndex);
-    }
-  });
+  render();
 }
 
 /* View mode */
-var viewMode = "grid";
-
-const viewGridButton = document.getElementById("view-grid-button");
-const viewStackedButton = document.getElementById("view-stacked-button");
 const displayEl = document.getElementById("display");
 
-function changeViewMode(mode) {
-  if (!displayEl || !viewGridButton || !viewStackedButton) return;
-  displayEl.classList.remove("view-grid", "view-stacked");
-  displayEl.classList.add("view-" + mode);
-  viewGridButton.classList.toggle("active", mode === "grid");
-  viewGridButton.setAttribute("aria-pressed", mode === "grid");
-  viewStackedButton.classList.toggle("active", mode === "stacked");
-  viewStackedButton.setAttribute("aria-pressed", mode === "stacked");
-}
-
-if (localStorage.getItem("viewMode")) {
-  viewMode = localStorage.getItem("viewMode");
-} else {
-  localStorage.setItem("viewMode", viewMode);
-}
-changeViewMode(viewMode);
-
-if (viewGridButton && viewStackedButton) {
-  viewGridButton.addEventListener("click", () => {
-    viewMode = "grid";
-    changeViewMode(viewMode);
-    localStorage.setItem("viewMode", viewMode);
-  });
-
-  viewStackedButton.addEventListener("click", () => {
-    viewMode = "stacked";
-    changeViewMode(viewMode);
-    localStorage.setItem("viewMode", viewMode);
-  });
-}
+setupChoiceSetting({
+  storageKey: "viewMode",
+  fallback: "grid",
+  choices: [
+    { value: "grid", buttonId: "view-grid-button" },
+    { value: "stacked", buttonId: "view-stacked-button" },
+  ],
+  apply(mode) {
+    if (!displayEl) return;
+    displayEl.classList.remove("view-grid", "view-stacked");
+    displayEl.classList.add("view-" + mode);
+  },
+});
 
 /* Landing mode */
-var landingMode = "random";
-
-const landingRandomButton = document.getElementById("landing-random-button");
-const landingResumeButton = document.getElementById("landing-resume-button");
-
-function changeLandingMode(mode) {
-  if (!landingRandomButton || !landingResumeButton) return;
-  landingRandomButton.classList.toggle("active", mode === "random");
-  landingRandomButton.setAttribute("aria-pressed", mode === "random");
-  landingResumeButton.classList.toggle("active", mode === "resume");
-  landingResumeButton.setAttribute("aria-pressed", mode === "resume");
-}
-
-if (localStorage.getItem("landingMode")) {
-  landingMode = localStorage.getItem("landingMode");
-} else {
-  localStorage.setItem("landingMode", landingMode);
-}
-changeLandingMode(landingMode);
-
-if (landingRandomButton && landingResumeButton) {
-  landingRandomButton.addEventListener("click", () => {
-    landingMode = "random";
-    changeLandingMode(landingMode);
-    localStorage.setItem("landingMode", landingMode);
-  });
-
-  landingResumeButton.addEventListener("click", () => {
-    landingMode = "resume";
-    changeLandingMode(landingMode);
-    localStorage.setItem("landingMode", landingMode);
-  });
-}
+setupChoiceSetting({
+  storageKey: "landingMode",
+  fallback: "random",
+  choices: [
+    { value: "random", buttonId: "landing-random-button" },
+    { value: "resume", buttonId: "landing-resume-button" },
+  ],
+});

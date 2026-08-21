@@ -4,11 +4,12 @@
  * from characteristically distinct translations.
  */
 
+import { dao, sources } from "./dao.js";
+
 const allTranslations = Object.keys(dao);
 
 function getRandomTranslations(arr, num) {
-  const shuffled = arr.sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, num);
+  return shuffle(arr.slice()).slice(0, num);
 }
 
 const translationCheckboxes = [
@@ -57,10 +58,7 @@ let selectedTranslations =
   JSON.parse(localStorage.getItem("selectedTranslations")) ||
   getRandomTranslations(allTranslations, 3);
 
-localStorage.setItem(
-  "selectedTranslations",
-  JSON.stringify(selectedTranslations)
-);
+storeSelectedTranslations();
 
 localStorage.getItem("shuffle-control") ||
   localStorage.setItem("shuffle-control", "true");
@@ -118,9 +116,10 @@ function renderChapterList() {
   root.setAttribute("id", "chapter-list");
   chapterListPlaceholder.appendChild(root);
   chapters.forEach((n) => {
-    const link = document.createElement("A");
-    link.setAttribute("href", `javascript:viewChapter(${n} - 1);`);
+    const link = document.createElement("BUTTON");
+    link.type = "button";
     link.classList.add("chapter-link");
+    link.dataset.chapter = n;
     link.innerText = `${n}`;
     const cell = document.createElement("TD");
     cell.appendChild(link);
@@ -128,63 +127,77 @@ function renderChapterList() {
   });
 }
 
+/* Delegated once on the placeholder, which outlives the table that
+ * renderChapterList tears down and rebuilds on every filter change. */
+chapterListPlaceholder.addEventListener("click", (e) => {
+  const link = e.target.closest(".chapter-link");
+  if (!link) return;
+  viewChapter(Number(link.dataset.chapter) - 1);
+});
+
 /**
  * History control
+ *
+ * readOrder is an append-only log of chapter numbers in the order they were
+ * shown. historyIndex is a negative offset from the end of that log: -1 is the
+ * newest entry, -2 the one before it. So the chapter currently on screen sits
+ * at readOrder[readOrder.length + historyIndex], and everything the nav shows
+ * is a lookup at an offset from there.
  */
 
 let readOrder = JSON.parse(localStorage.getItem("readOrder")) || [];
 let historyIndex = -1;
-let prevChapter =
-  readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
-let prevChapterTwo;
-let prevChapterThree;
-let nextChapter = readOrder[(historyIndex + 1) % readOrder.length];
-let nextChapterTwo;
-let nextChapterThree;
 
-const prevChapterDisplay = document.getElementById("prev-ch");
-const prevChapterTwoDisplay = document.getElementById("prev-ch-2");
-const prevChapterThreeDisplay = document.getElementById("prev-ch-3");
-const nextChapterDisplay = document.getElementById("next-ch");
-const nextChapterTwoDisplay = document.getElementById("next-ch-2");
-const nextChapterThreeDisplay = document.getElementById("next-ch-3");
+/* Ordered outwards from the reader: nearest chapter first. */
+const prevChapterSlots = [
+  document.getElementById("prev-ch"),
+  document.getElementById("prev-ch-2"),
+  document.getElementById("prev-ch-3"),
+];
+const nextChapterSlots = [
+  document.getElementById("next-ch"),
+  document.getElementById("next-ch-2"),
+  document.getElementById("next-ch-3"),
+];
 const seekBackButton = document.getElementById("ch-seek-back");
 const seekFwdButton = document.getElementById("ch-seek-fwd");
 const historyDisplay = document.getElementById("history-nav");
 const displayArea = document.getElementById("display");
 
-function hideUndefinedHistory() {
-  const historyChapters = document.getElementsByClassName("history");
-  for (let i = 0; i < historyChapters.length; i++) {
-    const historyChapter = historyChapters[i];
-    if (historyChapter.innerText == "undefined") {
-      historyChapter.classList.add("history-hide");
-    } else {
-      historyChapter.classList.remove("history-hide");
-    }
-  }
-  seekBackButton.style.display =
-    prevChapter === undefined &&
-    prevChapterTwo === undefined &&
-    prevChapterThree === undefined
-      ? "none"
-      : "inline-block";
-  seekFwdButton.style.display =
-    nextChapter === undefined &&
-    nextChapterTwo === undefined &&
-    nextChapterThree === undefined
-      ? "none"
-      : "inline-block";
-  const hasHistory = !(
-    prevChapter === undefined &&
-    prevChapterTwo === undefined &&
-    prevChapterThree === undefined &&
-    nextChapter === undefined &&
-    nextChapterTwo === undefined &&
-    nextChapterThree === undefined
-  );
+/* The chapter `offset` places before (negative) or after (positive) the one on
+ * screen, or undefined when that position falls outside the log. */
+function historyChapterAt(offset) {
+  const position = readOrder.length + historyIndex + offset;
+  return position >= 0 && position < readOrder.length
+    ? readOrder[position]
+    : undefined;
+}
+
+/* Fills every slot from the log and reports what it put there, so nothing has
+ * to read the rendered text back to find out. */
+function renderHistorySlots(slots, direction) {
+  return slots.map((slot, depth) => {
+    const chapter = historyChapterAt(direction * (depth + 1));
+    slot.textContent = chapter === undefined ? "" : String(chapter);
+    slot.classList.toggle("history-hide", chapter === undefined);
+    return chapter;
+  });
+}
+
+function renderHistory() {
+  const previous = renderHistorySlots(prevChapterSlots, -1);
+  const next = renderHistorySlots(nextChapterSlots, 1);
+
+  /* Slots run outwards, so an empty nearest slot means the rest are empty. */
+  const hasPrevious = previous[0] !== undefined;
+  const hasNext = next[0] !== undefined;
+  seekBackButton.style.display = hasPrevious ? "inline-block" : "none";
+  seekFwdButton.style.display = hasNext ? "inline-block" : "none";
+
+  const hasHistory = hasPrevious || hasNext;
   historyDisplay.style.display = hasHistory ? "flex" : "none";
   if (hasHistory) {
+    /* Measured after the display change above, so the nav has a layout. */
     document.documentElement.style.setProperty(
       "--history-nav-height",
       `${historyDisplay.offsetHeight}px`
@@ -195,72 +208,14 @@ function hideUndefinedHistory() {
   }
 }
 
-hideUndefinedHistory();
-
-function updatePreviousChapters() {
-  if (readOrder.length == 2) {
-    prevChapter =
-      readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
-    [prevChapterTwo, prevChapterThree] = [undefined, undefined];
-    prevChapterDisplay.innerHTML = prevChapter;
-  } else if (readOrder.length == 3) {
-    prevChapter =
-      readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
-    prevChapterTwo =
-      readOrder[(historyIndex + readOrder.length - 2) % readOrder.length];
-    prevChapterThree = undefined;
-    prevChapterDisplay.innerHTML = prevChapter;
-    prevChapterTwoDisplay.innerHTML = prevChapterTwo;
-  } else if (readOrder.length > 3) {
-    prevChapter =
-      readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
-    prevChapterTwo =
-      readOrder[(historyIndex + readOrder.length - 2) % readOrder.length];
-    prevChapterThree =
-      readOrder[(historyIndex + readOrder.length - 3) % readOrder.length];
-    prevChapterDisplay.innerHTML = prevChapter;
-    prevChapterTwoDisplay.innerHTML = prevChapterTwo;
-    prevChapterThreeDisplay.innerHTML = prevChapterThree;
-  }
-}
-
-function updateNextChapters() {
-  if (historyIndex == -1) {
-    [nextChapter, nextChapterTwo, nextChapterThree] = [
-      undefined,
-      undefined,
-      undefined,
-    ];
-  } else if (historyIndex == -2) {
-    nextChapter =
-      readOrder[(historyIndex + readOrder.length + 1) % readOrder.length];
-    [nextChapterTwo, nextChapterThree] = [undefined, undefined];
-  } else if (historyIndex == -3) {
-    nextChapter =
-      readOrder[(historyIndex + readOrder.length + 1) % readOrder.length];
-    nextChapterTwo =
-      readOrder[(historyIndex + readOrder.length + 2) % readOrder.length];
-    nextChapterThree = undefined;
-  } else {
-    nextChapter =
-      readOrder[(historyIndex + readOrder.length + 1) % readOrder.length];
-    nextChapterTwo =
-      readOrder[(historyIndex + readOrder.length + 2) % readOrder.length];
-    nextChapterThree =
-      readOrder[(historyIndex + readOrder.length + 3) % readOrder.length];
-  }
-  nextChapterDisplay.innerHTML = nextChapter;
-  nextChapterTwoDisplay.innerHTML = nextChapterTwo;
-  nextChapterThreeDisplay.innerHTML = nextChapterThree;
-}
-
-function updateHistory(index = -1) {
+function setHistoryIndex(index = -1) {
   historyIndex = index;
   localStorage.setItem("historyIndex", historyIndex);
-  updatePreviousChapters();
-  updateNextChapters();
-  hideUndefinedHistory();
+  renderHistory();
 }
+
+/* Size the nav before the first cards paint. */
+renderHistory();
 
 /* Random chapter selection */
 
@@ -283,30 +238,33 @@ function shuffle(array) {
 
 function buildTranslationCard(translation, chapterIndex) {
   const isBookmarked = bookmarkedChapters.includes(chapterIndex + 1);
-  return (
-    `<div class="translation">` +
-    `<div class="translation-header">` +
-    `<span class="chapter-number">Chapter ${chapterIndex + 1}</span>` +
-    `<span class="chapter-translator">${translation}</span>` +
-    `</div>` +
-    `<button type="button" class="bookmark-toggle${
-      isBookmarked ? " bookmarked" : ""
-    }" ` +
-    `aria-pressed="${isBookmarked}" ` +
-    `aria-label="${
-      isBookmarked ? "Remove star" : "Star this chapter"
-    }" ` +
-    `title="${isBookmarked ? "Remove star" : "Star this chapter"}">` +
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">` +
-    `<path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />` +
-    `</svg></button>` +
-    `<p class="translation-text">${dao[translation][chapterIndex]}</p>` +
-    `<div class="trans-info">` +
-    `<span class="trans-ref">${sources[translation][2]}</span><br />` +
-    `<a href="${sources[translation][1]}" class="trans-link" target="_blank">Source</a>` +
-    `</div>` +
-    `</div>`
-  );
+  const starLabel = isBookmarked ? "Remove star" : "Star this chapter";
+  const sourceUrl = sources[translation][1];
+  const reference = sources[translation][2];
+  return `<div class="translation">
+    <div class="translation-header">
+      <span class="chapter-number">Chapter ${chapterIndex + 1}</span>
+      <span class="chapter-translator">${escapeHtml(translation)}</span>
+    </div>
+    <button
+      type="button"
+      class="bookmark-toggle${isBookmarked ? " bookmarked" : ""}"
+      aria-pressed="${isBookmarked}"
+      aria-label="${starLabel}"
+      title="${starLabel}"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+      </svg>
+    </button>
+    <p class="translation-text">${escapeHtml(dao[translation][chapterIndex])}</p>
+    <div class="trans-info">
+      <span class="trans-ref">${escapeHtml(reference)}</span><br />
+      <a href="${escapeHtml(
+        sourceUrl
+      )}" class="trans-link" target="_blank" rel="noopener noreferrer">Source</a>
+    </div>
+  </div>`;
 }
 
 function renderTranslationCards(chapterIndex, shuffleCards) {
@@ -331,7 +289,12 @@ const SEARCH_MIN_LENGTH = 2;
 const SEARCH_SNIPPET_RADIUS = 40;
 
 function escapeHtml(str) {
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function extractSnippet(text, query) {
@@ -383,7 +346,7 @@ function newRandomChapter() {
   renderChapterList();
   readOrder.push(randomChapter + 1);
   localStorage.setItem("readOrder", JSON.stringify(readOrder));
-  updateHistory();
+  setHistoryIndex();
   currentChapterIndex = randomChapter;
   localStorage.setItem("lastChapterIndex", randomChapter);
 }
@@ -396,7 +359,7 @@ function resumeChapter(chapter) {
   const storedHistoryIndex = localStorage.getItem("historyIndex");
   const restoredHistoryIndex =
     storedHistoryIndex !== null ? parseInt(storedHistoryIndex, 10) : -1;
-  updateHistory(restoredHistoryIndex);
+  setHistoryIndex(restoredHistoryIndex);
 }
 
 const storedLastChapterIndex = localStorage.getItem("lastChapterIndex");
@@ -423,37 +386,23 @@ yinYang.addEventListener("click", () => {
 
 /* History chapter selection */
 
-function getHistoryChapter(chapter) {
+function showHistoryChapter(chapter) {
   renderTranslationCards(chapter - 1, false);
   currentChapterIndex = chapter - 1;
   localStorage.setItem("lastChapterIndex", chapter - 1);
 }
 
-function seekBack() {
-  historyIndex--;
-  localStorage.setItem("historyIndex", historyIndex);
-  updatePreviousChapters();
-  updateNextChapters();
-  hideUndefinedHistory();
+/* Read the target before moving the index, so the two steps cannot be
+ * transposed, and do nothing at the ends of the log. */
+function seek(direction) {
+  const chapter = historyChapterAt(direction);
+  if (chapter === undefined) return;
+  showHistoryChapter(chapter);
+  setHistoryIndex(historyIndex + direction);
 }
 
-function seekFwd() {
-  historyIndex++;
-  localStorage.setItem("historyIndex", historyIndex);
-  updatePreviousChapters();
-  updateNextChapters();
-  hideUndefinedHistory();
-}
-
-seekBackButton.addEventListener("click", () => {
-  getHistoryChapter(prevChapter);
-  seekBack();
-});
-
-seekFwdButton.addEventListener("click", () => {
-  getHistoryChapter(nextChapter);
-  seekFwd();
-});
+seekBackButton.addEventListener("click", () => seek(-1));
+seekFwdButton.addEventListener("click", () => seek(1));
 
 function viewChapter(chapter) {
   renderTranslationCards(chapter, true);
@@ -465,7 +414,7 @@ function viewChapter(chapter) {
   renderChapterList();
   readOrder.push(chapter + 1);
   localStorage.setItem("readOrder", JSON.stringify(readOrder));
-  updateHistory();
+  setHistoryIndex();
   currentChapterIndex = chapter;
   localStorage.setItem("lastChapterIndex", chapter);
 }
@@ -603,27 +552,31 @@ searchInput.addEventListener("input", () => {
   searchDebounceTimer = setTimeout(runSearch, 180);
 });
 
-function setSelectedTranslations(translations) {
-  translationCheckboxes.forEach(({ checkBoxId, name }) => {
-    const checkbox = document.getElementById(checkBoxId);
-    if (checkbox) checkbox.checked = translations.includes(name);
-  });
-  selectedTranslations = translations.slice();
+function storeSelectedTranslations() {
   localStorage.setItem(
     "selectedTranslations",
     JSON.stringify(selectedTranslations)
   );
 }
 
-function selectOnlyMatchedTranslations(translations) {
-  setSelectedTranslations(translations);
+function syncTranslationCheckboxes() {
+  translationCheckboxes.forEach(({ checkBoxId, name }) => {
+    const checkbox = document.getElementById(checkBoxId);
+    if (checkbox) checkbox.checked = selectedTranslations.includes(name);
+  });
+}
+
+function setSelectedTranslations(translations) {
+  selectedTranslations = translations.slice();
+  syncTranslationCheckboxes();
+  storeSelectedTranslations();
 }
 
 function jumpToSearchResult(resultEl) {
   const chapterIndex = parseInt(resultEl.getAttribute("data-chapter-index"), 10);
   const result = lastSearchResults.find((r) => r.chapterIndex === chapterIndex);
   if (result) {
-    selectOnlyMatchedTranslations(result.matches.map((m) => m.translation));
+    setSelectedTranslations(result.matches.map((m) => m.translation));
   }
   viewChapter(chapterIndex);
   searchModal.close();
@@ -671,34 +624,23 @@ resetSearchModal();
 
 /* Translation control */
 
-translationCheckboxes.forEach(({ checkBoxId, name }) => {
-  if (selectedTranslations.includes(name)) {
-    localStorage.setItem(checkBoxId, "true");
-  } else {
-    localStorage.setItem(checkBoxId, "false");
-  }
-});
+syncTranslationCheckboxes();
 
-function checkBoxes() {
-  const boxes = document.querySelectorAll("input[type='checkbox']");
-  for (let i = 0; i < boxes.length; i++) {
-    const box = boxes[i];
-    if (box.hasAttribute("store")) {
-      setupBox(box);
-    }
-  }
-  function setupBox(box) {
+/* Persistence for checkboxes that carry a store attribute, which is now
+ * only the shuffle toggle. The translation checkboxes are deliberately not
+ * among them: selectedTranslations is the single record of what is on, and
+ * storing each box separately meant the same state was kept twice. */
+function setupStoredCheckboxes() {
+  document.querySelectorAll("input[type='checkbox'][store]").forEach((box) => {
     const storageId = box.getAttribute("store");
-    const oldVal = localStorage.getItem(storageId);
-    box.checked = oldVal === "true" ? true : false;
-
-    box.addEventListener("change", function () {
-      localStorage.setItem(storageId, this.checked);
+    box.checked = localStorage.getItem(storageId) === "true";
+    box.addEventListener("change", () => {
+      localStorage.setItem(storageId, box.checked);
     });
-  }
+  });
 }
 
-checkBoxes();
+setupStoredCheckboxes();
 
 function toggleArrayItem(array, item) {
   const i = array.indexOf(item);
@@ -714,13 +656,12 @@ function refreshCurrentChapter() {
 }
 
 translationCheckboxes.forEach(({ checkBoxId, name }) => {
-  document.getElementById(checkBoxId).addEventListener("change", () => {
+  const checkbox = document.getElementById(checkBoxId);
+  if (!checkbox) return;
+  checkbox.addEventListener("change", () => {
     toggleArrayItem(selectedTranslations, name);
     refreshCurrentChapter();
-    localStorage.setItem(
-      "selectedTranslations",
-      JSON.stringify(selectedTranslations)
-    );
+    storeSelectedTranslations();
   });
 });
 
