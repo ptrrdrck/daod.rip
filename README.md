@@ -6,6 +6,7 @@ Read English translations of the Dàodéjīng ("Dow Duh Jeang") side by side.
 
 - [Introduction](#introduction)
 - [Usage](#usage)
+- [Local development](#local-development)
 - [Contributing](#contributing)
 
 ## Introduction
@@ -36,6 +37,18 @@ Use the checkboxes to select your preferred translations and toggle their displa
 
 Translations are displayed in a randomly shuffled order by default. Toggle this setting to have them display in a consistent order.
 ![image](./img/readme/shuffle-control.png)
+
+## Local development
+
+The scripts load as ES modules, which browsers fetch under CORS rules, so
+opening `index.html` straight from disk will not work — the browser blocks
+`file://` module requests. Serve the folder over HTTP instead:
+
+```
+python3 -m http.server 8000
+```
+
+Then open <http://localhost:8000>. No build step or dependencies are needed.
 
 ## Contributing
 

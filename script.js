@@ -4,6 +4,8 @@
  * from characteristically distinct translations.
  */
 
+import { dao, sources } from "./dao.js";
+
 const allTranslations = Object.keys(dao);
 
 function getRandomTranslations(arr, num) {
