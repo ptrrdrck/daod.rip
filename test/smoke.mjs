@@ -116,6 +116,22 @@ async function run() {
     "every card shows the same chapter",
     new Set(await page.locator("#display .chapter-number").allInnerTexts()).size === 1
   );
+  check("cards carry non-empty translation text",
+    (await page.locator("#display .translation-text").allInnerTexts()).every((t) => t.trim().length > 0));
+
+  /* Two translator names contain an ampersand, so this catches text being
+   * escaped twice and rendering as &amp; on the page. */
+  await openLibrary(page, "translations");
+  await page.locator("#select-all-translations-button").click();
+  await closeModals(page);
+  const translators = await page.locator("#display .chapter-translator").allInnerTexts();
+  const ampersandNames = translators.filter((t) => t.includes("&"));
+  check("translator names with an ampersand render as one character",
+    ampersandNames.length === 2 && ampersandNames.every((t) => !t.includes("&amp;")),
+    JSON.stringify(ampersandNames));
+  check("source citations render", (await page.locator("#display .trans-ref").allInnerTexts()).every((t) => t.trim().length > 0));
+  check("source links keep their href",
+    (await page.locator("#display .trans-link").first().getAttribute("href") || "").startsWith("http"));
 
   section("[2] chapter list");
   await openLibrary(page, "chapters");

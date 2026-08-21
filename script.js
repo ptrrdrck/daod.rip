@@ -293,30 +293,33 @@ function shuffle(array) {
 
 function buildTranslationCard(translation, chapterIndex) {
   const isBookmarked = bookmarkedChapters.includes(chapterIndex + 1);
-  return (
-    `<div class="translation">` +
-    `<div class="translation-header">` +
-    `<span class="chapter-number">Chapter ${chapterIndex + 1}</span>` +
-    `<span class="chapter-translator">${translation}</span>` +
-    `</div>` +
-    `<button type="button" class="bookmark-toggle${
-      isBookmarked ? " bookmarked" : ""
-    }" ` +
-    `aria-pressed="${isBookmarked}" ` +
-    `aria-label="${
-      isBookmarked ? "Remove star" : "Star this chapter"
-    }" ` +
-    `title="${isBookmarked ? "Remove star" : "Star this chapter"}">` +
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">` +
-    `<path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />` +
-    `</svg></button>` +
-    `<p class="translation-text">${dao[translation][chapterIndex]}</p>` +
-    `<div class="trans-info">` +
-    `<span class="trans-ref">${sources[translation][2]}</span><br />` +
-    `<a href="${sources[translation][1]}" class="trans-link" target="_blank">Source</a>` +
-    `</div>` +
-    `</div>`
-  );
+  const starLabel = isBookmarked ? "Remove star" : "Star this chapter";
+  const sourceUrl = sources[translation][1];
+  const reference = sources[translation][2];
+  return `<div class="translation">
+    <div class="translation-header">
+      <span class="chapter-number">Chapter ${chapterIndex + 1}</span>
+      <span class="chapter-translator">${escapeHtml(translation)}</span>
+    </div>
+    <button
+      type="button"
+      class="bookmark-toggle${isBookmarked ? " bookmarked" : ""}"
+      aria-pressed="${isBookmarked}"
+      aria-label="${starLabel}"
+      title="${starLabel}"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+      </svg>
+    </button>
+    <p class="translation-text">${escapeHtml(dao[translation][chapterIndex])}</p>
+    <div class="trans-info">
+      <span class="trans-ref">${escapeHtml(reference)}</span><br />
+      <a href="${escapeHtml(
+        sourceUrl
+      )}" class="trans-link" target="_blank" rel="noopener noreferrer">Source</a>
+    </div>
+  </div>`;
 }
 
 function renderTranslationCards(chapterIndex, shuffleCards) {
@@ -341,7 +344,12 @@ const SEARCH_MIN_LENGTH = 2;
 const SEARCH_SNIPPET_RADIUS = 40;
 
 function escapeHtml(str) {
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function extractSnippet(text, query) {
