@@ -28,6 +28,25 @@ It counts how many times the shape of stored data has changed, and changing it
 wipes every reader's saved state. It is not a release version and should never
 be synced to this one.
 
+## 1.0.2 — 2026-08-21
+
+### Fixed
+
+- Three typos in the text readers see. The Lin Yutang chapter 4 line read
+  "whose Son it it"; the Red Pine chapter 57 line read "simplifY"; and the empty
+  state under the Starred filter said "Tap the star while reading to star a
+  chapter", which named the action without saying where the chapter ends up. It
+  now reads "save a chapter to this list".
+
+### Changed
+
+- The About page keeps its introduction and drops the closing request for
+  feedback, which pointed at an issue tracker rather than telling a reader
+  anything about the app. In its place it now explains what the four buttons
+  across the top of the reading page do, what the star and the history arrows
+  are for, and that saved state lives in the reader's own browser with no
+  account behind it. The controls had no explanation anywhere before this.
+
 ## 1.0.1 — 2026-08-21
 
 ### Added

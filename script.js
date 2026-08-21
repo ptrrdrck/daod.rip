@@ -106,7 +106,7 @@ function renderChapterList() {
     empty.classList.add("chapter-list-empty");
     empty.textContent =
       chapterListFilter === "bookmarked"
-        ? "No starred chapters yet. Tap the star while reading to star a chapter."
+        ? "No starred chapters yet. Tap the star while reading to save a chapter to this list."
         : "You've read every chapter. Nice.";
     chapterListPlaceholder.appendChild(empty);
     return;
