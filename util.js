@@ -156,6 +156,12 @@ var themeKeys = Object.keys(themes);
 var themesIndex = 0;
 var themeSwatchesEl = document.getElementById("theme-swatches");
 
+/* Set to "user" as soon as a swatch is picked; until then the system colour
+ * scheme drives the theme. Previously this was inferred by listing which
+ * theme indices counted as a deliberate choice, and that list went stale
+ * every time a theme was added. */
+const THEME_SOURCE_KEY = "themeSource";
+
 function change(theme) {
   for (let prop in theme) {
     document.querySelector(":root").style.setProperty(prop, theme[prop]);
@@ -177,11 +183,14 @@ function updateActiveSwatch() {
   });
 }
 
-function setTheme(index) {
+function setTheme(index, source) {
   var themeCount = themeKeys.length;
   themesIndex = ((Number(index) % themeCount) + themeCount) % themeCount;
   change(themes[themeKeys[themesIndex]]);
   localStorage.setItem("theme", themesIndex);
+  if (source) {
+    localStorage.setItem(THEME_SOURCE_KEY, source);
+  }
   updateActiveSwatch();
 }
 
@@ -203,63 +212,48 @@ if (themeSwatchesEl) {
       t["--accentDark"] +
       " 50%)";
     swatch.addEventListener("click", function () {
-      setTheme(index);
+      setTheme(index, "user");
     });
     themeSwatchesEl.appendChild(swatch);
   });
 }
 
-if (localStorage.getItem("theme")) {
-  setTheme(parseInt(localStorage.getItem("theme"), 10));
+function prefersDarkScheme() {
+  return Boolean(
+    window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+}
+
+function applySystemTheme() {
+  setTheme(prefersDarkScheme() ? 1 : 0, "system");
+}
+
+/* A theme stored before THEME_SOURCE_KEY existed is whatever the reader last
+ * saw, so keep honouring it instead of overwriting it on this one load. */
+if (
+  localStorage.getItem("theme") !== null &&
+  localStorage.getItem(THEME_SOURCE_KEY) === null
+) {
+  localStorage.setItem(THEME_SOURCE_KEY, "user");
+}
+
+var storedTheme = localStorage.getItem("theme");
+if (localStorage.getItem(THEME_SOURCE_KEY) === "user" && storedTheme !== null) {
+  setTheme(parseInt(storedTheme, 10));
 } else {
-  setTheme(themesIndex);
+  applySystemTheme();
 }
 
-function activateDarkMode() {
-  setTheme(1);
+if (window.matchMedia) {
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", function () {
+      if (localStorage.getItem(THEME_SOURCE_KEY) !== "user") {
+        applySystemTheme();
+      }
+    });
 }
-
-if (
-  window.matchMedia &&
-  window.matchMedia("(prefers-color-scheme: dark)").matches &&
-  localStorage.getItem("theme") != 2 &&
-  localStorage.getItem("theme") != 3 &&
-  localStorage.getItem("theme") != 4 &&
-  localStorage.getItem("theme") != 5 &&
-  localStorage.getItem("theme") != 6 &&
-  localStorage.getItem("theme") != 7 &&
-  localStorage.getItem("theme") != 8 &&
-  localStorage.getItem("theme") != 9
-) {
-  activateDarkMode();
-}
-
-window
-  .matchMedia("(prefers-color-scheme: dark)")
-  .addEventListener("change", (e) => e.matches && activateDarkMode());
-
-function activateLightMode() {
-  setTheme(0);
-}
-
-if (
-  window.matchMedia &&
-  window.matchMedia("(prefers-color-scheme: light)").matches &&
-  localStorage.getItem("theme") != 2 &&
-  localStorage.getItem("theme") != 3 &&
-  localStorage.getItem("theme") != 4 &&
-  localStorage.getItem("theme") != 5 &&
-  localStorage.getItem("theme") != 6 &&
-  localStorage.getItem("theme") != 7 &&
-  localStorage.getItem("theme") != 8 &&
-  localStorage.getItem("theme") != 9
-) {
-  activateLightMode();
-}
-
-window
-  .matchMedia("(prefers-color-scheme: light)")
-  .addEventListener("change", (e) => e.matches && activateLightMode());
 
 /* Font size */
 const fontSizeScales = [0.85, 1, 1.15, 1.3];
