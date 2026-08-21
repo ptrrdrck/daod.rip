@@ -137,61 +137,67 @@ chapterListPlaceholder.addEventListener("click", (e) => {
 
 /**
  * History control
+ *
+ * readOrder is an append-only log of chapter numbers in the order they were
+ * shown. historyIndex is a negative offset from the end of that log: -1 is the
+ * newest entry, -2 the one before it. So the chapter currently on screen sits
+ * at readOrder[readOrder.length + historyIndex], and everything the nav shows
+ * is a lookup at an offset from there.
  */
 
 let readOrder = JSON.parse(localStorage.getItem("readOrder")) || [];
 let historyIndex = -1;
-let prevChapter =
-  readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
-let prevChapterTwo;
-let prevChapterThree;
-let nextChapter = readOrder[(historyIndex + 1) % readOrder.length];
-let nextChapterTwo;
-let nextChapterThree;
 
-const prevChapterDisplay = document.getElementById("prev-ch");
-const prevChapterTwoDisplay = document.getElementById("prev-ch-2");
-const prevChapterThreeDisplay = document.getElementById("prev-ch-3");
-const nextChapterDisplay = document.getElementById("next-ch");
-const nextChapterTwoDisplay = document.getElementById("next-ch-2");
-const nextChapterThreeDisplay = document.getElementById("next-ch-3");
+/* Ordered outwards from the reader: nearest chapter first. */
+const prevChapterSlots = [
+  document.getElementById("prev-ch"),
+  document.getElementById("prev-ch-2"),
+  document.getElementById("prev-ch-3"),
+];
+const nextChapterSlots = [
+  document.getElementById("next-ch"),
+  document.getElementById("next-ch-2"),
+  document.getElementById("next-ch-3"),
+];
 const seekBackButton = document.getElementById("ch-seek-back");
 const seekFwdButton = document.getElementById("ch-seek-fwd");
 const historyDisplay = document.getElementById("history-nav");
 const displayArea = document.getElementById("display");
 
-function hideUndefinedHistory() {
-  const historyChapters = document.getElementsByClassName("history");
-  for (let i = 0; i < historyChapters.length; i++) {
-    const historyChapter = historyChapters[i];
-    if (historyChapter.innerText == "undefined") {
-      historyChapter.classList.add("history-hide");
-    } else {
-      historyChapter.classList.remove("history-hide");
-    }
-  }
-  seekBackButton.style.display =
-    prevChapter === undefined &&
-    prevChapterTwo === undefined &&
-    prevChapterThree === undefined
-      ? "none"
-      : "inline-block";
-  seekFwdButton.style.display =
-    nextChapter === undefined &&
-    nextChapterTwo === undefined &&
-    nextChapterThree === undefined
-      ? "none"
-      : "inline-block";
-  const hasHistory = !(
-    prevChapter === undefined &&
-    prevChapterTwo === undefined &&
-    prevChapterThree === undefined &&
-    nextChapter === undefined &&
-    nextChapterTwo === undefined &&
-    nextChapterThree === undefined
-  );
+/* The chapter `offset` places before (negative) or after (positive) the one on
+ * screen, or undefined when that position falls outside the log. */
+function historyChapterAt(offset) {
+  const position = readOrder.length + historyIndex + offset;
+  return position >= 0 && position < readOrder.length
+    ? readOrder[position]
+    : undefined;
+}
+
+/* Fills every slot from the log and reports what it put there, so nothing has
+ * to read the rendered text back to find out. */
+function renderHistorySlots(slots, direction) {
+  return slots.map((slot, depth) => {
+    const chapter = historyChapterAt(direction * (depth + 1));
+    slot.textContent = chapter === undefined ? "" : String(chapter);
+    slot.classList.toggle("history-hide", chapter === undefined);
+    return chapter;
+  });
+}
+
+function renderHistory() {
+  const previous = renderHistorySlots(prevChapterSlots, -1);
+  const next = renderHistorySlots(nextChapterSlots, 1);
+
+  /* Slots run outwards, so an empty nearest slot means the rest are empty. */
+  const hasPrevious = previous[0] !== undefined;
+  const hasNext = next[0] !== undefined;
+  seekBackButton.style.display = hasPrevious ? "inline-block" : "none";
+  seekFwdButton.style.display = hasNext ? "inline-block" : "none";
+
+  const hasHistory = hasPrevious || hasNext;
   historyDisplay.style.display = hasHistory ? "flex" : "none";
   if (hasHistory) {
+    /* Measured after the display change above, so the nav has a layout. */
     document.documentElement.style.setProperty(
       "--history-nav-height",
       `${historyDisplay.offsetHeight}px`
@@ -202,72 +208,14 @@ function hideUndefinedHistory() {
   }
 }
 
-hideUndefinedHistory();
-
-function updatePreviousChapters() {
-  if (readOrder.length == 2) {
-    prevChapter =
-      readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
-    [prevChapterTwo, prevChapterThree] = [undefined, undefined];
-    prevChapterDisplay.innerHTML = prevChapter;
-  } else if (readOrder.length == 3) {
-    prevChapter =
-      readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
-    prevChapterTwo =
-      readOrder[(historyIndex + readOrder.length - 2) % readOrder.length];
-    prevChapterThree = undefined;
-    prevChapterDisplay.innerHTML = prevChapter;
-    prevChapterTwoDisplay.innerHTML = prevChapterTwo;
-  } else if (readOrder.length > 3) {
-    prevChapter =
-      readOrder[(historyIndex + readOrder.length - 1) % readOrder.length];
-    prevChapterTwo =
-      readOrder[(historyIndex + readOrder.length - 2) % readOrder.length];
-    prevChapterThree =
-      readOrder[(historyIndex + readOrder.length - 3) % readOrder.length];
-    prevChapterDisplay.innerHTML = prevChapter;
-    prevChapterTwoDisplay.innerHTML = prevChapterTwo;
-    prevChapterThreeDisplay.innerHTML = prevChapterThree;
-  }
-}
-
-function updateNextChapters() {
-  if (historyIndex == -1) {
-    [nextChapter, nextChapterTwo, nextChapterThree] = [
-      undefined,
-      undefined,
-      undefined,
-    ];
-  } else if (historyIndex == -2) {
-    nextChapter =
-      readOrder[(historyIndex + readOrder.length + 1) % readOrder.length];
-    [nextChapterTwo, nextChapterThree] = [undefined, undefined];
-  } else if (historyIndex == -3) {
-    nextChapter =
-      readOrder[(historyIndex + readOrder.length + 1) % readOrder.length];
-    nextChapterTwo =
-      readOrder[(historyIndex + readOrder.length + 2) % readOrder.length];
-    nextChapterThree = undefined;
-  } else {
-    nextChapter =
-      readOrder[(historyIndex + readOrder.length + 1) % readOrder.length];
-    nextChapterTwo =
-      readOrder[(historyIndex + readOrder.length + 2) % readOrder.length];
-    nextChapterThree =
-      readOrder[(historyIndex + readOrder.length + 3) % readOrder.length];
-  }
-  nextChapterDisplay.innerHTML = nextChapter;
-  nextChapterTwoDisplay.innerHTML = nextChapterTwo;
-  nextChapterThreeDisplay.innerHTML = nextChapterThree;
-}
-
-function updateHistory(index = -1) {
+function setHistoryIndex(index = -1) {
   historyIndex = index;
   localStorage.setItem("historyIndex", historyIndex);
-  updatePreviousChapters();
-  updateNextChapters();
-  hideUndefinedHistory();
+  renderHistory();
 }
+
+/* Size the nav before the first cards paint. */
+renderHistory();
 
 /* Random chapter selection */
 
@@ -398,7 +346,7 @@ function newRandomChapter() {
   renderChapterList();
   readOrder.push(randomChapter + 1);
   localStorage.setItem("readOrder", JSON.stringify(readOrder));
-  updateHistory();
+  setHistoryIndex();
   currentChapterIndex = randomChapter;
   localStorage.setItem("lastChapterIndex", randomChapter);
 }
@@ -411,7 +359,7 @@ function resumeChapter(chapter) {
   const storedHistoryIndex = localStorage.getItem("historyIndex");
   const restoredHistoryIndex =
     storedHistoryIndex !== null ? parseInt(storedHistoryIndex, 10) : -1;
-  updateHistory(restoredHistoryIndex);
+  setHistoryIndex(restoredHistoryIndex);
 }
 
 const storedLastChapterIndex = localStorage.getItem("lastChapterIndex");
@@ -438,37 +386,23 @@ yinYang.addEventListener("click", () => {
 
 /* History chapter selection */
 
-function getHistoryChapter(chapter) {
+function showHistoryChapter(chapter) {
   renderTranslationCards(chapter - 1, false);
   currentChapterIndex = chapter - 1;
   localStorage.setItem("lastChapterIndex", chapter - 1);
 }
 
-function seekBack() {
-  historyIndex--;
-  localStorage.setItem("historyIndex", historyIndex);
-  updatePreviousChapters();
-  updateNextChapters();
-  hideUndefinedHistory();
+/* Read the target before moving the index, so the two steps cannot be
+ * transposed, and do nothing at the ends of the log. */
+function seek(direction) {
+  const chapter = historyChapterAt(direction);
+  if (chapter === undefined) return;
+  showHistoryChapter(chapter);
+  setHistoryIndex(historyIndex + direction);
 }
 
-function seekFwd() {
-  historyIndex++;
-  localStorage.setItem("historyIndex", historyIndex);
-  updatePreviousChapters();
-  updateNextChapters();
-  hideUndefinedHistory();
-}
-
-seekBackButton.addEventListener("click", () => {
-  getHistoryChapter(prevChapter);
-  seekBack();
-});
-
-seekFwdButton.addEventListener("click", () => {
-  getHistoryChapter(nextChapter);
-  seekFwd();
-});
+seekBackButton.addEventListener("click", () => seek(-1));
+seekFwdButton.addEventListener("click", () => seek(1));
 
 function viewChapter(chapter) {
   renderTranslationCards(chapter, true);
@@ -480,7 +414,7 @@ function viewChapter(chapter) {
   renderChapterList();
   readOrder.push(chapter + 1);
   localStorage.setItem("readOrder", JSON.stringify(readOrder));
-  updateHistory();
+  setHistoryIndex();
   currentChapterIndex = chapter;
   localStorage.setItem("lastChapterIndex", chapter);
 }

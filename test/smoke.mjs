@@ -91,6 +91,40 @@ async function toggleCheckbox(page, id) {
   await page.locator('label[for="' + id + '"]').click();
 }
 
+/* The nav is a view of readOrder and historyIndex, so it can be checked
+ * against them rather than against hand-written expectations. */
+async function historySlotMismatches(page) {
+  const model = await page.evaluate(() => ({
+    readOrder: JSON.parse(localStorage.getItem("readOrder") || "[]"),
+    historyIndex: Number(localStorage.getItem("historyIndex")),
+  }));
+  const at = (offset) => {
+    const position = model.readOrder.length + model.historyIndex + offset;
+    return position >= 0 && position < model.readOrder.length
+      ? model.readOrder[position]
+      : undefined;
+  };
+  const slots = [
+    ["prev-ch", -1], ["prev-ch-2", -2], ["prev-ch-3", -3],
+    ["next-ch", 1], ["next-ch-2", 2], ["next-ch-3", 3],
+  ];
+  const problems = [];
+  for (const [id, offset] of slots) {
+    const expected = at(offset);
+    const el = page.locator("#" + id);
+    const text = ((await el.textContent()) || "").trim();
+    const hidden = await el.evaluate((n) => n.classList.contains("history-hide"));
+    if (expected === undefined) {
+      if (!hidden) problems.push(id + " should be blank, shows " + JSON.stringify(text));
+    } else if (hidden) {
+      problems.push(id + " should show " + expected + " but is hidden");
+    } else if (text !== String(expected)) {
+      problems.push(id + " shows " + JSON.stringify(text) + ", want " + expected);
+    }
+  }
+  return problems;
+}
+
 async function run() {
   const server = await startServer();
   const base = "http://127.0.0.1:" + server.address().port;
@@ -177,23 +211,88 @@ async function run() {
   await closeModals(page);
 
   section("[5] history navigation");
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 5; i++) {
     await page.locator("#drip-button").click();
     await page.waitForTimeout(120);
   }
   check("history nav becomes visible", await page.locator("#history-nav").isVisible());
-  const prevShown = Number((await page.locator("#prev-ch").innerText()).trim());
+  check("forward seeking is unavailable at the newest chapter",
+    !(await page.locator("#ch-seek-fwd").isVisible()));
+
+  let mismatches = await historySlotMismatches(page);
+  check("slots match readOrder after dripping", mismatches.length === 0, mismatches.join("; "));
+
+  const startedFrom = await shownChapter(page);
+  const prevShown = Number((await page.locator("#prev-ch").textContent()).trim());
   await page.locator("#ch-seek-back").click();
   await page.waitForTimeout(150);
   check("seeking back opens the previous chapter",
     (await shownChapter(page)) === prevShown,
     "prev-ch showed " + prevShown + ", display shows " + (await shownChapter(page)));
-  const nextShown = Number((await page.locator("#next-ch").innerText()).trim());
+
+  mismatches = await historySlotMismatches(page);
+  check("slots match readOrder after seeking back", mismatches.length === 0, mismatches.join("; "));
+
+  const nextShown = Number((await page.locator("#next-ch").textContent()).trim());
   await page.locator("#ch-seek-fwd").click();
   await page.waitForTimeout(150);
   check("seeking forward opens the next chapter",
     (await shownChapter(page)) === nextShown,
     "next-ch showed " + nextShown + ", display shows " + (await shownChapter(page)));
+  check("back then forward returns to where it started",
+    (await shownChapter(page)) === startedFrom,
+    "started at " + startedFrom + ", ended at " + (await shownChapter(page)));
+
+  await page.reload({ waitUntil: "networkidle" });
+  mismatches = await historySlotMismatches(page);
+  check("slots still match readOrder after a reload", mismatches.length === 0, mismatches.join("; "));
+
+  /* Walk to the far end of the log. The old implementation could index
+   * readOrder[0] here instead of running out, so this is where a wraparound
+   * would show up. */
+  const logLength = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("readOrder") || "[]").length);
+  let steps = 0;
+  while (await page.locator("#ch-seek-back").isVisible()) {
+    await page.locator("#ch-seek-back").click();
+    await page.waitForTimeout(90);
+    steps++;
+    if (steps > logLength + 3) break;
+  }
+  check("seeking back stops at the start of the log rather than wrapping",
+    steps === logLength - 1, "took " + steps + " steps, log holds " + logLength);
+  const oldest = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("readOrder"))[0]);
+  check("the far end of the log is the oldest chapter",
+    (await shownChapter(page)) === oldest,
+    "oldest is " + oldest + ", display shows " + (await shownChapter(page)));
+  mismatches = await historySlotMismatches(page);
+  check("slots match readOrder at the far end", mismatches.length === 0, mismatches.join("; "));
+
+  /* A separate context, so seeding a one-entry log cannot disturb this run.
+   * A single chapter has nothing before it; the old arithmetic offered the
+   * chapter itself as its own previous. */
+  const soloContext = await browser.newContext();
+  const soloPage = await soloContext.newPage();
+  await soloPage.goto(base + "/index.html", { waitUntil: "networkidle" });
+  await soloPage.evaluate(() => {
+    localStorage.setItem("readOrder", JSON.stringify([42]));
+    localStorage.setItem("historyIndex", "-1");
+    localStorage.setItem("landingMode", "resume");
+    localStorage.setItem("lastChapterIndex", "41");
+  });
+  await soloPage.reload({ waitUntil: "networkidle" });
+  check("a one-chapter log offers no previous chapter",
+    !(await soloPage.locator("#ch-seek-back").isVisible()));
+  check("a one-chapter log offers no next chapter",
+    !(await soloPage.locator("#ch-seek-fwd").isVisible()));
+  check("a one-chapter log hides the nav entirely",
+    !(await soloPage.locator("#history-nav").isVisible()));
+  await soloContext.close();
+
+  /* Back to the newest chapter for the sections that follow. */
+  await page.locator("#drip-button").click();
+  await page.waitForTimeout(150);
 
   section("[6] translation selection");
   const before = await page.locator("#display .translation").count();
