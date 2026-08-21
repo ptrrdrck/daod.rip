@@ -37,6 +37,20 @@ be synced to this one.
   state under the Starred filter said "Tap the star while reading to star a
   chapter", which named the action without saying where the chapter ends up. It
   now reads "save a chapter to this list".
+- Twenty-one typos in the translation texts themselves, across eighteen
+  chapters, found by running the whole of `dao.js` through a spellcheck plus
+  checks for doubled words, stray capitals and unbalanced punctuation. Twelve
+  of those chapters are Robert G. Henricks, which suggests that source was
+  transcribed by OCR: "the So of Heaven" for "the Son of Heaven" and "salture
+  them which disks of jade" for "salute them with" in chapter 62, "compassions
+  of death" for "companions of death" and "Whey they die" in chapter 76,
+  "loard" for "lord", "thw" for "the", "crafy" for "crafty", and similar. The
+  rest were "the the block" (Mitchell 28), "the the thousand things" (Henricks
+  5), "Is is not true" (Yutang 39), "sick-mindness" (Yutang 71), "excresences"
+  (Lau 24), "straighforward" (Lau 58) and "stay hidde" (Red Pine 15).
+  Only unambiguous mechanical errors were corrected. Readings that could be a
+  translator's own choice were left alone, among them Red Pine's "lost for a
+  long long time" (58) and "encharged with the world" (13).
 
 ### Changed
 
