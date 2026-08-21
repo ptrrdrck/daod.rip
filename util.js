@@ -1,7 +1,18 @@
 /* © 2021 Peter Rodrick <pete@lftlc.xyz> */
 
-/* Version checking */
-const version = "8.0.0";
+/* Storage schema version, not a release number. It has only ever meant one
+ * thing: when this string changes, everything the reader has saved is
+ * discarded. So bump it only when a change makes previously stored data
+ * invalid or unreadable, and never for ordinary feature or bug work.
+ *
+ * 9.0.0 retires the per-checkbox "<name>-checkbox" keys, which nothing reads
+ * any more, and introduces themeSource, which decides whether the system
+ * colour scheme may override a chosen theme.
+ *
+ * The localStorage key below stays "version" deliberately. Renaming it would
+ * leave returning readers with no stored value, which reads as a first visit
+ * and skips the very clear this bump exists to perform. */
+const version = "9.0.0";
 
 if (
   localStorage.getItem("version") === "undefined" ||
