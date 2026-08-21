@@ -1,29 +1,46 @@
 /* © 2021 Peter Rodrick <pete@lftlc.xyz> */
 
-/* Storage schema version, not a release number. It has only ever meant one
- * thing: when this string changes, everything the reader has saved is
- * discarded. So bump it only when a change makes previously stored data
- * invalid or unreadable, and never for ordinary feature or bug work.
+/* The release version, shown in the footer and matching the git tag and the
+ * version in package.json. test/smoke.mjs fails if the page and package.json
+ * ever disagree. See CHANGELOG.md for what each digit means here.
+ *
+ * This is not storageEpoch below. They count different things and are
+ * expected to differ. */
+const APP_VERSION = "1.0.0";
+
+const appVersionEl = document.getElementById("app-version");
+if (appVersionEl) {
+  appVersionEl.textContent = "v" + APP_VERSION;
+}
+
+/* How many times the shape of stored data has changed, not a release number.
+ * It has only ever meant one thing: when this string changes, everything the
+ * reader has saved is discarded. So bump it only when a change makes
+ * previously stored data invalid or unreadable, and never for ordinary
+ * feature or bug work.
  *
  * 9.0.0 retires the per-checkbox "<name>-checkbox" keys, which nothing reads
  * any more, and introduces themeSource, which decides whether the system
  * colour scheme may override a chosen theme.
  *
- * The localStorage key below stays "version" deliberately. Renaming it would
- * leave returning readers with no stored value, which reads as a first visit
- * and skips the very clear this bump exists to perform. */
-const version = "9.0.0";
+ * The value keeps its old three-part shape on purpose: changing it to a plain
+ * count would be a change, and every change here wipes readers who have only
+ * just been wiped by 9.0.0. The localStorage key stays "version" for the same
+ * kind of reason. Renaming it would leave returning readers with no stored
+ * value, which reads as a first visit and skips the very clear a bump exists
+ * to perform. */
+const storageEpoch = "9.0.0";
 
 if (
   localStorage.getItem("version") === "undefined" ||
   localStorage.getItem("version") === null
 ) {
-  localStorage.setItem("version", version);
+  localStorage.setItem("version", storageEpoch);
 }
 
-if (localStorage.getItem("version") !== version) {
+if (localStorage.getItem("version") !== storageEpoch) {
   localStorage.clear();
-  localStorage.setItem("version", version);
+  localStorage.setItem("version", storageEpoch);
 }
 
 /* Theme changing */
