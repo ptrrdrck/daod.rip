@@ -10,16 +10,39 @@ digits mean this here:
 - **MINOR** — a new feature, or a visible change to how an existing one works.
 - **PATCH** — a fix or an internal change a reader would not notice.
 
-Every release is a git tag on `master`, which is what actually publishes to
-daod.rip. The tag is the record: `git checkout v1.0.0` gives back exactly what
-shipped. The same number appears in `package.json` and in `APP_VERSION` in
-`util.js`, which is what the footer displays; the smoke test fails if the page
-and `package.json` ever disagree.
+`master` is what publishes to daod.rip, so every merge to it is a version —
+patches included, with no exemption for documentation or tooling changes. Two
+different things hang off that:
+
+- **A tag** is the record. Every version gets one: `git checkout v1.0.0` gives
+  back exactly what shipped.
+- **A GitHub Release** is an announcement on top of a tag, worth creating only
+  for notable versions. A patch normally gets a tag and nothing more.
+
+The same number appears in `package.json` and in `APP_VERSION` in `util.js`,
+which is what the footer displays; the smoke test fails if the page and
+`package.json` ever disagree. Because the footer shows it, no bump is invisible.
 
 `storageEpoch` in `util.js` is a **separate number** and is expected to differ.
 It counts how many times the shape of stored data has changed, and changing it
 wipes every reader's saved state. It is not a release version and should never
 be synced to this one.
+
+## 1.0.1 — 2026-08-21
+
+### Added
+
+- `CLAUDE.md`, so the versioning convention, the separation between the release
+  version and `storageEpoch`, and how to run the checks survive into sessions
+  that were not present when they were decided.
+
+### Changed
+
+- `## Versioning` above now separates a tag from a GitHub Release, and states
+  that every merge to `master` is a version. An earlier draft would have
+  exempted documentation and tooling changes from bumping at all, which
+  contradicted the PATCH definition already written here; this release is itself
+  that kind of change, and takes a patch number accordingly.
 
 ## 1.0.0 — 2026-08-21
 

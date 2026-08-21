@@ -6,7 +6,7 @@
  *
  * This is not storageEpoch below. They count different things and are
  * expected to differ. */
-const APP_VERSION = "1.0.0";
+const APP_VERSION = "1.0.1";
 
 const appVersionEl = document.getElementById("app-version");
 if (appVersionEl) {
