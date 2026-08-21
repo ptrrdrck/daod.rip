@@ -60,6 +60,17 @@ be synced to this one.
   across the top of the reading page do, what the star and the history arrows
   are for, and that saved state lives in the reader's own browser with no
   account behind it. The controls had no explanation anywhere before this.
+- `README.md` rewritten against the app as it now is. The old one documented a
+  UI that no longer exists — a type-in field for viewing a chapter, a standalone
+  theme changer, chapter links loose on the page — and illustrated it with eight
+  screenshots that had gone stale. The screenshots are gone (`img/readme/` with
+  them, since nothing else referenced it) and the user guide is now written out
+  in text: what drip does, the star, the history strip, search, both library
+  tabs, every setting, what a shared link carries, and what is kept in
+  `localStorage`. It also records two behaviours that were not written down
+  anywhere: opening a search result switches your selection to the translators
+  that matched, and opening a shared link replaces your saved translation
+  selection with the one in the link.
 
 ## 1.0.1 — 2026-08-21
 
