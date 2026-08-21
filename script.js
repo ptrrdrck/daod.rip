@@ -117,15 +117,24 @@ function renderChapterList() {
   root.setAttribute("id", "chapter-list");
   chapterListPlaceholder.appendChild(root);
   chapters.forEach((n) => {
-    const link = document.createElement("A");
-    link.setAttribute("href", `javascript:viewChapter(${n} - 1);`);
+    const link = document.createElement("BUTTON");
+    link.type = "button";
     link.classList.add("chapter-link");
+    link.dataset.chapter = n;
     link.innerText = `${n}`;
     const cell = document.createElement("TD");
     cell.appendChild(link);
     root.appendChild(cell);
   });
 }
+
+/* Delegated once on the placeholder, which outlives the table that
+ * renderChapterList tears down and rebuilds on every filter change. */
+chapterListPlaceholder.addEventListener("click", (e) => {
+  const link = e.target.closest(".chapter-link");
+  if (!link) return;
+  viewChapter(Number(link.dataset.chapter) - 1);
+});
 
 /**
  * History control

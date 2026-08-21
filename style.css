@@ -885,6 +885,10 @@ main {
   padding: 0 3px 1px 3px;
   border-radius: 8px;
   color: var(--fontColor);
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
 }
 .chapter-link:hover {
   font-style: normal;
