@@ -283,7 +283,22 @@ async function run() {
     (await shownChapter(page)) ===
       Number(await page.evaluate(() => localStorage.getItem("lastChapterIndex"))) + 1);
 
-  section("[10] every theme survives a reload");
+  section("[10] shuffle toggle");
+  await openModal(page, "settings-button");
+  const shuffleBefore = await page.evaluate(() => localStorage.getItem("shuffle-control"));
+  await toggleCheckbox(page, "shuffle-control");
+  const shuffleAfter = await page.evaluate(() => localStorage.getItem("shuffle-control"));
+  check("toggling the shuffle control flips its stored value",
+    shuffleBefore !== shuffleAfter, shuffleBefore + " -> " + shuffleAfter);
+  await closeModals(page);
+  await page.reload({ waitUntil: "networkidle" });
+  await openModal(page, "settings-button");
+  check("shuffle control is restored from storage",
+    (await page.locator("#shuffle-control").isChecked()) === (shuffleAfter === "true"),
+    "stored=" + shuffleAfter);
+  await closeModals(page);
+
+  section("[11] every theme survives a reload");
   const themeCount = await page.evaluate(() => document.querySelectorAll("#theme-swatches .theme-swatch").length);
   let themeFailures = [];
   for (let i = 0; i < themeCount; i++) {
@@ -296,7 +311,7 @@ async function run() {
   }
   check("all " + themeCount + " themes persist", themeFailures.length === 0, themeFailures.join(", "));
 
-  section("[11] shared links");
+  section("[12] shared links");
   await page.goto(base + "/index.html?ch=42&t=mitchell,legge", { waitUntil: "networkidle" });
   check("?ch= opens the shared chapter", (await shownChapter(page)) === 42,
     "got " + (await shownChapter(page)));
@@ -304,7 +319,7 @@ async function run() {
     (await page.locator("#display .translation").count()) === 2,
     "got " + (await page.locator("#display .translation").count()));
 
-  section("[12] about page");
+  section("[13] about page");
   const aboutErrors = [];
   const aboutPage = await context.newPage();
   aboutPage.on("pageerror", (e) => aboutErrors.push(String(e)));

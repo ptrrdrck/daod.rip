@@ -58,10 +58,7 @@ let selectedTranslations =
   JSON.parse(localStorage.getItem("selectedTranslations")) ||
   getRandomTranslations(allTranslations, 3);
 
-localStorage.setItem(
-  "selectedTranslations",
-  JSON.stringify(selectedTranslations)
-);
+storeSelectedTranslations();
 
 localStorage.getItem("shuffle-control") ||
   localStorage.setItem("shuffle-control", "true");
@@ -621,27 +618,31 @@ searchInput.addEventListener("input", () => {
   searchDebounceTimer = setTimeout(runSearch, 180);
 });
 
-function setSelectedTranslations(translations) {
-  translationCheckboxes.forEach(({ checkBoxId, name }) => {
-    const checkbox = document.getElementById(checkBoxId);
-    if (checkbox) checkbox.checked = translations.includes(name);
-  });
-  selectedTranslations = translations.slice();
+function storeSelectedTranslations() {
   localStorage.setItem(
     "selectedTranslations",
     JSON.stringify(selectedTranslations)
   );
 }
 
-function selectOnlyMatchedTranslations(translations) {
-  setSelectedTranslations(translations);
+function syncTranslationCheckboxes() {
+  translationCheckboxes.forEach(({ checkBoxId, name }) => {
+    const checkbox = document.getElementById(checkBoxId);
+    if (checkbox) checkbox.checked = selectedTranslations.includes(name);
+  });
+}
+
+function setSelectedTranslations(translations) {
+  selectedTranslations = translations.slice();
+  syncTranslationCheckboxes();
+  storeSelectedTranslations();
 }
 
 function jumpToSearchResult(resultEl) {
   const chapterIndex = parseInt(resultEl.getAttribute("data-chapter-index"), 10);
   const result = lastSearchResults.find((r) => r.chapterIndex === chapterIndex);
   if (result) {
-    selectOnlyMatchedTranslations(result.matches.map((m) => m.translation));
+    setSelectedTranslations(result.matches.map((m) => m.translation));
   }
   viewChapter(chapterIndex);
   searchModal.close();
@@ -689,34 +690,23 @@ resetSearchModal();
 
 /* Translation control */
 
-translationCheckboxes.forEach(({ checkBoxId, name }) => {
-  if (selectedTranslations.includes(name)) {
-    localStorage.setItem(checkBoxId, "true");
-  } else {
-    localStorage.setItem(checkBoxId, "false");
-  }
-});
+syncTranslationCheckboxes();
 
-function checkBoxes() {
-  const boxes = document.querySelectorAll("input[type='checkbox']");
-  for (let i = 0; i < boxes.length; i++) {
-    const box = boxes[i];
-    if (box.hasAttribute("store")) {
-      setupBox(box);
-    }
-  }
-  function setupBox(box) {
+/* Persistence for checkboxes that carry a store attribute, which is now
+ * only the shuffle toggle. The translation checkboxes are deliberately not
+ * among them: selectedTranslations is the single record of what is on, and
+ * storing each box separately meant the same state was kept twice. */
+function setupStoredCheckboxes() {
+  document.querySelectorAll("input[type='checkbox'][store]").forEach((box) => {
     const storageId = box.getAttribute("store");
-    const oldVal = localStorage.getItem(storageId);
-    box.checked = oldVal === "true" ? true : false;
-
-    box.addEventListener("change", function () {
-      localStorage.setItem(storageId, this.checked);
+    box.checked = localStorage.getItem(storageId) === "true";
+    box.addEventListener("change", () => {
+      localStorage.setItem(storageId, box.checked);
     });
-  }
+  });
 }
 
-checkBoxes();
+setupStoredCheckboxes();
 
 function toggleArrayItem(array, item) {
   const i = array.indexOf(item);
@@ -732,13 +722,12 @@ function refreshCurrentChapter() {
 }
 
 translationCheckboxes.forEach(({ checkBoxId, name }) => {
-  document.getElementById(checkBoxId).addEventListener("change", () => {
+  const checkbox = document.getElementById(checkBoxId);
+  if (!checkbox) return;
+  checkbox.addEventListener("change", () => {
     toggleArrayItem(selectedTranslations, name);
     refreshCurrentChapter();
-    localStorage.setItem(
-      "selectedTranslations",
-      JSON.stringify(selectedTranslations)
-    );
+    storeSelectedTranslations();
   });
 });
 
