@@ -8,6 +8,7 @@ const browserGlobals = {
   setTimeout: "readonly",
   clearTimeout: "readonly",
   getComputedStyle: "readonly",
+  Node: "readonly",
   URLSearchParams: "readonly",
 };
 

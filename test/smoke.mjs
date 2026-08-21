@@ -418,7 +418,28 @@ async function run() {
     (await page.locator("#display .translation").count()) === 2,
     "got " + (await page.locator("#display .translation").count()));
 
-  section("[13] about page");
+  section("[13] release version");
+  const pkg = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
+  const shownVersion = (await page.locator("#app-version").textContent()).trim();
+  check("the footer shows a version", shownVersion.length > 0, JSON.stringify(shownVersion));
+  check("the footer version matches package.json",
+    shownVersion === "v" + pkg.version,
+    "page shows " + JSON.stringify(shownVersion) + ", package.json says " + pkg.version);
+  check("the version sits under the About link",
+    await page.evaluate(() => {
+      const about = document.querySelector('#madeby a[href="./about.html"]');
+      const version = document.getElementById("app-version");
+      return Boolean(about && version) &&
+        (about.compareDocumentPosition(version) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+    }));
+  /* The release version and the storage epoch count different things; if these
+   * ever match again it probably means they have been re-conflated. */
+  const storedEpoch = await page.evaluate(() => localStorage.getItem("version"));
+  check("the storage epoch is tracked separately from the release version",
+    storedEpoch !== null && storedEpoch !== pkg.version,
+    "storage epoch " + storedEpoch + " vs release " + pkg.version);
+
+  section("[14] about page");
   const aboutErrors = [];
   const aboutPage = await context.newPage();
   aboutPage.on("pageerror", (e) => aboutErrors.push(String(e)));
