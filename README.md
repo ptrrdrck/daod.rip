@@ -48,7 +48,23 @@ opening `index.html` straight from disk will not work — the browser blocks
 python3 -m http.server 8000
 ```
 
-Then open <http://localhost:8000>. No build step or dependencies are needed.
+Then open <http://localhost:8000>. The site itself has no build step and no
+runtime dependencies.
+
+### Checks
+
+There is a browser smoke test that drives the real pages and asserts on what a
+reader can see. It needs the dev dependencies, which are only used for checking
+the site, never for serving it:
+
+```
+npm install
+npm test     # drives index.html and about.html in headless Chromium
+npm run lint # catches undefined references, which module scope now enforces
+```
+
+`npm test` starts its own static server on a free port, so nothing needs to be
+running first.
 
 ## Contributing
 
