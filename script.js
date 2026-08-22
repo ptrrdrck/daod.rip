@@ -133,6 +133,7 @@ chapterListPlaceholder.addEventListener("click", (e) => {
   const link = e.target.closest(".chapter-link");
   if (!link) return;
   viewChapter(Number(link.dataset.chapter) - 1);
+  libraryModal.close();
 });
 
 /**
