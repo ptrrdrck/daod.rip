@@ -41,6 +41,14 @@ be synced to this one.
   Translations and Unread for anyone who has never picked, which is where the
   Library opened before.
 
+### Fixed
+
+- The ten translation labels in the Library line up on the left. At 600px and
+  wider each label shrank to its text and centered itself, so the checkboxes sat
+  in a ragged zigzag down the panel instead of a column. Narrow screens already
+  looked right and are unchanged, as is the lone shuffle checkbox in Settings,
+  which is still centered by the shared rule.
+
 ## 1.1.0 — 2026-08-22
 
 ### Changed

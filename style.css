@@ -661,6 +661,13 @@ input {
 .library-panel[hidden] {
   display: none;
 }
+/* The translation list reads as a column of rows, so its labels stretch to the
+ * panel and line up on the left. The base rule centers a checkbox at 600px and
+ * up, which is right for a lone control like the shuffle setting but leaves a
+ * list of ten looking ragged. */
+#library-panel-translations .checkbox-container {
+  align-self: stretch;
+}
 .button-row {
   display: flex;
   gap: 10px;
