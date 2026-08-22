@@ -181,6 +181,8 @@ async function run() {
   check("clicking a chapter link opens that chapter",
     (await shownChapter(page)) === wanted,
     "wanted " + wanted + ", got " + (await shownChapter(page)));
+  check("clicking a chapter link closes the library",
+    (await page.locator("#library-modal").evaluate((el) => el.open)) === false);
 
   section("[3] chapter filters");
   await openLibrary(page, "chapters");
@@ -208,6 +210,11 @@ async function run() {
   await page.locator("#chapter-filter-bookmarked").click();
   check("starred chapter appears under the starred filter",
     (await page.locator("#chapter-list .chapter-link").allInnerTexts()).map(Number).includes(starred));
+  /* The close is delegated once for every filter, so checking a second list
+   * guards the shared handler rather than the Unread list alone. */
+  await page.locator("#chapter-list .chapter-link").first().click();
+  check("clicking a starred chapter link closes the library",
+    (await page.locator("#library-modal").evaluate((el) => el.open)) === false);
   await closeModals(page);
 
   section("[5] history navigation");

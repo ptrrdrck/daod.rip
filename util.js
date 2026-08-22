@@ -6,7 +6,7 @@
  *
  * This is not storageEpoch below. They count different things and are
  * expected to differ. */
-const APP_VERSION = "1.0.2";
+const APP_VERSION = "1.1.0";
 
 const appVersionEl = document.getElementById("app-version");
 if (appVersionEl) {
@@ -284,7 +284,7 @@ if (window.matchMedia) {
 }
 
 /* Font size */
-const fontSizeScales = [0.85, 1, 1.15, 1.3];
+const fontSizeScales = [0.7, 0.85, 1, 1.15];
 const fontSizeLabels = ["Small", "Normal", "Large", "X-Large"];
 let fontSizeIndex = 1;
 

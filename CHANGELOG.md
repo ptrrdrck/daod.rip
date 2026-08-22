@@ -28,6 +28,20 @@ It counts how many times the shape of stored data has changed, and changing it
 wipes every reader's saved state. It is not a release version and should never
 be synced to this one.
 
+## 1.1.0 — 2026-08-22
+
+### Changed
+
+- Picking a chapter from the Library closes the Library. It used to stay open
+  over the chapter it had just opened, so every jump took a second dismissing
+  tap. This applies to all three lists — All, Unread and Starred.
+- Every translation font size steps down one notch. What was Large now renders
+  at Normal, what was Normal renders at Small, and Small gets a new, smaller
+  size below anything the ladder offered before. The old largest size is gone:
+  a reader sitting on X-Large keeps that setting but sees what Large used to
+  show. Nobody's saved size selection is reset — the level a reader picked is
+  still the level they are on, it simply renders one step smaller.
+
 ## 1.0.2 — 2026-08-21
 
 ### Fixed
