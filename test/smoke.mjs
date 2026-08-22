@@ -183,6 +183,13 @@ async function run() {
     "wanted " + wanted + ", got " + (await shownChapter(page)));
   check("clicking a chapter link closes the library",
     (await page.locator("#library-modal").evaluate((el) => el.open)) === false);
+  check("the tab a reader leaves the library on is stored",
+    (await page.evaluate(() => localStorage.getItem("libraryTab"))) === "chapters");
+  await openModal(page, "library-button");
+  check("reopening the library lands on the remembered tab",
+    (await page.locator("#library-panel-chapters").isVisible()) &&
+      !(await page.locator("#library-panel-translations").isVisible()));
+  await closeModals(page);
 
   section("[3] chapter filters");
   await openLibrary(page, "chapters");
@@ -196,6 +203,12 @@ async function run() {
   await page.locator("#chapter-filter-bookmarked").click();
   check("the 'starred' filter is empty before starring",
     (await page.locator("#chapter-list .chapter-link").count()) === 0);
+  check("the filter a reader leaves the library on is stored",
+    (await page.evaluate(() => localStorage.getItem("chapterListFilter"))) === "bookmarked");
+  await closeModals(page);
+  await openModal(page, "library-button");
+  check("reopening the library keeps that filter active",
+    await page.locator("#chapter-filter-bookmarked").evaluate((el) => el.classList.contains("active")));
   await closeModals(page);
 
   section("[4] bookmarks");
@@ -369,6 +382,8 @@ async function run() {
     viewMode: localStorage.getItem("viewMode"),
     landingMode: localStorage.getItem("landingMode"),
     fontSizeIndex: localStorage.getItem("fontSizeIndex"),
+    libraryTab: localStorage.getItem("libraryTab"),
+    chapterListFilter: localStorage.getItem("chapterListFilter"),
   }));
   await page.reload({ waitUntil: "networkidle" });
   const settingsAfter = await page.evaluate(() => ({
@@ -376,6 +391,8 @@ async function run() {
     viewMode: localStorage.getItem("viewMode"),
     landingMode: localStorage.getItem("landingMode"),
     fontSizeIndex: localStorage.getItem("fontSizeIndex"),
+    libraryTab: localStorage.getItem("libraryTab"),
+    chapterListFilter: localStorage.getItem("chapterListFilter"),
   }));
   check("theme survives reload (system scheme must not override a pick)",
     settingsBefore.theme === settingsAfter.theme,
@@ -383,6 +400,29 @@ async function run() {
   check("view mode survives reload", settingsBefore.viewMode === settingsAfter.viewMode);
   check("landing mode survives reload", settingsBefore.landingMode === settingsAfter.landingMode);
   check("font size survives reload", settingsBefore.fontSizeIndex === settingsAfter.fontSizeIndex);
+  check("library tab survives reload", settingsBefore.libraryTab === settingsAfter.libraryTab);
+  check("chapter filter survives reload",
+    settingsBefore.chapterListFilter === settingsAfter.chapterListFilter);
+  /* Resolved in the page so a missing key fails the check rather than throwing
+   * on a selector built from null. */
+  await openModal(page, "library-button");
+  const applied = await page.evaluate(() => {
+    const panel = document.getElementById(
+      "library-panel-" + localStorage.getItem("libraryTab")
+    );
+    const filter = document.getElementById(
+      "chapter-filter-" + localStorage.getItem("chapterListFilter")
+    );
+    return {
+      tab: Boolean(panel) && !panel.hidden,
+      filter: Boolean(filter) && filter.classList.contains("active"),
+    };
+  });
+  check("a reloaded library opens on the remembered tab", applied.tab,
+    "remembered " + settingsAfter.libraryTab);
+  check("a reloaded library opens with the remembered filter active", applied.filter,
+    "remembered " + settingsAfter.chapterListFilter);
+  await closeModals(page);
   check("stacked view applies its class",
     await page.locator("#display.view-stacked").count() === 1);
   check("resume landing mode reopens the last chapter",

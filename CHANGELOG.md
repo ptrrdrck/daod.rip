@@ -28,6 +28,19 @@ It counts how many times the shape of stored data has changed, and changing it
 wipes every reader's saved state. It is not a release version and should never
 be synced to this one.
 
+## 1.2.0 — 2026-08-22
+
+### Added
+
+- The Library reopens on the tab and the chapter filter you last used. It used
+  to reset to Translations every time it closed, so a reader who lives in the
+  Chapters tab under Starred re-made both picks on every visit. Both rows now
+  remember, across a close and across a reload, which is a default a reader sets
+  by reading rather than by visiting Settings — no new controls anywhere.
+- Nothing saved is reset by this. The two new stored keys fall back to
+  Translations and Unread for anyone who has never picked, which is where the
+  Library opened before.
+
 ## 1.1.0 — 2026-08-22
 
 ### Changed
