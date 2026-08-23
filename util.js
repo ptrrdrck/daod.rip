@@ -6,7 +6,7 @@
  *
  * This is not storageEpoch below. They count different things and are
  * expected to differ. */
-const APP_VERSION = "1.3.1";
+const APP_VERSION = "1.4.0";
 
 const appVersionEl = document.getElementById("app-version");
 if (appVersionEl) {
@@ -328,10 +328,11 @@ if (fontSizeDecreaseButton && fontSizeIncreaseButton) {
 }
 
 /* Settings that are a choice between segmented buttons. The users of this —
- * view mode, landing mode, the library tab and the chapter filter — differ only
- * in which buttons they own, what they store, and whether picking a value does
- * anything beyond marking its button active. Tabs carry aria-selected rather
- * than aria-pressed, which is what activeAttribute is for. */
+ * view mode, landing mode, translation order, the library tab and the chapter
+ * filter — differ only in which buttons they own, what they store, and whether
+ * picking a value does anything beyond marking its button active. Tabs carry
+ * aria-selected rather than aria-pressed, which is what activeAttribute is
+ * for. */
 export function setupChoiceSetting({
   storageKey,
   fallback,
@@ -361,15 +362,22 @@ export function setupChoiceSetting({
     if (apply) apply(value);
   }
 
+  function select(next) {
+    value = next;
+    localStorage.setItem(storageKey, value);
+    render();
+  }
+
   buttons.forEach((button) => {
-    button.el.addEventListener("click", () => {
-      value = button.value;
-      localStorage.setItem(storageKey, value);
-      render();
-    });
+    button.el.addEventListener("click", () => select(button.value));
   });
 
   render();
+
+  /* Handed back so a setting can also be moved by something other than its
+   * own buttons: reordering the library list flips translation order to
+   * Manual. Undefined on about.html, which owns none of these controls. */
+  return { set: select };
 }
 
 /* View mode */

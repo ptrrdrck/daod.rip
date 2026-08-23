@@ -28,6 +28,34 @@ It counts how many times the shape of stored data has changed, and changing it
 wipes every reader's saved state. It is not a release version and should never
 be synced to this one.
 
+## 1.4.0 — 2026-08-23
+
+### Added
+
+- The Library's Translations tab now sets the order the cards appear in. Every
+  row carries a pair of arrows, and the list reads the way the page does: the
+  translations on screen first, in card order, then the rest alphabetically by
+  the first translator's last name. The arrows cross that boundary rather than
+  stopping at it — the down arrow on the last selected translation drops it
+  into the unselected group, and the up arrow on an unselected one picks it up
+  at the bottom of the selection.
+
+### Changed
+
+- "Shuffle translation display order" is now **Translation Order**, a choice
+  between **Shuffled** and **Manual**. Shuffled is still the default and still
+  reorders the cards on every chapter; Manual holds the order set in the
+  Library. Reordering by hand switches the setting to Manual, because an order
+  a reader has just set should survive the next chapter.
+- Shuffled rewrites the stored order rather than only the rendered cards, so
+  the Library names what is on screen after every drip instead of showing an
+  order the page stopped using at load.
+- Select All appends the translations that were not selected instead of
+  replacing the selection, so an order already set survives it.
+
+Readers who had turned the old shuffle checkbox off come back on Manual.
+Nothing saved changes shape, so `storageEpoch` is untouched.
+
 ## 1.3.1 — 2026-08-23
 
 ### Changed
