@@ -28,6 +28,15 @@ It counts how many times the shape of stored data has changed, and changing it
 wipes every reader's saved state. It is not a release version and should never
 be synced to this one.
 
+## 1.3.1 — 2026-08-23
+
+### Changed
+
+- `CLAUDE.md` now fixes the shape of the tag command a session hands over at
+  the end of a release: one copy-paste line, pinned to the merge SHA rather
+  than to wherever `master` points when it is run. Nothing about the site
+  changes.
+
 ## 1.3.0 — 2026-08-23
 
 ### Changed

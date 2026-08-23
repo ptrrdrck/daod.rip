@@ -43,6 +43,17 @@ these sessions.** The credential covers `refs/heads/*` but not `refs/tags/*`;
 branch pushes and merges through the GitHub MCP tools both work, so only the tag
 step needs a human. Direct pushes to `master` are also blocked, hence the PR.
 
+Hand the tag over as one copy-paste line, pinned to the merge commit rather
+than to whatever `master` happens to point at by the time it is run:
+
+```
+git fetch origin master && git tag v1.3.0 648b560d16bdbdeb21ecaa4be0825b9509ba8b99 && git push origin v1.3.0
+```
+
+Substitute the version and the full merge SHA the merge returned. One line, in
+that order, every time — the fetch is what makes the SHA resolvable in a
+checkout that has not seen the merge yet.
+
 ## Running things
 
 ```
