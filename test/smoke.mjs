@@ -457,20 +457,111 @@ async function run() {
     (await shownChapter(page)) ===
       Number(await page.evaluate(() => localStorage.getItem("lastChapterIndex"))) + 1);
 
-  section("[10] shuffle toggle");
-  await openModal(page, "settings-button");
-  const shuffleBefore = await page.evaluate(() => localStorage.getItem("shuffle-control"));
-  await toggleCheckbox(page, "shuffle-control");
-  const shuffleAfter = await page.evaluate(() => localStorage.getItem("shuffle-control"));
-  check("toggling the shuffle control flips its stored value",
-    shuffleBefore !== shuffleAfter, shuffleBefore + " -> " + shuffleAfter);
+  section("[10] translation order");
   await closeModals(page);
+  /* A known selection, so the assertions below can name positions. */
+  const FIXTURE = ["James Legge", "D. C. Lau", "Stephen Mitchell"];
+  await page.evaluate((selection) => {
+    localStorage.setItem("translationOrder", "manual");
+    localStorage.setItem("selectedTranslations", JSON.stringify(selection));
+  }, FIXTURE);
   await page.reload({ waitUntil: "networkidle" });
+
+  const libraryOrder = () =>
+    page.$$eval("#translation-list .translation-row", (rows) =>
+      rows.map((row) => row.dataset.translation));
+  const cardOrder = () => page.locator("#display .chapter-translator").allInnerTexts();
+  const storedSelection = () =>
+    page.evaluate(() => JSON.parse(localStorage.getItem("selectedTranslations")));
+  const arrow = (row, direction) =>
+    page.locator("#translation-list .translation-row").nth(row)
+      .locator('.order-button[data-direction="' + direction + '"]');
+
   await openModal(page, "settings-button");
-  check("shuffle control is restored from storage",
-    (await page.locator("#shuffle-control").isChecked()) === (shuffleAfter === "true"),
-    "stored=" + shuffleAfter);
+  check("the manual setting is restored from storage",
+    (await page.locator("#translation-order-manual-button.active").count()) === 1);
   await closeModals(page);
+
+  await openLibrary(page, "translations");
+  check("the library lists the selection in card order",
+    (await libraryOrder()).slice(0, 3).join("|") === (await cardOrder()).join("|"),
+    JSON.stringify(await libraryOrder()) + " vs " + JSON.stringify(await cardOrder()));
+  check("unselected translations follow, alphabetically by last name",
+    (await libraryOrder()).slice(3).join("|") === [
+      "Stephen Addiss & Stanley Lombardo",
+      "Gia-Fu Feng & Jane English",
+      "Robert G. Henricks",
+      "Ursula K. Le Guin",
+      "Derek Lin",
+      "Red Pine (Bill Porter)",
+      "Lin Yutang",
+    ].join("|"), JSON.stringify((await libraryOrder()).slice(3)));
+  check("the first selected row cannot move up",
+    await arrow(0, "up").isDisabled());
+  check("an unselected row cannot move down",
+    await arrow(5, "down").isDisabled());
+
+  await arrow(0, "down").click();
+  await page.waitForTimeout(150);
+  check("the down arrow swaps a translation with the one below it",
+    (await storedSelection()).join("|") === "D. C. Lau|James Legge|Stephen Mitchell",
+    JSON.stringify(await storedSelection()));
+  check("the cards follow the new library order",
+    (await cardOrder()).join("|") === (await libraryOrder()).slice(0, 3).join("|"),
+    JSON.stringify(await cardOrder()));
+
+  await arrow(1, "up").click();
+  await page.waitForTimeout(150);
+  check("the up arrow swaps a translation with the one above it",
+    (await storedSelection()).join("|") === "James Legge|D. C. Lau|Stephen Mitchell",
+    JSON.stringify(await storedSelection()));
+
+  await arrow(2, "down").click();
+  await page.waitForTimeout(150);
+  check("the down arrow past the last selected row deselects it",
+    (await storedSelection()).join("|") === "James Legge|D. C. Lau",
+    JSON.stringify(await storedSelection()));
+
+  await page.locator('.translation-row[data-translation="Ursula K. Le Guin"]')
+    .locator('.order-button[data-direction="up"]').click();
+  await page.waitForTimeout(150);
+  check("the up arrow on an unselected row selects it at the bottom",
+    (await storedSelection()).join("|") === "James Legge|D. C. Lau|Ursula K. Le Guin",
+    JSON.stringify(await storedSelection()));
+  await closeModals(page);
+
+  await page.evaluate(() => localStorage.setItem("translationOrder", "shuffled"));
+  await page.reload({ waitUntil: "networkidle" });
+  await openLibrary(page, "translations");
+  await arrow(0, "down").click();
+  await page.waitForTimeout(150);
+  check("reordering switches translation order to manual",
+    (await page.evaluate(() => localStorage.getItem("translationOrder"))) === "manual");
+  await closeModals(page);
+  await openModal(page, "settings-button");
+  check("the manual button is the active one after a reorder",
+    (await page.locator("#translation-order-manual-button.active").count()) === 1);
+  await closeModals(page);
+
+  /* Shuffled rewrites the stored order rather than the rendered cards, so the
+   * library has to keep agreeing with the page across a run of new chapters. */
+  await page.evaluate(() => localStorage.setItem("translationOrder", "shuffled"));
+  await page.reload({ waitUntil: "networkidle" });
+  const shuffleMismatches = [];
+  for (let i = 0; i < 5; i++) {
+    await page.locator("#drip-button").click();
+    await page.waitForTimeout(150);
+    await openLibrary(page, "translations");
+    const cards = (await cardOrder()).join("|");
+    const rows = (await libraryOrder()).slice(0, FIXTURE.length).join("|");
+    const stored = (await storedSelection()).join("|");
+    if (cards !== rows || cards !== stored) {
+      shuffleMismatches.push(cards + " / " + rows + " / " + stored);
+    }
+    await closeModals(page);
+  }
+  check("shuffled keeps the library list, the cards and storage in step",
+    shuffleMismatches.length === 0, shuffleMismatches.join(" | "));
 
   section("[11] every theme survives a reload");
   const themeCount = await page.evaluate(() => document.querySelectorAll("#theme-swatches .theme-swatch").length);

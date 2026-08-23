@@ -185,19 +185,33 @@
             </button>
           </div>
         </div>
-        <label
-          id="first-control"
-          for="shuffle-control"
-          class="checkbox-container"
-          >Shuffle translation display order
-          <input
-            id="shuffle-control"
-            type="checkbox"
-            store="shuffle-control"
-            checked
-          />
-          <span class="checkmark"></span>
-        </label>
+        <div class="setting-row">
+          <span class="select-text">Translation Order</span>
+          <div
+            class="segmented-buttons"
+            role="group"
+            aria-label="Translation order"
+          >
+            <button
+              class="button"
+              id="translation-order-shuffled-button"
+              title="Shuffle the card order on every chapter"
+              aria-label="Shuffle the card order on every chapter"
+              aria-pressed="true"
+            >
+              Shuffled
+            </button>
+            <button
+              class="button"
+              id="translation-order-manual-button"
+              title="Keep the order set in the Library"
+              aria-label="Keep the order set in the Library"
+              aria-pressed="false"
+            >
+              Manual
+            </button>
+          </div>
+        </div>
         <div class="setting-row">
           <span class="select-text">Reset Session</span>
           <button class="button button-danger" id="clear-storage-button">
@@ -322,102 +336,7 @@
               Deselect All
             </button>
           </div>
-          <label
-            id="first-translation"
-            for="addissLombardo-checkbox"
-            class="checkbox-container"
-            >Stephen Addiss & Stanley Lombardo
-            <input
-              id="addissLombardo-checkbox"
-              type="checkbox"
-              checked
-            />
-            <span class="checkmark"></span>
-          </label>
-          <label for="fengEnglish-checkbox" class="checkbox-container"
-            >Gia-Fu Feng & Jane English
-            <input
-              id="fengEnglish-checkbox"
-              type="checkbox"
-              checked
-            />
-            <span class="checkmark"></span>
-          </label>
-          <label for="henricks-checkbox" class="checkbox-container"
-            >Robert G. Henricks
-            <input
-              id="henricks-checkbox"
-              type="checkbox"
-              checked
-            />
-            <span class="checkmark"></span>
-          </label>
-          <label for="lau-checkbox" class="checkbox-container"
-            >D. C. Lau
-            <input
-              id="lau-checkbox"
-              type="checkbox"
-              checked
-            />
-            <span class="checkmark"></span>
-          </label>
-          <label for="legge-checkbox" class="checkbox-container"
-            >James Legge
-            <input
-              id="legge-checkbox"
-              type="checkbox"
-              checked
-            />
-            <span class="checkmark"></span>
-          </label>
-          <label for="leguin-checkbox" class="checkbox-container"
-            >Ursula K. Le Guin
-            <input
-              id="leguin-checkbox"
-              type="checkbox"
-              checked
-            />
-            <span class="checkmark"></span>
-          </label>
-          <label for="lin-checkbox" class="checkbox-container"
-            >Derek Lin
-            <input
-              id="lin-checkbox"
-              type="checkbox"
-              checked
-            />
-            <span class="checkmark"></span>
-          </label>
-          <label for="mitchell-checkbox" class="checkbox-container"
-            >Stephen Mitchell
-            <input
-              id="mitchell-checkbox"
-              type="checkbox"
-              checked
-            />
-            <span class="checkmark"></span>
-          </label>
-          <label for="redpine-checkbox" class="checkbox-container"
-            >Red Pine (Bill Porter)
-            <input
-              id="redpine-checkbox"
-              type="checkbox"
-              checked
-            />
-            <span class="checkmark"></span>
-          </label>
-          <label
-            id="last-translation"
-            for="yutang-checkbox"
-            class="checkbox-container"
-            >Lin Yutang
-            <input
-              id="yutang-checkbox"
-              type="checkbox"
-              checked
-            />
-            <span class="checkmark"></span>
-          </label>
+          <div id="translation-list"></div>
         </div>
         <div
           id="library-panel-chapters"

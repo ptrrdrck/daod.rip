@@ -13,34 +13,44 @@ function getRandomTranslations(arr, num) {
   return shuffle(arr.slice()).slice(0, num);
 }
 
-const translationCheckboxes = [
-  { checkBoxId: "mitchell-checkbox", name: "Stephen Mitchell" },
-  { checkBoxId: "fengEnglish-checkbox", name: "Gia-Fu Feng & Jane English" },
+/* Every translation the site carries. `slug` is the short identity: it is the
+ * ?t= value in a share link and, suffixed with -checkbox, the id of the row's
+ * input. `sortKey` is the first translator's last name, spelled out rather
+ * than pulled off the end of `name`, because no rule gets "Ursula K. Le Guin",
+ * "Red Pine (Bill Porter)" and "Lin Yutang" all right at once. */
+const translationCatalog = [
+  { slug: "mitchell", name: "Stephen Mitchell", sortKey: "Mitchell" },
+  { slug: "fengEnglish", name: "Gia-Fu Feng & Jane English", sortKey: "Feng" },
   {
-    checkBoxId: "addissLombardo-checkbox",
+    slug: "addissLombardo",
     name: "Stephen Addiss & Stanley Lombardo",
+    sortKey: "Addiss",
   },
-  { checkBoxId: "lin-checkbox", name: "Derek Lin" },
-  { checkBoxId: "legge-checkbox", name: "James Legge" },
-  { checkBoxId: "leguin-checkbox", name: "Ursula K. Le Guin" },
-  { checkBoxId: "lau-checkbox", name: "D. C. Lau" },
-  { checkBoxId: "yutang-checkbox", name: "Lin Yutang" },
-  { checkBoxId: "henricks-checkbox", name: "Robert G. Henricks" },
-  { checkBoxId: "redpine-checkbox", name: "Red Pine (Bill Porter)" },
+  { slug: "lin", name: "Derek Lin", sortKey: "Lin" },
+  { slug: "legge", name: "James Legge", sortKey: "Legge" },
+  { slug: "leguin", name: "Ursula K. Le Guin", sortKey: "Le Guin" },
+  { slug: "lau", name: "D. C. Lau", sortKey: "Lau" },
+  { slug: "yutang", name: "Lin Yutang", sortKey: "Yutang" },
+  { slug: "henricks", name: "Robert G. Henricks", sortKey: "Henricks" },
+  { slug: "redpine", name: "Red Pine (Bill Porter)", sortKey: "Red Pine" },
 ];
 
 const slugToName = Object.fromEntries(
-  translationCheckboxes.map(({ checkBoxId, name }) => [
-    checkBoxId.replace("-checkbox", ""),
-    name,
-  ])
+  translationCatalog.map(({ slug, name }) => [slug, name])
 );
 const nameToSlug = Object.fromEntries(
-  translationCheckboxes.map(({ checkBoxId, name }) => [
-    name,
-    checkBoxId.replace("-checkbox", ""),
-  ])
+  translationCatalog.map(({ slug, name }) => [name, slug])
 );
+
+/* Where an unselected translation sits in the library list. Spaces are folded
+ * out before comparing so it reads letter by letter, the way a bookshelf does:
+ * Legge comes before Le Guin. */
+const alphabeticalTranslations = translationCatalog
+  .slice()
+  .sort((a, b) =>
+    a.sortKey.replace(/\s+/g, "").localeCompare(b.sortKey.replace(/\s+/g, ""))
+  )
+  .map(({ name }) => name);
 
 function getSharedTranslationsFromUrl() {
   const t = new URLSearchParams(window.location.search).get("t");
@@ -61,8 +71,165 @@ let selectedTranslations =
 
 storeSelectedTranslations();
 
-localStorage.getItem("shuffle-control") ||
-  localStorage.setItem("shuffle-control", "true");
+/* Translation order
+ *
+ * "shuffled" reshuffles selectedTranslations on every new chapter and keeps
+ * the result, so the library list always shows the order the cards are in.
+ * "manual" leaves that order alone, which is what the arrows in the library
+ * list set. Readers who had turned the old shuffle checkbox off meant manual,
+ * so carry them over rather than silently reshuffling for them. */
+const TRANSLATION_ORDER_KEY = "translationOrder";
+
+if (
+  localStorage.getItem(TRANSLATION_ORDER_KEY) === null &&
+  localStorage.getItem("shuffle-control") === "false"
+) {
+  localStorage.setItem(TRANSLATION_ORDER_KEY, "manual");
+}
+
+const translationOrderSetting = setupChoiceSetting({
+  storageKey: TRANSLATION_ORDER_KEY,
+  fallback: "shuffled",
+  choices: [
+    { value: "shuffled", buttonId: "translation-order-shuffled-button" },
+    { value: "manual", buttonId: "translation-order-manual-button" },
+  ],
+});
+
+function translationOrderIsShuffled() {
+  return localStorage.getItem(TRANSLATION_ORDER_KEY) === "shuffled";
+}
+
+/* Translation list (Translations tab)
+ *
+ * Selected translations first, in the order their cards appear, then the rest
+ * alphabetically. The list is rebuilt from selectedTranslations rather than
+ * edited in place, so it cannot drift from what is on screen; that is also why
+ * its handlers are delegated on the container, which outlives the rows.
+ *
+ * This sits above the first render because renderTranslationCards redraws the
+ * list whenever it reshuffles. */
+
+const translationListEl = document.getElementById("translation-list");
+
+const ARROW_PATHS = {
+  up: "M7.41 15.41 12 10.83l4.59 4.58L18 14l-6-6-6 6z",
+  down: "M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z",
+};
+
+const ARROW_LABELS = {
+  up: "Move up",
+  down: "Move down",
+};
+
+function orderButtonHtml(direction, enabled) {
+  const label = ARROW_LABELS[direction];
+  return `<button
+      type="button"
+      class="button order-button"
+      data-direction="${direction}"
+      title="${label}"
+      aria-label="${label}"
+      ${enabled ? "" : "disabled"}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="${ARROW_PATHS[direction]}" />
+      </svg>
+    </button>`;
+}
+
+function translationRowHtml(name, selected, canMoveUp, canMoveDown) {
+  const checkboxId = nameToSlug[name] + "-checkbox";
+  return `<div class="translation-row" data-translation="${escapeHtml(name)}">
+    <label for="${checkboxId}" class="checkbox-container"
+      >${escapeHtml(name)}
+      <input id="${checkboxId}" type="checkbox"${selected ? " checked" : ""} />
+      <span class="checkmark"></span>
+    </label>
+    <div class="order-buttons">
+      ${orderButtonHtml("up", canMoveUp)}
+      ${orderButtonHtml("down", canMoveDown)}
+    </div>
+  </div>`;
+}
+
+function renderTranslationList() {
+  if (!translationListEl) return;
+  const unselected = alphabeticalTranslations.filter(
+    (name) => !selectedTranslations.includes(name)
+  );
+  /* A selected row's down arrow is never dead: at the bottom of the block it
+   * drops the translation into the unselected tail. An unselected row's up
+   * arrow selects it; its down arrow has nowhere to go, the tail being sorted
+   * rather than ordered. */
+  const rows = selectedTranslations.map((name, index) =>
+    translationRowHtml(name, true, index > 0, true)
+  );
+  if (rows.length > 0 && unselected.length > 0) {
+    rows.push('<div class="translation-divider" role="separator"></div>');
+  }
+  unselected.forEach((name) => {
+    rows.push(translationRowHtml(name, false, true, false));
+  });
+  translationListEl.innerHTML = rows.join("");
+}
+
+/* Every edit to the selection or its order lands the same way. */
+function commitTranslationChange() {
+  storeSelectedTranslations();
+  renderTranslationList();
+  refreshCurrentChapter();
+}
+
+/* The arrows cross the divider rather than stopping at it: from the tail, up
+ * joins the selection at the bottom of it, and from the last selected row,
+ * down leaves the selection. There is nowhere below the tail to go, and the
+ * tail sorts itself, so those rows get no down arrow. */
+function moveTranslation(name, direction) {
+  const index = selectedTranslations.indexOf(name);
+  if (index === -1) {
+    if (direction === "down") return;
+    selectedTranslations.push(name);
+  } else if (direction === "up") {
+    if (index === 0) return;
+    [selectedTranslations[index - 1], selectedTranslations[index]] = [
+      selectedTranslations[index],
+      selectedTranslations[index - 1],
+    ];
+  } else if (index === selectedTranslations.length - 1) {
+    selectedTranslations.splice(index, 1);
+  } else {
+    [selectedTranslations[index], selectedTranslations[index + 1]] = [
+      selectedTranslations[index + 1],
+      selectedTranslations[index],
+    ];
+  }
+  /* Having placed a translation by hand, the reader would not thank us for
+   * shuffling it away on the next chapter. */
+  translationOrderSetting.set("manual");
+  commitTranslationChange();
+}
+
+if (translationListEl) {
+  translationListEl.addEventListener("click", (e) => {
+    const button = e.target.closest(".order-button");
+    if (!button) return;
+    const row = button.closest(".translation-row");
+    moveTranslation(row.dataset.translation, button.dataset.direction);
+  });
+
+  /* Selection listens for change rather than click: the label, the box and
+   * the checkmark are three places one tap can land, and only the input
+   * reports the result of that tap once. */
+  translationListEl.addEventListener("change", (e) => {
+    const row = e.target.closest(".translation-row");
+    if (!row) return;
+    toggleArrayItem(selectedTranslations, row.dataset.translation);
+    commitTranslationChange();
+  });
+}
+
+renderTranslationList();
 
 let readChapters = JSON.parse(localStorage.getItem("readChapters")) || [];
 let bookmarkedChapters =
@@ -269,20 +436,25 @@ function buildTranslationCard(translation, chapterIndex) {
   </div>`;
 }
 
+/* Cards come out in selectedTranslations order, always. Shuffling rewrites
+ * that array rather than the rendered cards, which is what keeps the library
+ * list honest about what is on screen. Only the calls that open a chapter
+ * pass shuffleCards; redrawing after a selection or order edit must not
+ * reshuffle the thing the reader just set. */
 function renderTranslationCards(chapterIndex, shuffleCards) {
+  if (shuffleCards && translationOrderIsShuffled()) {
+    shuffle(selectedTranslations);
+    storeSelectedTranslations();
+    renderTranslationList();
+  }
   if (selectedTranslations.length === 0) {
     displayArea.innerHTML =
       '<p class="empty-state">No translations selected — pick some in the Library.</p>';
     return;
   }
-  let message = [];
-  selectedTranslations.forEach(function (translation) {
-    message.push(buildTranslationCard(translation, chapterIndex));
-  });
-  if (shuffleCards && localStorage.getItem("shuffle-control") === "true") {
-    message = shuffle(message);
-  }
-  displayArea.innerHTML = message.join("");
+  displayArea.innerHTML = selectedTranslations
+    .map((translation) => buildTranslationCard(translation, chapterIndex))
+    .join("");
 }
 
 /* Search */
@@ -561,17 +733,10 @@ function storeSelectedTranslations() {
   );
 }
 
-function syncTranslationCheckboxes() {
-  translationCheckboxes.forEach(({ checkBoxId, name }) => {
-    const checkbox = document.getElementById(checkBoxId);
-    if (checkbox) checkbox.checked = selectedTranslations.includes(name);
-  });
-}
-
 function setSelectedTranslations(translations) {
   selectedTranslations = translations.slice();
-  syncTranslationCheckboxes();
   storeSelectedTranslations();
+  renderTranslationList();
 }
 
 function jumpToSearchResult(resultEl) {
@@ -624,26 +789,6 @@ searchModal.addEventListener("close", () => {
 
 resetSearchModal();
 
-/* Translation control */
-
-syncTranslationCheckboxes();
-
-/* Persistence for checkboxes that carry a store attribute, which is now
- * only the shuffle toggle. The translation checkboxes are deliberately not
- * among them: selectedTranslations is the single record of what is on, and
- * storing each box separately meant the same state was kept twice. */
-function setupStoredCheckboxes() {
-  document.querySelectorAll("input[type='checkbox'][store]").forEach((box) => {
-    const storageId = box.getAttribute("store");
-    box.checked = localStorage.getItem(storageId) === "true";
-    box.addEventListener("change", () => {
-      localStorage.setItem(storageId, box.checked);
-    });
-  });
-}
-
-setupStoredCheckboxes();
-
 function toggleArrayItem(array, item) {
   const i = array.indexOf(item);
   if (i === -1) {
@@ -656,16 +801,6 @@ function toggleArrayItem(array, item) {
 function refreshCurrentChapter() {
   renderTranslationCards(currentChapterIndex, false);
 }
-
-translationCheckboxes.forEach(({ checkBoxId, name }) => {
-  const checkbox = document.getElementById(checkBoxId);
-  if (!checkbox) return;
-  checkbox.addEventListener("change", () => {
-    toggleArrayItem(selectedTranslations, name);
-    refreshCurrentChapter();
-    storeSelectedTranslations();
-  });
-});
 
 /* Bookmarks */
 
@@ -751,8 +886,17 @@ setupChoiceSetting({
   },
 });
 
+/* Appends the tail instead of replacing the selection, so an order the reader
+ * has set survives selecting the rest and the rows they had only gain a
+ * checkmark. */
 selectAllTranslationsButton.addEventListener("click", () => {
-  setSelectedTranslations(allTranslations);
+  setSelectedTranslations(
+    selectedTranslations.concat(
+      alphabeticalTranslations.filter(
+        (name) => !selectedTranslations.includes(name)
+      )
+    )
+  );
   refreshCurrentChapter();
 });
 

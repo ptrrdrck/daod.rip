@@ -987,13 +987,56 @@ main {
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-#first-translation,
-#first-control {
+/* The Translations tab. A row is the label, which fills the width, plus the
+ * two arrows. The arrows sit outside the label on purpose: inside it, tapping
+ * one would also toggle the checkbox it is meant to reorder. */
+#translation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   margin-top: 10px;
 }
-#last-translation,
-#first-control {
-  margin-bottom: 0;
+.translation-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.translation-row .checkbox-container {
+  flex: 1;
+  min-width: 0;
+}
+.order-buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+/* Quiet enough to sit ten times down a list, so bordered rather than filled,
+ * the way the segmented buttons are. */
+.order-button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: var(--fontColor);
+  border: 1px solid var(--borderColor);
+}
+.order-button:hover {
+  color: var(--accentLight);
+}
+.order-button svg {
+  width: 60%;
+  height: 60%;
+}
+/* Where the translations on screen stop and the ones that are not begin. */
+.translation-divider {
+  height: 1px;
+  margin: 10px;
+  background-color: var(--fontColor);
+  opacity: 0.25;
 }
 .emoji {
   filter: var(--filterColor);
