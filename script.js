@@ -5,6 +5,7 @@
  */
 
 import { dao, sources } from "./dao.js";
+import { setupChoiceSetting } from "./util.js";
 
 const allTranslations = Object.keys(dao);
 
@@ -687,15 +688,39 @@ displayArea.addEventListener("click", (e) => {
   renderChapterList();
 });
 
+/* Chapter filter (Chapters tab) */
+
+const resetUnreadButton = document.getElementById("reset-unread-button");
+
+/* Remembered the same way the tab is. The stored values are the names
+ * renderChapterList branches on, so "bookmarked" is what the Starred button
+ * writes. */
+setupChoiceSetting({
+  storageKey: "chapterListFilter",
+  fallback: "unread",
+  choices: [
+    { value: "all", buttonId: "chapter-filter-all" },
+    { value: "unread", buttonId: "chapter-filter-unread" },
+    { value: "bookmarked", buttonId: "chapter-filter-bookmarked" },
+  ],
+  apply(filter) {
+    chapterListFilter = filter;
+    resetUnreadButton.hidden = filter !== "unread";
+    renderChapterList();
+  },
+});
+
+resetUnreadButton.addEventListener("click", () => {
+  localStorage.removeItem("readChapters");
+  readChapters = [];
+  renderChapterList();
+});
+
 /* Library modal */
 
 const libraryButton = document.getElementById("library-button");
 const libraryModal = document.getElementById("library-modal");
 const libraryCloseButton = document.getElementById("library-close-button");
-const libraryTabTranslations = document.getElementById(
-  "library-tab-translations"
-);
-const libraryTabChapters = document.getElementById("library-tab-chapters");
 const libraryPanelTranslations = document.getElementById(
   "library-panel-translations"
 );
@@ -709,21 +734,22 @@ const deselectAllTranslationsButton = document.getElementById(
   "deselect-all-translations-button"
 );
 
-function setLibraryTab(tab) {
-  const isTranslations = tab === "translations";
-  libraryTabTranslations.classList.toggle("active", isTranslations);
-  libraryTabTranslations.setAttribute("aria-selected", isTranslations);
-  libraryTabChapters.classList.toggle("active", !isTranslations);
-  libraryTabChapters.setAttribute("aria-selected", !isTranslations);
-  libraryPanelTranslations.hidden = !isTranslations;
-  libraryPanelChapters.hidden = isTranslations;
-  if (!isTranslations) renderChapterList();
-}
-
-libraryTabTranslations.addEventListener("click", () =>
-  setLibraryTab("translations")
-);
-libraryTabChapters.addEventListener("click", () => setLibraryTab("chapters"));
+/* The tab a reader last used is the tab the library opens on, which is why
+ * nothing resets it when the dialog closes. */
+setupChoiceSetting({
+  storageKey: "libraryTab",
+  fallback: "translations",
+  activeAttribute: "aria-selected",
+  choices: [
+    { value: "translations", buttonId: "library-tab-translations" },
+    { value: "chapters", buttonId: "library-tab-chapters" },
+  ],
+  apply(tab) {
+    libraryPanelTranslations.hidden = tab !== "translations";
+    libraryPanelChapters.hidden = tab === "translations";
+    if (tab === "chapters") renderChapterList();
+  },
+});
 
 selectAllTranslationsButton.addEventListener("click", () => {
   setSelectedTranslations(allTranslations);
@@ -747,53 +773,4 @@ libraryModal.addEventListener("click", (e) => {
   if (e.target === libraryModal) {
     libraryModal.close();
   }
-});
-
-libraryModal.addEventListener("close", () => {
-  setLibraryTab("translations");
-});
-
-/* Chapter filter (Chapters tab) */
-
-const chapterFilterAllButton = document.getElementById("chapter-filter-all");
-const chapterFilterUnreadButton = document.getElementById(
-  "chapter-filter-unread"
-);
-const chapterFilterBookmarkedButton = document.getElementById(
-  "chapter-filter-bookmarked"
-);
-const resetUnreadButton = document.getElementById("reset-unread-button");
-
-function setChapterListFilter(filter) {
-  chapterListFilter = filter;
-  chapterFilterAllButton.classList.toggle("active", filter === "all");
-  chapterFilterAllButton.setAttribute("aria-pressed", filter === "all");
-  chapterFilterUnreadButton.classList.toggle("active", filter === "unread");
-  chapterFilterUnreadButton.setAttribute("aria-pressed", filter === "unread");
-  chapterFilterBookmarkedButton.classList.toggle(
-    "active",
-    filter === "bookmarked"
-  );
-  chapterFilterBookmarkedButton.setAttribute(
-    "aria-pressed",
-    filter === "bookmarked"
-  );
-  resetUnreadButton.hidden = filter !== "unread";
-  renderChapterList();
-}
-
-chapterFilterAllButton.addEventListener("click", () =>
-  setChapterListFilter("all")
-);
-chapterFilterUnreadButton.addEventListener("click", () =>
-  setChapterListFilter("unread")
-);
-chapterFilterBookmarkedButton.addEventListener("click", () =>
-  setChapterListFilter("bookmarked")
-);
-
-resetUnreadButton.addEventListener("click", () => {
-  localStorage.removeItem("readChapters");
-  readChapters = [];
-  renderChapterList();
 });

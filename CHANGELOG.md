@@ -28,6 +28,32 @@ It counts how many times the shape of stored data has changed, and changing it
 wipes every reader's saved state. It is not a release version and should never
 be synced to this one.
 
+## 1.2.0 — 2026-08-22
+
+### Added
+
+- The Library reopens on the tab and the chapter filter you last used. It used
+  to reset to Translations every time it closed, so a reader who lives in the
+  Chapters tab under Starred re-made both picks on every visit. Both rows now
+  remember, across a close and across a reload, which is a default a reader sets
+  by reading rather than by visiting Settings — no new controls anywhere.
+- Nothing saved is reset by this. The two new stored keys fall back to
+  Translations and Unread for anyone who has never picked, which is where the
+  Library opened before.
+
+### Fixed
+
+- The ten translation labels in the Library line up on the left. At 600px and
+  wider each label shrank to its text and centered itself, so the checkboxes sat
+  in a ragged zigzag down the panel instead of a column. The rule that did this
+  is gone rather than overridden, so the shuffle checkbox in Settings lines up
+  the same way; narrow screens already looked right and are unchanged.
+- Every Settings row is now a label with its controls beneath it, flush left at
+  any width. The rows used to put the control at the right edge and fall back to
+  stacking whenever one ran out of room, which happened at three different
+  widths — View at 360px, Font size at 414px, Landing at 500px — so the modal
+  rearranged itself as a window was resized. Now it does not.
+
 ## 1.1.0 — 2026-08-22
 
 ### Changed

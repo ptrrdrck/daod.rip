@@ -6,7 +6,7 @@
  *
  * This is not storageEpoch below. They count different things and are
  * expected to differ. */
-const APP_VERSION = "1.1.0";
+const APP_VERSION = "1.2.0";
 
 const appVersionEl = document.getElementById("app-version");
 if (appVersionEl) {
@@ -327,10 +327,18 @@ if (fontSizeDecreaseButton && fontSizeIncreaseButton) {
   fontSizeIncreaseButton.addEventListener("click", () => stepFontSize(1));
 }
 
-/* Settings that are a choice between two buttons. View mode and landing mode
- * differ only in which buttons they own, what they store, and whether picking
- * a value does anything beyond marking its button active. */
-function setupChoiceSetting({ storageKey, fallback, choices, apply }) {
+/* Settings that are a choice between segmented buttons. The users of this —
+ * view mode, landing mode, the library tab and the chapter filter — differ only
+ * in which buttons they own, what they store, and whether picking a value does
+ * anything beyond marking its button active. Tabs carry aria-selected rather
+ * than aria-pressed, which is what activeAttribute is for. */
+export function setupChoiceSetting({
+  storageKey,
+  fallback,
+  choices,
+  apply,
+  activeAttribute = "aria-pressed",
+}) {
   const buttons = choices.map((choice) => ({
     value: choice.value,
     el: document.getElementById(choice.buttonId),
@@ -348,7 +356,7 @@ function setupChoiceSetting({ storageKey, fallback, choices, apply }) {
     buttons.forEach((button) => {
       const isActive = button.value === value;
       button.el.classList.toggle("active", isActive);
-      button.el.setAttribute("aria-pressed", isActive);
+      button.el.setAttribute(activeAttribute, isActive);
     });
     if (apply) apply(value);
   }
