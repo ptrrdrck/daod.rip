@@ -261,6 +261,13 @@ h1 {
   border: none;
   border-radius: 50%;
   font-weight: 400;
+  /* About renders this as a link and the reading page as a button, so the
+     three properties the two elements would otherwise take from the browser —
+     the form-control font, the link hover italic, the button centring — are
+     spelled out here to keep both pages on the same button. */
+  font-family: inherit;
+  font-style: normal;
+  text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -429,8 +436,17 @@ input {
   line-height: 1.3;
   letter-spacing: 0.22px;
 }
-#display.history-collapsed {
+/* The reading page with no history yet, and About, which never has one: both
+   leave the drip button the space the history nav would have occupied. */
+#display.history-collapsed,
+#display.about-copy {
   margin-top: var(--history-nav-height, 82px);
+}
+/* About carries no settings control, so its copy stays on the "Normal" step of
+   the size ladder (fontSizeScales[1] in util.js) instead of following whatever
+   size the reader last chose on the reading page. */
+#display.about-copy {
+  --fontSizeScale: 0.85;
 }
 .view-grid {
   display: grid;

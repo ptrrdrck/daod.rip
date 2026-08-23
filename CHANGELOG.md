@@ -28,6 +28,28 @@ It counts how many times the shape of stored data has changed, and changing it
 wipes every reader's saved state. It is not a release version and should never
 be synced to this one.
 
+## 1.3.0 — 2026-08-23
+
+### Changed
+
+- The About copy holds the "Normal" step of the size ladder instead of
+  following the size a reader last picked on the reading page. About carries no
+  settings control, so a reader who had gone up to X-Large had no way to bring
+  the page back down from the page itself.
+- About leaves the same space under the drip button that the reading page
+  leaves when it has no history to show. The copy used to start immediately
+  under the button, which read as a different page rather than the same one
+  with different text.
+
+### Fixed
+
+- The drip button on About behaves like the one on the reading page. About
+  renders it as a link and the reading page as a button, and the link was
+  taking three things from the browser that the button was not: the hover
+  italic every other link on the site gets, its own font, and left-aligned
+  text. All three are now spelled out on the button itself, so both pages draw
+  the same control.
+
 ## 1.2.0 — 2026-08-22
 
 ### Added
