@@ -322,6 +322,16 @@ async function run() {
   const after = await page.locator("#display .translation").count();
   check("toggling a translation changes the card count", after !== before,
     "before=" + before + " after=" + after);
+  const ragged = await page.evaluate(() => {
+    const lefts = [...document.querySelectorAll("#library-panel-translations .checkbox-container")]
+      .map((label) => Math.round(label.getBoundingClientRect().left));
+    const button = Math.round(
+      document.getElementById("select-all-translations-button").getBoundingClientRect().left
+    );
+    return [...new Set([...lefts, button])];
+  });
+  check("translation labels line up with the buttons above them",
+    ragged.length === 1, "left edges " + JSON.stringify(ragged));
   const selectedAfterToggle = await page.evaluate(() => localStorage.getItem("selectedTranslations"));
   await page.locator("#deselect-all-translations-button").click();
   await page.waitForTimeout(150);
@@ -368,6 +378,24 @@ async function run() {
 
   section("[9] settings persistence");
   await openModal(page, "settings-button");
+  /* Every row is a label above its controls, all flush to one left edge, at
+   * every width — the layout used to reflow at 360, 414 and 500px. */
+  const rowLayout = await page.evaluate(() => {
+    const rows = [...document.querySelectorAll("#settings-modal .setting-row")];
+    return {
+      stacked: rows.every((row) => {
+        const [label, control] = row.children;
+        return !control ||
+          control.getBoundingClientRect().top >= label.getBoundingClientRect().bottom - 1;
+      }),
+      edges: [...new Set(rows.flatMap((row) =>
+        [...row.children].map((el) => Math.round(el.getBoundingClientRect().left))
+      ))],
+    };
+  });
+  check("settings controls sit below their labels", rowLayout.stacked);
+  check("settings rows share one left edge", rowLayout.edges.length === 1,
+    "left edges " + JSON.stringify(rowLayout.edges));
   const swatches = page.locator("#theme-swatches .theme-swatch");
   const lastIndex = (await swatches.count()) - 1;
   await swatches.nth(lastIndex).click();

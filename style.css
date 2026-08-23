@@ -101,9 +101,6 @@ html {
   .reference {
     word-break: break-all;
   }
-  .checkbox-container {
-    align-self: unset;
-  }
   #madeby {
     width: 300px;
   }
@@ -171,9 +168,6 @@ html {
   }
   .reference {
     word-break: break-all;
-  }
-  .checkbox-container {
-    align-self: center;
   }
   #madeby {
     width: 600px;
@@ -661,13 +655,6 @@ input {
 .library-panel[hidden] {
   display: none;
 }
-/* The translation list reads as a column of rows, so its labels stretch to the
- * panel and line up on the left. The base rule centers a checkbox at 600px and
- * up, which is right for a lone control like the shuffle setting but leaves a
- * list of ten looking ragged. */
-#library-panel-translations .checkbox-container {
-  align-self: stretch;
-}
 .button-row {
   display: flex;
   gap: 10px;
@@ -768,13 +755,22 @@ input {
   border-radius: 2px;
   padding: 0 1px;
 }
+/* A label above its controls, both flush left, at every width. Laid out as a
+ * row with the control pushed right, it ran out of room and wrapped at three
+ * different viewport widths, so the modal reflowed as the reader resized.
+ * align-items keeps each control group its natural size rather than stretching
+ * the buttons across the modal. */
 .setting-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 10px;
-  padding: 10px 10px 10px 10px;
+  padding: 10px;
+}
+/* .button sets align-self: center for the row layouts it usually sits in, which
+ * in this column would center it horizontally. The row decides. */
+.setting-row > * {
+  align-self: flex-start;
 }
 .setting-row .select-text {
   white-space: nowrap;
@@ -849,7 +845,6 @@ main {
   flex-direction: column;
 }
 .select-text {
-  align-self: center;
   letter-spacing: 0.32px;
 }
 ::selection {

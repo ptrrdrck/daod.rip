@@ -45,9 +45,14 @@ be synced to this one.
 
 - The ten translation labels in the Library line up on the left. At 600px and
   wider each label shrank to its text and centered itself, so the checkboxes sat
-  in a ragged zigzag down the panel instead of a column. Narrow screens already
-  looked right and are unchanged, as is the lone shuffle checkbox in Settings,
-  which is still centered by the shared rule.
+  in a ragged zigzag down the panel instead of a column. The rule that did this
+  is gone rather than overridden, so the shuffle checkbox in Settings lines up
+  the same way; narrow screens already looked right and are unchanged.
+- Every Settings row is now a label with its controls beneath it, flush left at
+  any width. The rows used to put the control at the right edge and fall back to
+  stacking whenever one ran out of room, which happened at three different
+  widths — View at 360px, Font size at 414px, Landing at 500px — so the modal
+  rearranged itself as a window was resized. Now it does not.
 
 ## 1.1.0 — 2026-08-22
 
