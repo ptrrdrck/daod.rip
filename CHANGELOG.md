@@ -7,8 +7,16 @@ breaking changes to an API someone depends on — does not map cleanly. The
 digits mean this here:
 
 - **MAJOR** — a redesign, or a change that discards what readers have saved.
-- **MINOR** — a new feature, or a visible change to how an existing one works.
-- **PATCH** — a fix or an internal change a reader would not notice.
+- **MINOR** — a reader can do something they could not do before, or an
+  existing feature now behaves differently: the same action gives a different
+  result.
+- **PATCH** — everything else, and most versions are patches. Fixes,
+  restyling, copy, documentation, tooling.
+
+What separates the last two is whether the site *does* something different, not
+whether anyone would notice. A change can be plainly visible — a new colour, a
+different layout, text on a card instead of on the page — and still be a patch,
+because a reader carries out the same actions and gets the same results.
 
 `master` is what publishes to daod.rip, so every merge to it is a version —
 patches included, with no exemption for documentation or tooling changes. Two
@@ -28,7 +36,23 @@ It counts how many times the shape of stored data has changed, and changing it
 wipes every reader's saved state. It is not a release version and should never
 be synced to this one.
 
-## 1.5.0 — 2026-08-27
+## 1.4.2 — 2026-08-27
+
+### Changed
+
+- The line between MINOR and PATCH above now falls on what the site does
+  rather than on what a reader would notice. It used to read "a visible change
+  to how an existing one works", and *visible* turned out to cover far too
+  much: the About card in 1.4.1 changed no behaviour at all and still argued
+  its way to a minor bump under the old wording. Cosmetic changes are patches
+  now, however obvious they are on screen. Nothing else about versioning
+  moves — every merge to `master` is still a version, and patches are cheap.
+- 1.4.1 shipped as 1.5.0 and was renumbered a few hours later under the rule
+  above. It reached daod.rip with 1.5.0 in the footer, so a checkout of that
+  commit carries the old number; the release is 1.4.1 everywhere else. There is
+  no other 1.5.0, and the next minor will reuse the number.
+
+## 1.4.1 — 2026-08-27
 
 ### Changed
 
