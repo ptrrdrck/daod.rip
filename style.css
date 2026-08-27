@@ -444,9 +444,15 @@ input {
 }
 /* About carries no settings control, so its copy stays on the "Normal" step of
    the size ladder (fontSizeScales[1] in util.js) instead of following whatever
-   size the reader last chose on the reading page. */
+   size the reader last chose on the reading page. The card underneath it is
+   the one the translations sit on — keep the four card properties in step
+   with .translation. */
 #display.about-copy {
   --fontSizeScale: 0.85;
+  padding: 20px;
+  border-radius: 10px;
+  background: var(--accentLight);
+  border: 1px solid var(--borderColor);
 }
 .view-grid {
   display: grid;
