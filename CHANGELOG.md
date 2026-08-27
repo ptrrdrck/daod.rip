@@ -28,6 +28,17 @@ It counts how many times the shape of stored data has changed, and changing it
 wipes every reader's saved state. It is not a release version and should never
 be synced to this one.
 
+## 1.5.0 — 2026-08-27
+
+### Changed
+
+- The About copy sits on a card, the same one every translation on the reading
+  page sits on. It used to be set straight onto the page gradient, which made
+  About look like a different site rather than the same one with different
+  text. The card takes its background and border from the theme variables the
+  translation cards use, so it follows all eleven themes without a rule of its
+  own.
+
 ## 1.4.0 — 2026-08-23
 
 ### Added
