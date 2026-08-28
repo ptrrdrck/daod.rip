@@ -5,6 +5,17 @@
  */
 
 import { dao } from "./dao.js";
+import {
+  historyChapterAt,
+  renderHistory,
+  seekBackButton,
+  seekFwdButton,
+  setHistoryIndex,
+} from "./history.js";
+import {
+  chapterListPlaceholder,
+  renderChapterList,
+} from "./chapter-list.js";
 import { renderTranslationCards } from "./cards.js";
 import {
   renderTranslationList,
@@ -14,7 +25,6 @@ import {
   TRANSLATION_ORDER_KEY,
   state,
   storeBookmarkedChapters,
-  storeHistoryIndex,
   storeLastChapterIndex,
   storeReadChapters,
   storeReadOrder,
@@ -132,61 +142,9 @@ if (translationListEl) {
 renderTranslationList();
 
 
-const chapterListPlaceholder = document.getElementById(
-  "chapter-list-placeholder"
-);
 
 const sharedChapter = getSharedChapterFromUrl();
 
-function renderChapterList() {
-  const existingTable = document.getElementById("chapter-list");
-  if (existingTable) existingTable.remove();
-  const existingEmpty =
-    chapterListPlaceholder.querySelector(".chapter-list-empty");
-  if (existingEmpty) existingEmpty.remove();
-
-  const chapters = [];
-  for (let n = 1; n <= totalChapters; n++) {
-    if (state.chapterListFilter === "all") {
-      chapters.push(n);
-    } else if (
-      state.chapterListFilter === "unread" &&
-      !state.readChapters.includes(n)
-    ) {
-      chapters.push(n);
-    } else if (
-      state.chapterListFilter === "bookmarked" &&
-      state.bookmarkedChapters.includes(n)
-    ) {
-      chapters.push(n);
-    }
-  }
-
-  if (chapters.length === 0) {
-    const empty = document.createElement("P");
-    empty.classList.add("chapter-list-empty");
-    empty.textContent =
-      state.chapterListFilter === "bookmarked"
-        ? "No starred chapters yet. Tap the star while reading to save a chapter to this list."
-        : "You've read every chapter. Nice.";
-    chapterListPlaceholder.appendChild(empty);
-    return;
-  }
-
-  const root = document.createElement("TABLE");
-  root.setAttribute("id", "chapter-list");
-  chapterListPlaceholder.appendChild(root);
-  chapters.forEach((n) => {
-    const link = document.createElement("BUTTON");
-    link.type = "button";
-    link.classList.add("chapter-link");
-    link.dataset.chapter = n;
-    link.innerText = `${n}`;
-    const cell = document.createElement("TD");
-    cell.appendChild(link);
-    root.appendChild(cell);
-  });
-}
 
 /* Delegated once on the placeholder, which outlives the table that
  * renderChapterList tears down and rebuilds on every filter change. */
@@ -198,81 +156,12 @@ chapterListPlaceholder.addEventListener("click", (e) => {
 });
 
 /**
- * History control
- *
- * readOrder is an append-only log of chapter numbers in the order they were
- * shown. historyIndex is a negative offset from the end of that log: -1 is the
- * newest entry, -2 the one before it. So the chapter currently on screen sits
- * at readOrder[readOrder.length + historyIndex], and everything the nav shows
- * is a lookup at an offset from there.
- */
 
 
-/* Ordered outwards from the reader: nearest chapter first. */
-const prevChapterSlots = [
-  document.getElementById("prev-ch"),
-  document.getElementById("prev-ch-2"),
-  document.getElementById("prev-ch-3"),
-];
-const nextChapterSlots = [
-  document.getElementById("next-ch"),
-  document.getElementById("next-ch-2"),
-  document.getElementById("next-ch-3"),
-];
-const seekBackButton = document.getElementById("ch-seek-back");
-const seekFwdButton = document.getElementById("ch-seek-fwd");
-const historyDisplay = document.getElementById("history-nav");
-const displayArea = document.getElementById("display");
 
-/* The chapter `offset` places before (negative) or after (positive) the one on
- * screen, or undefined when that position falls outside the log. */
-function historyChapterAt(offset) {
-  const position = state.readOrder.length + state.historyIndex + offset;
-  return position >= 0 && position < state.readOrder.length
-    ? state.readOrder[position]
-    : undefined;
-}
 
-/* Fills every slot from the log and reports what it put there, so nothing has
- * to read the rendered text back to find out. */
-function renderHistorySlots(slots, direction) {
-  return slots.map((slot, depth) => {
-    const chapter = historyChapterAt(direction * (depth + 1));
-    slot.textContent = chapter === undefined ? "" : String(chapter);
-    slot.classList.toggle("history-hide", chapter === undefined);
-    return chapter;
-  });
-}
 
-function renderHistory() {
-  const previous = renderHistorySlots(prevChapterSlots, -1);
-  const next = renderHistorySlots(nextChapterSlots, 1);
 
-  /* Slots run outwards, so an empty nearest slot means the rest are empty. */
-  const hasPrevious = previous[0] !== undefined;
-  const hasNext = next[0] !== undefined;
-  seekBackButton.style.display = hasPrevious ? "inline-block" : "none";
-  seekFwdButton.style.display = hasNext ? "inline-block" : "none";
-
-  const hasHistory = hasPrevious || hasNext;
-  historyDisplay.style.display = hasHistory ? "flex" : "none";
-  if (hasHistory) {
-    /* Measured after the display change above, so the nav has a layout. */
-    document.documentElement.style.setProperty(
-      "--history-nav-height",
-      `${historyDisplay.offsetHeight}px`
-    );
-    displayArea.classList.remove("history-collapsed");
-  } else {
-    displayArea.classList.add("history-collapsed");
-  }
-}
-
-function setHistoryIndex(index = -1) {
-  state.historyIndex = index;
-  storeHistoryIndex();
-  renderHistory();
-}
 
 /* Size the nav before the first cards paint. */
 renderHistory();
@@ -607,6 +496,8 @@ function refreshCurrentChapter() {
 }
 
 /* Bookmarks */
+
+const displayArea = document.getElementById("display");
 
 displayArea.addEventListener("click", (e) => {
   const toggle = e.target.closest(".bookmark-toggle");
