@@ -20,15 +20,16 @@ that:
   returns exactly what shipped. A GitHub Release is a separate, optional
   announcement layer, worth creating only for notable versions.
 - **The release number lives in three places that must move together:**
-  `APP_VERSION` in `util.js`, `version` in `package.json`, and the tag.
+  `APP_VERSION` in `js/settings.js`, `version` in `package.json`, and the tag.
   `test/smoke.mjs` fails if the footer and `package.json` disagree, which
   catches two of the three; the tag is on you to check.
 
 `APP_VERSION` renders in the page footer, so there is no such thing as a silent
 bump — the footer names the version a reader is looking at.
 
-**`storageEpoch` in `util.js` is a different number and must never be synced to
-the release version.** It counts how many times stored data has changed shape.
+**`storageEpoch` in `js/settings.js` is a different number and must never be
+synced to the release version.** It counts how many times stored data has
+changed shape.
 Changing it wipes every reader's saved reading history, stars, translation
 selections and theme, so it moves only when stored data genuinely becomes
 unreadable, and never to match a release. Its localStorage key is `"version"`
@@ -73,9 +74,32 @@ run it before pushing anything.
 
 ## Layout
 
-- `index.html`, `about.html` — the two pages
-- `script.js` — reading, history, search, library and bookmarks; imports `dao.js`
-- `util.js` — version, themes, and the settings controls; loaded by both pages
-- `dao.js` — the translations and their sources, exported as data. Large, and
+`index.html` and `about.html` are the two pages. All the JavaScript is in `js/`,
+and imports run in one direction — data, then state, then renderers, then the
+entry modules. Nothing imports upwards, which is what keeps the graph free of
+cycles.
+
+Entry modules, loaded by a script tag:
+
+- `js/settings.js` — both pages. `APP_VERSION`, `storageEpoch`, themes, font
+  size, view mode, landing mode.
+- `js/main.js` — the reading page only. Every action and every event listener:
+  opening a chapter, seeking history, editing the selection, the modals,
+  sharing, stars. The largest file, and the only one that composes the others.
+
+Below them:
+
+- `js/dao.js` — the translations and their sources, exported as data. Large, and
   reproducing its text in output is not appropriate; treat it as a data file.
-- `test/smoke.mjs` — the smoke test
+- `js/catalog.js` — which translations exist, their slugs, sort order, chapter
+  count, and share-link parsing. Never changes as a reader uses the site.
+- `js/state.js` — everything kept between renders, on one object because a
+  module cannot assign to a binding it imports, plus every localStorage write
+  the reading page makes.
+- `js/util.js` — stateless helpers with no side effects on import.
+- `js/cards.js`, `js/translation-list.js`, `js/chapter-list.js`,
+  `js/history.js`, `js/search.js` — renderers. Each draws from state and
+  returns; none of them calls an action, which is why none of them needs
+  `main.js`.
+
+`test/smoke.mjs` is the smoke test.

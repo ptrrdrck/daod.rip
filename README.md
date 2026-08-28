@@ -168,9 +168,13 @@ adding or editing a translation will not break it.
 | --- | --- |
 | `index.html` | The reading page, including the settings, search and library dialogs. |
 | `about.html` | The about page. |
-| `script.js` | Reading, history, search, library and stars. |
-| `util.js` | Version, themes, and the settings controls. Loaded by both pages. |
-| `dao.js` | The translations and their sources, exported as data. |
+| `js/main.js` | Every action and listener on the reading page: opening chapters, history, the modals, sharing, stars. |
+| `js/settings.js` | Version, themes, font size, view and landing mode. Loaded by both pages. |
+| `js/state.js` | What is kept between renders, and every localStorage write. |
+| `js/catalog.js` | Which translations exist, how they sort, and how a share link names them. |
+| `js/cards.js`, `js/translation-list.js`, `js/chapter-list.js`, `js/history.js`, `js/search.js` | The renderers, one per part of the page. |
+| `js/util.js` | Stateless helpers shared by both entry modules. |
+| `js/dao.js` | The translations and their sources, exported as data. |
 | `style.css` | All of the styling, including the theme variables. |
 | `test/smoke.mjs` | The smoke test. |
 
