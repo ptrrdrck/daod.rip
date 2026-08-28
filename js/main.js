@@ -6,6 +6,15 @@
 
 import { dao, sources } from "./dao.js";
 import {
+  allTranslations,
+  alphabeticalTranslations,
+  getRandomTranslations,
+  getSharedChapterFromUrl,
+  getSharedTranslationsFromUrl,
+  nameToSlug,
+  totalChapters,
+} from "./catalog.js";
+import {
   escapeHtml,
   randNumb,
   setupChoiceSetting,
@@ -17,63 +26,6 @@ import {
  * reads what a reader saved. The script tags already run it first; this keeps
  * that true if they are ever reordered. */
 import "./settings.js";
-
-const allTranslations = Object.keys(dao);
-
-function getRandomTranslations(arr, num) {
-  return shuffle(arr.slice()).slice(0, num);
-}
-
-/* Every translation the site carries. `slug` is the short identity: it is the
- * ?t= value in a share link and, suffixed with -checkbox, the id of the row's
- * input. `sortKey` is the first translator's last name, spelled out rather
- * than pulled off the end of `name`, because no rule gets "Ursula K. Le Guin",
- * "Red Pine (Bill Porter)" and "Lin Yutang" all right at once. */
-const translationCatalog = [
-  { slug: "mitchell", name: "Stephen Mitchell", sortKey: "Mitchell" },
-  { slug: "fengEnglish", name: "Gia-Fu Feng & Jane English", sortKey: "Feng" },
-  {
-    slug: "addissLombardo",
-    name: "Stephen Addiss & Stanley Lombardo",
-    sortKey: "Addiss",
-  },
-  { slug: "lin", name: "Derek Lin", sortKey: "Lin" },
-  { slug: "legge", name: "James Legge", sortKey: "Legge" },
-  { slug: "leguin", name: "Ursula K. Le Guin", sortKey: "Le Guin" },
-  { slug: "lau", name: "D. C. Lau", sortKey: "Lau" },
-  { slug: "yutang", name: "Lin Yutang", sortKey: "Yutang" },
-  { slug: "henricks", name: "Robert G. Henricks", sortKey: "Henricks" },
-  { slug: "redpine", name: "Red Pine (Bill Porter)", sortKey: "Red Pine" },
-];
-
-const slugToName = Object.fromEntries(
-  translationCatalog.map(({ slug, name }) => [slug, name])
-);
-const nameToSlug = Object.fromEntries(
-  translationCatalog.map(({ slug, name }) => [name, slug])
-);
-
-/* Where an unselected translation sits in the library list. Spaces are folded
- * out before comparing so it reads letter by letter, the way a bookshelf does:
- * Legge comes before Le Guin. */
-const alphabeticalTranslations = translationCatalog
-  .slice()
-  .sort((a, b) =>
-    a.sortKey.replace(/\s+/g, "").localeCompare(b.sortKey.replace(/\s+/g, ""))
-  )
-  .map(({ name }) => name);
-
-function getSharedTranslationsFromUrl() {
-  const t = new URLSearchParams(window.location.search).get("t");
-  if (!t) {
-    return null;
-  }
-  const names = t
-    .split(",")
-    .map((slug) => slugToName[slug])
-    .filter(Boolean);
-  return names.length ? names : null;
-}
 
 let selectedTranslations =
   getSharedTranslationsFromUrl() ||
@@ -246,16 +198,10 @@ let readChapters = JSON.parse(localStorage.getItem("readChapters")) || [];
 let bookmarkedChapters =
   JSON.parse(localStorage.getItem("bookmarkedChapters")) || [];
 
-const totalChapters = dao[allTranslations[0]].length;
 const chapterListPlaceholder = document.getElementById(
   "chapter-list-placeholder"
 );
 let chapterListFilter = "unread";
-
-function getSharedChapterFromUrl() {
-  const ch = parseInt(new URLSearchParams(window.location.search).get("ch"), 10);
-  return Number.isInteger(ch) && ch >= 1 && ch <= totalChapters ? ch : null;
-}
 
 const sharedChapter = getSharedChapterFromUrl();
 
@@ -404,8 +350,6 @@ let currentChapterIndex;
 const dripButton = document.getElementById("drip-button");
 const yinYang = document.getElementById("yin-yang");
 
-
-
 function buildTranslationCard(translation, chapterIndex) {
   const isBookmarked = bookmarkedChapters.includes(chapterIndex + 1);
   const starLabel = isBookmarked ? "Remove star" : "Star this chapter";
@@ -462,7 +406,6 @@ function renderTranslationCards(chapterIndex, shuffleCards) {
 
 const SEARCH_MIN_LENGTH = 2;
 const SEARCH_SNIPPET_RADIUS = 40;
-
 
 function extractSnippet(text, query) {
   const lowerText = text.toLowerCase();
@@ -781,7 +724,6 @@ searchModal.addEventListener("close", () => {
 });
 
 resetSearchModal();
-
 
 function refreshCurrentChapter() {
   renderTranslationCards(currentChapterIndex, false);
