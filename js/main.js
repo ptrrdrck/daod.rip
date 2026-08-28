@@ -6,11 +6,18 @@
 
 import { dao, sources } from "./dao.js";
 import {
+  state,
+  storeBookmarkedChapters,
+  storeHistoryIndex,
+  storeLastChapterIndex,
+  storeReadChapters,
+  storeReadOrder,
+  storeSelectedTranslations,
+} from "./state.js";
+import {
   allTranslations,
   alphabeticalTranslations,
-  getRandomTranslations,
   getSharedChapterFromUrl,
-  getSharedTranslationsFromUrl,
   nameToSlug,
   totalChapters,
 } from "./catalog.js";
@@ -27,16 +34,12 @@ import {
  * that true if they are ever reordered. */
 import "./settings.js";
 
-let selectedTranslations =
-  getSharedTranslationsFromUrl() ||
-  JSON.parse(localStorage.getItem("selectedTranslations")) ||
-  getRandomTranslations(allTranslations, 3);
 
 storeSelectedTranslations();
 
 /* Translation order
  *
- * "shuffled" reshuffles selectedTranslations on every new chapter and keeps
+ * "shuffled" reshuffles the selection on every new chapter and keeps
  * the result, so the library list always shows the order the cards are in.
  * "manual" leaves that order alone, which is what the arrows in the library
  * list set. Readers who had turned the old shuffle checkbox off meant manual,
@@ -66,7 +69,7 @@ function translationOrderIsShuffled() {
 /* Translation list (Translations tab)
  *
  * Selected translations first, in the order their cards appear, then the rest
- * alphabetically. The list is rebuilt from selectedTranslations rather than
+ * alphabetically. The list is rebuilt from the selection rather than
  * edited in place, so it cannot drift from what is on screen; that is also why
  * its handlers are delegated on the container, which outlives the rows.
  *
@@ -119,13 +122,13 @@ function translationRowHtml(name, selected, canMoveUp, canMoveDown) {
 function renderTranslationList() {
   if (!translationListEl) return;
   const unselected = alphabeticalTranslations.filter(
-    (name) => !selectedTranslations.includes(name)
+    (name) => !state.selectedTranslations.includes(name)
   );
   /* A selected row's down arrow is never dead: at the bottom of the block it
    * drops the translation into the unselected tail. An unselected row's up
    * arrow selects it; its down arrow has nowhere to go, the tail being sorted
    * rather than ordered. */
-  const rows = selectedTranslations.map((name, index) =>
+  const rows = state.selectedTranslations.map((name, index) =>
     translationRowHtml(name, true, index > 0, true)
   );
   if (rows.length > 0 && unselected.length > 0) {
@@ -149,22 +152,23 @@ function commitTranslationChange() {
  * down leaves the selection. There is nowhere below the tail to go, and the
  * tail sorts itself, so those rows get no down arrow. */
 function moveTranslation(name, direction) {
-  const index = selectedTranslations.indexOf(name);
+  const selected = state.selectedTranslations;
+  const index = selected.indexOf(name);
   if (index === -1) {
     if (direction === "down") return;
-    selectedTranslations.push(name);
+    selected.push(name);
   } else if (direction === "up") {
     if (index === 0) return;
-    [selectedTranslations[index - 1], selectedTranslations[index]] = [
-      selectedTranslations[index],
-      selectedTranslations[index - 1],
+    [selected[index - 1], selected[index]] = [
+      selected[index],
+      selected[index - 1],
     ];
-  } else if (index === selectedTranslations.length - 1) {
-    selectedTranslations.splice(index, 1);
+  } else if (index === selected.length - 1) {
+    selected.splice(index, 1);
   } else {
-    [selectedTranslations[index], selectedTranslations[index + 1]] = [
-      selectedTranslations[index + 1],
-      selectedTranslations[index],
+    [selected[index], selected[index + 1]] = [
+      selected[index + 1],
+      selected[index],
     ];
   }
   /* Having placed a translation by hand, the reader would not thank us for
@@ -187,21 +191,17 @@ if (translationListEl) {
   translationListEl.addEventListener("change", (e) => {
     const row = e.target.closest(".translation-row");
     if (!row) return;
-    toggleArrayItem(selectedTranslations, row.dataset.translation);
+    toggleArrayItem(state.selectedTranslations, row.dataset.translation);
     commitTranslationChange();
   });
 }
 
 renderTranslationList();
 
-let readChapters = JSON.parse(localStorage.getItem("readChapters")) || [];
-let bookmarkedChapters =
-  JSON.parse(localStorage.getItem("bookmarkedChapters")) || [];
 
 const chapterListPlaceholder = document.getElementById(
   "chapter-list-placeholder"
 );
-let chapterListFilter = "unread";
 
 const sharedChapter = getSharedChapterFromUrl();
 
@@ -214,13 +214,16 @@ function renderChapterList() {
 
   const chapters = [];
   for (let n = 1; n <= totalChapters; n++) {
-    if (chapterListFilter === "all") {
-      chapters.push(n);
-    } else if (chapterListFilter === "unread" && !readChapters.includes(n)) {
+    if (state.chapterListFilter === "all") {
       chapters.push(n);
     } else if (
-      chapterListFilter === "bookmarked" &&
-      bookmarkedChapters.includes(n)
+      state.chapterListFilter === "unread" &&
+      !state.readChapters.includes(n)
+    ) {
+      chapters.push(n);
+    } else if (
+      state.chapterListFilter === "bookmarked" &&
+      state.bookmarkedChapters.includes(n)
     ) {
       chapters.push(n);
     }
@@ -230,7 +233,7 @@ function renderChapterList() {
     const empty = document.createElement("P");
     empty.classList.add("chapter-list-empty");
     empty.textContent =
-      chapterListFilter === "bookmarked"
+      state.chapterListFilter === "bookmarked"
         ? "No starred chapters yet. Tap the star while reading to save a chapter to this list."
         : "You've read every chapter. Nice.";
     chapterListPlaceholder.appendChild(empty);
@@ -271,8 +274,6 @@ chapterListPlaceholder.addEventListener("click", (e) => {
  * is a lookup at an offset from there.
  */
 
-let readOrder = JSON.parse(localStorage.getItem("readOrder")) || [];
-let historyIndex = -1;
 
 /* Ordered outwards from the reader: nearest chapter first. */
 const prevChapterSlots = [
@@ -293,9 +294,9 @@ const displayArea = document.getElementById("display");
 /* The chapter `offset` places before (negative) or after (positive) the one on
  * screen, or undefined when that position falls outside the log. */
 function historyChapterAt(offset) {
-  const position = readOrder.length + historyIndex + offset;
-  return position >= 0 && position < readOrder.length
-    ? readOrder[position]
+  const position = state.readOrder.length + state.historyIndex + offset;
+  return position >= 0 && position < state.readOrder.length
+    ? state.readOrder[position]
     : undefined;
 }
 
@@ -335,8 +336,8 @@ function renderHistory() {
 }
 
 function setHistoryIndex(index = -1) {
-  historyIndex = index;
-  localStorage.setItem("historyIndex", historyIndex);
+  state.historyIndex = index;
+  storeHistoryIndex();
   renderHistory();
 }
 
@@ -345,13 +346,12 @@ renderHistory();
 
 /* Random chapter selection */
 
-let currentChapterIndex;
 
 const dripButton = document.getElementById("drip-button");
 const yinYang = document.getElementById("yin-yang");
 
 function buildTranslationCard(translation, chapterIndex) {
-  const isBookmarked = bookmarkedChapters.includes(chapterIndex + 1);
+  const isBookmarked = state.bookmarkedChapters.includes(chapterIndex + 1);
   const starLabel = isBookmarked ? "Remove star" : "Star this chapter";
   const sourceUrl = sources[translation][1];
   const reference = sources[translation][2];
@@ -381,23 +381,23 @@ function buildTranslationCard(translation, chapterIndex) {
   </div>`;
 }
 
-/* Cards come out in selectedTranslations order, always. Shuffling rewrites
+/* Cards come out in selection order, always. Shuffling rewrites
  * that array rather than the rendered cards, which is what keeps the library
  * list honest about what is on screen. Only the calls that open a chapter
  * pass shuffleCards; redrawing after a selection or order edit must not
  * reshuffle the thing the reader just set. */
 function renderTranslationCards(chapterIndex, shuffleCards) {
   if (shuffleCards && translationOrderIsShuffled()) {
-    shuffle(selectedTranslations);
+    shuffle(state.selectedTranslations);
     storeSelectedTranslations();
     renderTranslationList();
   }
-  if (selectedTranslations.length === 0) {
+  if (state.selectedTranslations.length === 0) {
     displayArea.innerHTML =
       '<p class="empty-state">No translations selected — pick some in the Library.</p>';
     return;
   }
-  displayArea.innerHTML = selectedTranslations
+  displayArea.innerHTML = state.selectedTranslations
     .map((translation) => buildTranslationCard(translation, chapterIndex))
     .join("");
 }
@@ -449,22 +449,22 @@ function searchTranslations(query) {
 function newRandomChapter() {
   const randomChapter = randNumb(totalChapters);
   renderTranslationCards(randomChapter, true);
-  if (readChapters.indexOf(randomChapter + 1) === -1) {
-    readChapters.push(randomChapter + 1);
+  if (state.readChapters.indexOf(randomChapter + 1) === -1) {
+    state.readChapters.push(randomChapter + 1);
   }
-  localStorage.setItem("readChapters", JSON.stringify(readChapters));
+  storeReadChapters();
   renderChapterList();
-  readOrder.push(randomChapter + 1);
-  localStorage.setItem("readOrder", JSON.stringify(readOrder));
+  state.readOrder.push(randomChapter + 1);
+  storeReadOrder();
   setHistoryIndex();
-  currentChapterIndex = randomChapter;
-  localStorage.setItem("lastChapterIndex", randomChapter);
+  state.currentChapterIndex = randomChapter;
+  storeLastChapterIndex();
 }
 
 function resumeChapter(chapter) {
   renderTranslationCards(chapter, true);
-  currentChapterIndex = chapter;
-  localStorage.setItem("lastChapterIndex", chapter);
+  state.currentChapterIndex = chapter;
+  storeLastChapterIndex();
   renderChapterList();
   const storedHistoryIndex = localStorage.getItem("historyIndex");
   const restoredHistoryIndex =
@@ -498,8 +498,8 @@ yinYang.addEventListener("click", () => {
 
 function showHistoryChapter(chapter) {
   renderTranslationCards(chapter - 1, false);
-  currentChapterIndex = chapter - 1;
-  localStorage.setItem("lastChapterIndex", chapter - 1);
+  state.currentChapterIndex = chapter - 1;
+  storeLastChapterIndex();
 }
 
 /* Read the target before moving the index, so the two steps cannot be
@@ -508,7 +508,7 @@ function seek(direction) {
   const chapter = historyChapterAt(direction);
   if (chapter === undefined) return;
   showHistoryChapter(chapter);
-  setHistoryIndex(historyIndex + direction);
+  setHistoryIndex(state.historyIndex + direction);
 }
 
 seekBackButton.addEventListener("click", () => seek(-1));
@@ -517,16 +517,16 @@ seekFwdButton.addEventListener("click", () => seek(1));
 function viewChapter(chapter) {
   renderTranslationCards(chapter, true);
   window.scrollTo({ top: 0, behavior: "smooth" });
-  if (readChapters.indexOf(chapter + 1) === -1) {
-    readChapters.push(chapter + 1);
+  if (state.readChapters.indexOf(chapter + 1) === -1) {
+    state.readChapters.push(chapter + 1);
   }
-  localStorage.setItem("readChapters", JSON.stringify(readChapters));
+  storeReadChapters();
   renderChapterList();
-  readOrder.push(chapter + 1);
-  localStorage.setItem("readOrder", JSON.stringify(readOrder));
+  state.readOrder.push(chapter + 1);
+  storeReadOrder();
   setHistoryIndex();
-  currentChapterIndex = chapter;
-  localStorage.setItem("lastChapterIndex", chapter);
+  state.currentChapterIndex = chapter;
+  storeLastChapterIndex();
 }
 
 /* Share link */
@@ -538,10 +538,10 @@ const topShareButtonCheckIcon =
 
 topShareButton.addEventListener("click", async () => {
   const params = new URLSearchParams();
-  params.set("ch", currentChapterIndex + 1);
+  params.set("ch", state.currentChapterIndex + 1);
   params.set(
     "t",
-    selectedTranslations.map((name) => nameToSlug[name]).join(",")
+    state.selectedTranslations.map((name) => nameToSlug[name]).join(",")
   );
   const shareUrl = `${location.origin}${location.pathname}?${params.toString()}`;
 
@@ -662,15 +662,9 @@ searchInput.addEventListener("input", () => {
   searchDebounceTimer = setTimeout(runSearch, 180);
 });
 
-function storeSelectedTranslations() {
-  localStorage.setItem(
-    "selectedTranslations",
-    JSON.stringify(selectedTranslations)
-  );
-}
 
 function setSelectedTranslations(translations) {
-  selectedTranslations = translations.slice();
+  state.selectedTranslations = translations.slice();
   storeSelectedTranslations();
   renderTranslationList();
 }
@@ -726,7 +720,7 @@ searchModal.addEventListener("close", () => {
 resetSearchModal();
 
 function refreshCurrentChapter() {
-  renderTranslationCards(currentChapterIndex, false);
+  renderTranslationCards(state.currentChapterIndex, false);
 }
 
 /* Bookmarks */
@@ -734,12 +728,11 @@ function refreshCurrentChapter() {
 displayArea.addEventListener("click", (e) => {
   const toggle = e.target.closest(".bookmark-toggle");
   if (!toggle) return;
-  toggleArrayItem(bookmarkedChapters, currentChapterIndex + 1);
-  localStorage.setItem(
-    "bookmarkedChapters",
-    JSON.stringify(bookmarkedChapters)
+  toggleArrayItem(state.bookmarkedChapters, state.currentChapterIndex + 1);
+  storeBookmarkedChapters();
+  const nowBookmarked = state.bookmarkedChapters.includes(
+    state.currentChapterIndex + 1
   );
-  const nowBookmarked = bookmarkedChapters.includes(currentChapterIndex + 1);
   document.querySelectorAll("#display .bookmark-toggle").forEach((btn) => {
     btn.classList.toggle("bookmarked", nowBookmarked);
     btn.setAttribute("aria-pressed", nowBookmarked);
@@ -766,7 +759,7 @@ setupChoiceSetting({
     { value: "bookmarked", buttonId: "chapter-filter-bookmarked" },
   ],
   apply(filter) {
-    chapterListFilter = filter;
+    state.chapterListFilter = filter;
     resetUnreadButton.hidden = filter !== "unread";
     renderChapterList();
   },
@@ -774,7 +767,7 @@ setupChoiceSetting({
 
 resetUnreadButton.addEventListener("click", () => {
   localStorage.removeItem("readChapters");
-  readChapters = [];
+  state.readChapters = [];
   renderChapterList();
 });
 
@@ -818,9 +811,9 @@ setupChoiceSetting({
  * checkmark. */
 selectAllTranslationsButton.addEventListener("click", () => {
   setSelectedTranslations(
-    selectedTranslations.concat(
+    state.selectedTranslations.concat(
       alphabeticalTranslations.filter(
-        (name) => !selectedTranslations.includes(name)
+        (name) => !state.selectedTranslations.includes(name)
       )
     )
   );
