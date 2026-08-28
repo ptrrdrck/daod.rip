@@ -5,7 +5,7 @@
  */
 
 import { dao, sources } from "./dao.js";
-import { setupChoiceSetting } from "./util.js";
+import { setupChoiceSetting } from "./settings.js";
 
 const allTranslations = Object.keys(dao);
 
