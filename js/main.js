@@ -5,7 +5,18 @@
  */
 
 import { dao, sources } from "./dao.js";
-import { setupChoiceSetting } from "./settings.js";
+import {
+  escapeHtml,
+  randNumb,
+  setupChoiceSetting,
+  shuffle,
+  toggleArrayItem,
+} from "./util.js";
+/* Imported for its side effects, not for a value. settings.js clears storage
+ * when the storage epoch moves, and that has to happen before anything here
+ * reads what a reader saved. The script tags already run it first; this keeps
+ * that true if they are ever reordered. */
+import "./settings.js";
 
 const allTranslations = Object.keys(dao);
 
@@ -393,17 +404,7 @@ let currentChapterIndex;
 const dripButton = document.getElementById("drip-button");
 const yinYang = document.getElementById("yin-yang");
 
-function randNumb(num) {
-  return Math.floor(Math.random() * num);
-}
 
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
 
 function buildTranslationCard(translation, chapterIndex) {
   const isBookmarked = bookmarkedChapters.includes(chapterIndex + 1);
@@ -462,14 +463,6 @@ function renderTranslationCards(chapterIndex, shuffleCards) {
 const SEARCH_MIN_LENGTH = 2;
 const SEARCH_SNIPPET_RADIUS = 40;
 
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
 
 function extractSnippet(text, query) {
   const lowerText = text.toLowerCase();
@@ -789,14 +782,6 @@ searchModal.addEventListener("close", () => {
 
 resetSearchModal();
 
-function toggleArrayItem(array, item) {
-  const i = array.indexOf(item);
-  if (i === -1) {
-    array.push(item);
-  } else {
-    array.splice(i, 1);
-  }
-}
 
 function refreshCurrentChapter() {
   renderTranslationCards(currentChapterIndex, false);
