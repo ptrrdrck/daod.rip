@@ -4,12 +4,14 @@
  * from characteristically distinct translations.
  */
 
-import { dao, sources } from "./dao.js";
+import { dao } from "./dao.js";
+import { renderTranslationCards } from "./cards.js";
 import {
   renderTranslationList,
   translationListEl,
 } from "./translation-list.js";
 import {
+  TRANSLATION_ORDER_KEY,
   state,
   storeBookmarkedChapters,
   storeHistoryIndex,
@@ -29,7 +31,6 @@ import {
   escapeHtml,
   randNumb,
   setupChoiceSetting,
-  shuffle,
   toggleArrayItem,
 } from "./util.js";
 /* Imported for its side effects, not for a value. settings.js clears storage
@@ -48,7 +49,6 @@ storeSelectedTranslations();
  * "manual" leaves that order alone, which is what the arrows in the library
  * list set. Readers who had turned the old shuffle checkbox off meant manual,
  * so carry them over rather than silently reshuffling for them. */
-const TRANSLATION_ORDER_KEY = "translationOrder";
 
 if (
   localStorage.getItem(TRANSLATION_ORDER_KEY) === null &&
@@ -66,9 +66,6 @@ const translationOrderSetting = setupChoiceSetting({
   ],
 });
 
-function translationOrderIsShuffled() {
-  return localStorage.getItem(TRANSLATION_ORDER_KEY) === "shuffled";
-}
 
 
 
@@ -286,57 +283,7 @@ renderHistory();
 const dripButton = document.getElementById("drip-button");
 const yinYang = document.getElementById("yin-yang");
 
-function buildTranslationCard(translation, chapterIndex) {
-  const isBookmarked = state.bookmarkedChapters.includes(chapterIndex + 1);
-  const starLabel = isBookmarked ? "Remove star" : "Star this chapter";
-  const sourceUrl = sources[translation][1];
-  const reference = sources[translation][2];
-  return `<div class="translation">
-    <div class="translation-header">
-      <span class="chapter-number">Chapter ${chapterIndex + 1}</span>
-      <span class="chapter-translator">${escapeHtml(translation)}</span>
-    </div>
-    <button
-      type="button"
-      class="bookmark-toggle${isBookmarked ? " bookmarked" : ""}"
-      aria-pressed="${isBookmarked}"
-      aria-label="${starLabel}"
-      title="${starLabel}"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-      </svg>
-    </button>
-    <p class="translation-text">${escapeHtml(dao[translation][chapterIndex])}</p>
-    <div class="trans-info">
-      <span class="trans-ref">${escapeHtml(reference)}</span><br />
-      <a href="${escapeHtml(
-        sourceUrl
-      )}" class="trans-link" target="_blank" rel="noopener noreferrer">Source</a>
-    </div>
-  </div>`;
-}
 
-/* Cards come out in selection order, always. Shuffling rewrites
- * that array rather than the rendered cards, which is what keeps the library
- * list honest about what is on screen. Only the calls that open a chapter
- * pass shuffleCards; redrawing after a selection or order edit must not
- * reshuffle the thing the reader just set. */
-function renderTranslationCards(chapterIndex, shuffleCards) {
-  if (shuffleCards && translationOrderIsShuffled()) {
-    shuffle(state.selectedTranslations);
-    storeSelectedTranslations();
-    renderTranslationList();
-  }
-  if (state.selectedTranslations.length === 0) {
-    displayArea.innerHTML =
-      '<p class="empty-state">No translations selected — pick some in the Library.</p>';
-    return;
-  }
-  displayArea.innerHTML = state.selectedTranslations
-    .map((translation) => buildTranslationCard(translation, chapterIndex))
-    .join("");
-}
 
 /* Search */
 

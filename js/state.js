@@ -18,6 +18,14 @@ import {
   getSharedTranslationsFromUrl,
 } from "./catalog.js";
 
+/* Which way the cards are ordered. The buttons that set it live in
+ * main.js; this is only the reading of what they stored. */
+export const TRANSLATION_ORDER_KEY = "translationOrder";
+
+export function translationOrderIsShuffled() {
+  return localStorage.getItem(TRANSLATION_ORDER_KEY) === "shuffled";
+}
+
 export const state = {
   /* Cards appear in this order, and the library list shows the same one. */
   selectedTranslations:
