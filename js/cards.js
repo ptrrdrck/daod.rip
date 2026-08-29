@@ -8,6 +8,7 @@
  */
 
 import { dao, sources } from "./dao.js";
+import { buyUrl, catalogEntry, rightsLabel } from "./catalog.js";
 import {
   state,
   storeSelectedTranslations,
@@ -21,8 +22,26 @@ const displayArea = document.getElementById("display");
 export function buildTranslationCard(translation, chapterIndex) {
   const isBookmarked = state.bookmarkedChapters.includes(chapterIndex + 1);
   const starLabel = isBookmarked ? "Remove star" : "Star this chapter";
-  const sourceUrl = sources[translation][1];
   const reference = sources[translation][2];
+  const entry = catalogEntry(translation);
+  const buy = buyUrl(translation);
+  /* A translation still in print is worth buying and a translation in the
+   * public domain is worth reading for nothing, so a card offers whichever
+   * applies rather than the same link twice. Legge is the one that has both. */
+  const links = [
+    entry && entry.freeText
+      ? `<a href="${escapeHtml(
+          entry.freeText
+        )}" class="trans-link" target="_blank" rel="noopener noreferrer">Read free</a>`
+      : "",
+    buy
+      ? `<a href="${escapeHtml(
+          buy
+        )}" class="trans-link" target="_blank" rel="noopener noreferrer">Buy the book</a>`
+      : "",
+  ]
+    .filter(Boolean)
+    .join("");
   return `<div class="translation">
     <div class="translation-header">
       <span class="chapter-number">Chapter ${chapterIndex + 1}</span>
@@ -41,10 +60,9 @@ export function buildTranslationCard(translation, chapterIndex) {
     </button>
     <p class="translation-text">${escapeHtml(dao[translation][chapterIndex])}</p>
     <div class="trans-info">
-      <span class="trans-ref">${escapeHtml(reference)}</span><br />
-      <a href="${escapeHtml(
-        sourceUrl
-      )}" class="trans-link" target="_blank" rel="noopener noreferrer">Source</a>
+      <span class="trans-ref">${escapeHtml(reference)}</span>
+      <span class="trans-rights">${escapeHtml(rightsLabel(translation))}</span>
+      <span class="trans-links">${links}</span>
     </div>
   </div>`;
 }

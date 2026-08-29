@@ -129,9 +129,15 @@ browsing data clears it.
 | Gia-Fu Feng & Jane English | *Tao Te Ching* — Vintage Books (2011) |
 | Ursula K. Le Guin | *Tao Te Ching: A Book about the Way and the Power of the Way* — Shambhala (2011) |
 
-The chapters are reproduced under provisions 106 and 107 of Public Law 94-553,
-which permit limited reproduction of copyrighted material for educational and
-scholarly purposes. Each card links to its source; the books are worth owning.
+Nine of these are still in copyright and are reproduced under provisions 106
+and 107 of Public Law 94-553, which permit limited reproduction of copyrighted
+material for educational and scholarly purposes. Legge (1891) is public domain.
+Every card names the translator, the year and the publisher, and links to buy
+the book; the books are worth owning.
+
+That permission covers showing the translations here, and does not stretch to
+reproducing them anywhere else. [`RIGHTS.md`](RIGHTS.md) sets out where each
+one stands and the check anything downstream has to pass first.
 
 ## Local development
 
@@ -154,8 +160,9 @@ the site, never for serving it:
 
 ```
 npm install
-npm test     # drives index.html and about.html in headless Chromium
-npm run lint # catches undefined references, which module scope now enforces
+npm test       # drives index.html and about.html in headless Chromium
+npm run lint   # catches undefined references, which module scope now enforces
+npm run corpus # checks dao.js and the catalog still agree about the corpus
 ```
 
 `npm test` starts its own static server on a free port, so nothing needs to be
@@ -171,12 +178,14 @@ adding or editing a translation will not break it.
 | `js/main.js` | Every action and listener on the reading page: opening chapters, history, the modals, sharing, stars. |
 | `js/settings.js` | Version, themes, font size, view and landing mode. Loaded by both pages. |
 | `js/state.js` | What is kept between renders, and every localStorage write. |
-| `js/catalog.js` | Which translations exist, how they sort, and how a share link names them. |
+| `js/catalog.js` | Which translations exist, how they sort, how a share link names them, and what may lawfully be done with each. |
 | `js/cards.js`, `js/translation-list.js`, `js/chapter-list.js`, `js/history.js`, `js/search.js` | The renderers, one per part of the page. |
 | `js/util.js` | Stateless helpers shared by both entry modules. |
 | `js/dao.js` | The translations and their sources, exported as data. |
 | `style.css` | All of the styling, including the theme variables. |
 | `test/smoke.mjs` | The smoke test. |
+| `tools/ingest.mjs` | Corpus checks, and the gate a new translation passes before joining. |
+| `RIGHTS.md` | What may be done with each translation, and what may not. |
 
 ## Versioning
 

@@ -37,6 +37,52 @@ differ. It counts how many times the shape of stored data has changed, and
 changing it wipes every reader's saved state. It is not a release version and
 should never be synced to this one.
 
+## 1.5.0 — 2026-08-29
+
+### Added
+
+- Every translation now carries its rights: the year, the publisher, and
+  whether it is public domain, still in copyright, or post-1930 and never
+  checked for renewal. A card prints that line under the citation, so a reader
+  can see who owns the words they are reading and a publisher who finds the
+  site finds their own name on the same line as their text. One of the ten —
+  Legge, 1891 — is unambiguously free to republish; Lin Yutang (1948) is the
+  one marked unverified.
+- `quotableInFull` in `js/catalog.js`, which is the only question anything
+  outside the site is allowed to ask before reproducing a translation. It
+  answers `true` for public-domain entries and nothing else. Putting the check
+  in the corpus rather than in each caller means a caller has to go out of its
+  way to be careless rather than merely forget to be careful. `RIGHTS.md`
+  explains what the site relies on for the other nine and why a feed, a print
+  run or an export does not get to rely on the same thing.
+- `tools/ingest.mjs`, run as `npm run corpus`. With `--verify` it checks what
+  is here — that dao.js and the catalog agree on which translations exist,
+  that each has 81 non-empty chapters, that no slug is used twice, and that
+  nothing claims public domain with a date after the 1930 cutoff. Given a
+  candidate file it checks a translation before it joins the corpus and prints
+  the blocks to paste in. It refuses anything still in copyright: adding one of
+  those is a decision to be made by hand, with the reasoning written down.
+  It deliberately does not edit `js/dao.js` itself, because saving a minute of
+  pasting is not worth a script that rewrites the one file the whole site is
+  built on.
+- `docs/permission-requests.md`: drafts asking Copper Canyon, Shambhala and
+  Harper for permission to quote short excerpts with attribution and a link to
+  buy the book. None have been sent.
+
+### Changed
+
+- The link at the foot of a card was labelled **Source** and went to Amazon,
+  which is two things it was not. It is now **Buy the book**, and it goes to
+  Bookshop.org, which pays a commission on the sale and splits a second one
+  across independent bookshops. Public-domain translations get a **Read free**
+  link to the full text alongside it. The ISBNs are the ISBN-13s of the same
+  editions the old links pointed at, so a reader lands on the same book.
+  `BOOKSHOP_AFFILIATE_ID` is empty until there is an id to put in it, and the
+  links reach the right book either way — they simply earn nothing first. The
+  card's other URL, the one pointing at a scan of the text, stays unlinked, as
+  it always has been.
+- `npm run lint` covers `tools` as well as `js` and `test`.
+
 ## 1.4.6 — 2026-08-29
 
 ### Fixed
