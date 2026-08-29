@@ -37,6 +37,35 @@ differ. It counts how many times the shape of stored data has changed, and
 changing it wipes every reader's saved state. It is not a release version and
 should never be synced to this one.
 
+## 1.4.6 — 2026-08-29
+
+### Fixed
+
+- The word "drip" sits on the middle of its button again. An earlier optical
+  nudge shifted it up to answer the descender on the "p", and overshot:
+  measured off the rendered glyphs at 4x, the word's ink box — ascender top to
+  descender bottom — sat 1.6px above centre on a phone, 2.3px on a tablet and
+  2.9px on a desktop, which reads as high on a circle. The asymmetric vertical
+  padding is retuned so every breakpoint lands within 0.4px of centre. The
+  padding sums are untouched, so the buttons are the same 88, 104 and 116px
+  circles they were. The numbers come from measurement rather than from the
+  font metrics, which disagreed with what Chromium actually drew by up to
+  1.4px, and the base rule now says so.
+
+### Changed
+
+- The Settings labels are title case: **Font Size** and **Page Load Chapter**,
+  matching Theme, View and Translation Order. The clear-storage confirmation no
+  longer lists the saved theme separately, since "all other settings" already
+  covers it. This shipped to `master` before this release and was never tagged,
+  so it is recorded here rather than left out of the history. As in 1.4.5, only
+  the visible text changes; the stored key and the button ids stay put, and the
+  aria-labels stay sentence case as every other aria-label on the site is. The
+  two assertions that name the setting follow the new text.
+- `package-lock.json` is ignored. `npm install` writes one, but the repository
+  has never tracked it: eslint and playwright exist only to run the checks, so
+  nothing served from daod.rip depends on the resolved tree.
+
 ## 1.4.5 — 2026-08-28
 
 ### Changed
