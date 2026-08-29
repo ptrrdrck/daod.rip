@@ -45,6 +45,7 @@ import {
 import {
   randNumb,
   setupChoiceSetting,
+  setupModal,
   toggleArrayItem,
 } from "./util.js";
 /* Imported for its side effects, not for a value. settings.js clears storage
@@ -292,22 +293,11 @@ topShareButton.addEventListener("click", async () => {
 
 /* Settings modal */
 
-const settingsButton = document.getElementById("settings-button");
-const settingsModal = document.getElementById("settings-modal");
-const settingsCloseButton = document.getElementById("settings-close-button");
-
-settingsButton.addEventListener("click", () => {
-  settingsModal.showModal();
-});
-
-settingsCloseButton.addEventListener("click", () => {
-  settingsModal.close();
-});
-
-settingsModal.addEventListener("click", (e) => {
-  if (e.target === settingsModal) {
-    settingsModal.close();
-  }
+setupModal({
+  buttonId: "settings-button",
+  modalId: "settings-modal",
+  closeButtonId: "settings-close-button",
+  onClose: resetClearStorageConfirm,
 });
 
 const clearStorageButton = document.getElementById("clear-storage-button");
@@ -336,14 +326,18 @@ clearStorageConfirmButton.addEventListener("click", () => {
   location.reload();
 });
 
-settingsModal.addEventListener("close", resetClearStorageConfirm);
 
 /* Search modal */
 
-const searchButton = document.getElementById("search-button");
-const searchModal = document.getElementById("search-modal");
-const searchCloseButton = document.getElementById("search-close-button");
 const searchInput = document.getElementById("search-input");
+
+const searchModal = setupModal({
+  buttonId: "search-button",
+  modalId: "search-modal",
+  closeButtonId: "search-close-button",
+  onOpen: () => searchInput.focus(),
+  onClose: () => resetSearchModal(),
+});
 
 
 
@@ -401,25 +395,6 @@ function resetSearchModal() {
   lastSearchResults = [];
   renderSearchStatus("Search across all 10 translations.");
 }
-
-searchButton.addEventListener("click", () => {
-  searchModal.showModal();
-  searchInput.focus();
-});
-
-searchCloseButton.addEventListener("click", () => {
-  searchModal.close();
-});
-
-searchModal.addEventListener("click", (e) => {
-  if (e.target === searchModal) {
-    searchModal.close();
-  }
-});
-
-searchModal.addEventListener("close", () => {
-  resetSearchModal();
-});
 
 resetSearchModal();
 
@@ -479,9 +454,11 @@ resetUnreadButton.addEventListener("click", () => {
 
 /* Library modal */
 
-const libraryButton = document.getElementById("library-button");
-const libraryModal = document.getElementById("library-modal");
-const libraryCloseButton = document.getElementById("library-close-button");
+const libraryModal = setupModal({
+  buttonId: "library-button",
+  modalId: "library-modal",
+  closeButtonId: "library-close-button",
+});
 const libraryPanelTranslations = document.getElementById(
   "library-panel-translations"
 );
@@ -529,18 +506,4 @@ selectAllTranslationsButton.addEventListener("click", () => {
 deselectAllTranslationsButton.addEventListener("click", () => {
   setSelectedTranslations([]);
   refreshCurrentChapter();
-});
-
-libraryButton.addEventListener("click", () => {
-  libraryModal.showModal();
-});
-
-libraryCloseButton.addEventListener("click", () => {
-  libraryModal.close();
-});
-
-libraryModal.addEventListener("click", (e) => {
-  if (e.target === libraryModal) {
-    libraryModal.close();
-  }
 });

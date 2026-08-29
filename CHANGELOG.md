@@ -37,6 +37,31 @@ differ. It counts how many times the shape of stored data has changed, and
 changing it wipes every reader's saved state. It is not a release version and
 should never be synced to this one.
 
+## 1.4.4 — 2026-08-28
+
+### Changed
+
+- The About copy is shorter and plainer, and the tour of every button is gone.
+  This shipped to `master` before this release and was never tagged, so it is
+  recorded here rather than left out of the history.
+- The three dialogs share one `setupModal` helper. Settings, Search and the
+  Library each carried the same three listeners — open from a button, close
+  from a close button, close when the backdrop is clicked — written out three
+  times, and only what happens on open and on close actually differed. It is
+  about the same number of lines either way; the point is that there is now one
+  implementation to get right rather than three to keep in step.
+
+### Added
+
+- Sixteen assertions covering how the dialogs open and close. The suite closed
+  them by calling `close()` directly, so neither of the two paths a reader
+  actually uses had ever been exercised: the close button and the backdrop.
+  Both are wired by one helper now, so a break in it would break all three
+  dialogs at once. The new assertions also cover the guard that keeps a click
+  on a dialog's own contents from closing it, and the things the three dialogs
+  do differently: Search focusing its input on open and clearing its query on
+  close, and Settings putting the clear-storage confirmation away.
+
 ## 1.4.3 — 2026-08-28
 
 ### Changed
