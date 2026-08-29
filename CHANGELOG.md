@@ -27,14 +27,36 @@ different things hang off that:
 - **A GitHub Release** is an announcement on top of a tag, worth creating only
   for notable versions. A patch normally gets a tag and nothing more.
 
-The same number appears in `package.json` and in `APP_VERSION` in `util.js`,
-which is what the footer displays; the smoke test fails if the page and
-`package.json` ever disagree. Because the footer shows it, no bump is invisible.
+The same number appears in `package.json` and in `APP_VERSION` in
+`js/settings.js`, which is what the footer displays; the smoke test fails if the
+page and `package.json` ever disagree. Because the footer shows it, no bump is
+invisible.
 
-`storageEpoch` in `util.js` is a **separate number** and is expected to differ.
-It counts how many times the shape of stored data has changed, and changing it
-wipes every reader's saved state. It is not a release version and should never
-be synced to this one.
+`storageEpoch` in `js/settings.js` is a **separate number** and is expected to
+differ. It counts how many times the shape of stored data has changed, and
+changing it wipes every reader's saved state. It is not a release version and
+should never be synced to this one.
+
+## 1.4.3 — 2026-08-28
+
+### Changed
+
+- `script.js` is now ten modules under `js/`. It had reached 920 lines and held
+  every concern the reading page has, so adding anything meant finding the right
+  stretch of one file. Nothing a reader can do has changed.
+- A naive split was not possible. Three pairs of concerns called each other in
+  both directions, and six shared variables were reassigned across those
+  boundaries — which a module cannot do to a binding it imports. `js/state.js`
+  now owns that state, every other module reads and writes through it, and
+  imports run in one direction: data, state, renderers, then the two entry
+  modules.
+- `util.js` and `script.js` became `js/settings.js` and `js/main.js`, named for
+  the jobs they do. `setupChoiceSetting` moved to `js/util.js`, which now holds
+  only helpers and runs nothing on import, so the entry modules depend on a
+  library rather than on each other.
+- `APP_VERSION` and `storageEpoch` moved with `settings.js`. `CLAUDE.md` and
+  `README.md` name their new home; the old paths would have sent a reader to the
+  wrong file.
 
 ## 1.4.2 — 2026-08-27
 

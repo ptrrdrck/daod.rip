@@ -1,12 +1,12 @@
 {
   "name": "daod-rip",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "private": true,
   "description": "Read English translations of the Daodejing side by side.",
   "type": "module",
   "scripts": {
     "serve": "python3 -m http.server 8000",
-    "lint": "eslint util.js script.js dao.js test",
+    "lint": "eslint js test",
     "test": "node test/smoke.mjs"
   },
   "devDependencies": {

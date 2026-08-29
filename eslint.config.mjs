@@ -20,7 +20,7 @@ const nodeGlobals = {
 
 export default [
   {
-    files: ["*.js"],
+    files: ["js/**/*.js"],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "module",
