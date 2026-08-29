@@ -44,7 +44,7 @@ html {
     top: 12px;
     width: 20px;
     height: 20px;
-    padding: 41px 44px 47px;
+    padding: 43px 44px 45px;
     font-size: 1.2rem;
   }
   #top-share-button {
@@ -117,7 +117,7 @@ html {
     top: 20px;
     width: 24px;
     height: 24px;
-    padding: 48px 52px 56px;
+    padding: 50px 52px 54px;
     font-size: 1.3rem;
   }
   #top-share-button {
@@ -185,7 +185,7 @@ html {
     top: 20px;
     width: 28px;
     height: 28px;
-    padding: 54px 58px 62px;
+    padding: 57px 58px 59px;
     font-size: 1.4rem;
   }
   #display,
@@ -254,6 +254,13 @@ h1 {
   /* Scrolls with the page, then sticks at the same top offset as
      #top-share-button — keep the two in step per breakpoint. */
   position: sticky;
+  /* Under border-box the per-breakpoint padding exceeds width/height, so the
+     padding sums alone set the circle's diameter: keep top + bottom equal to
+     left + right, or it stops being round. Bottom padding runs a little over the
+     top so the descender of "drip" hangs below the middle and the word's ink
+     box — ascender top to descender bottom — lands on the centre; the amounts
+     are measured off the rendered glyphs, not derived, so retune them by
+     measurement if the font or font-size changes. */
   margin: 0 auto;
   z-index: 10;
   background: var(--fontColor);
