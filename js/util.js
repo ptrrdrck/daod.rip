@@ -1,7 +1,7 @@
 /* © 2021 Peter Rodrick <pete@lftlc.xyz>
  *
- * Helpers with no state and no page of their own, used by both entry modules.
- * Nothing here touches the DOM on import.
+ * Helpers with no state and no page of their own, shared by whichever entry
+ * modules need them. Nothing here touches the DOM on import.
  */
 
 export function randNumb(num) {
@@ -85,4 +85,40 @@ export function setupChoiceSetting({
    * own buttons: reordering the library list flips translation order to
    * Manual. Undefined on about.html, which owns none of these controls. */
   return { set: select };
+}
+
+/* Every dialog on the page opens from a button, closes from its own close
+ * button, and closes when the backdrop is clicked. Only what happens on open
+ * and on close differs, so that is all a caller passes.
+ *
+ * A dialog fills the viewport when open, so a click whose target is the dialog
+ * itself — rather than anything inside it — landed on the backdrop.
+ *
+ * Returns the dialog, because two of them are also closed from elsewhere: the
+ * Library when a chapter is picked from it, and Search when a result is. */
+export function setupModal({
+  buttonId,
+  modalId,
+  closeButtonId,
+  onOpen,
+  onClose,
+}) {
+  const modal = document.getElementById(modalId);
+
+  document.getElementById(buttonId).addEventListener("click", () => {
+    modal.showModal();
+    if (onOpen) onOpen();
+  });
+
+  document.getElementById(closeButtonId).addEventListener("click", () => {
+    modal.close();
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.close();
+  });
+
+  if (onClose) modal.addEventListener("close", onClose);
+
+  return modal;
 }

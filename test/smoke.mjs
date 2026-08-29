@@ -605,7 +605,85 @@ async function run() {
     storedEpoch !== null && storedEpoch !== pkg.version,
     "storage epoch " + storedEpoch + " vs release " + pkg.version);
 
-  section("[14] about page");
+  section("[14] opening and closing the dialogs");
+  /* The suite closes dialogs by calling close() directly, so the two paths a
+   * reader actually uses — the close button and the backdrop — were never
+   * exercised. Both are wired by one helper now, so one break would break all
+   * three dialogs. */
+  const dialogs = [
+    ["settings-button", "settings-modal", "settings-close-button"],
+    ["search-button", "search-modal", "search-close-button"],
+    ["library-button", "library-modal", "library-close-button"],
+  ];
+  for (const [buttonId, modalId, closeId] of dialogs) {
+    const modal = page.locator("#" + modalId);
+
+    await closeModals(page);
+    await page.locator("#" + buttonId).click();
+    check(modalId + " opens from its button", await modal.isVisible());
+
+    await page.locator("#" + closeId).click();
+    await page.waitForTimeout(80);
+    check(modalId + " closes from its close button", !(await modal.isVisible()));
+
+    /* A click on the backdrop is dispatched on the dialog itself, which is
+     * what the e.target check distinguishes from a click on its contents. */
+    await page.locator("#" + buttonId).click();
+    const box = await modal.boundingBox();
+    const outside =
+      box.x > 12
+        ? { x: box.x / 2, y: box.y + box.height / 2 }
+        : box.y > 12
+          ? { x: box.x + box.width / 2, y: box.y / 2 }
+          : null;
+    if (outside) {
+      await page.mouse.click(outside.x, outside.y);
+      await page.waitForTimeout(80);
+      check(modalId + " closes when the backdrop is clicked", !(await modal.isVisible()));
+    } else {
+      check(modalId + " leaves backdrop to click", false,
+        "dialog fills the viewport, no backdrop to click");
+    }
+
+    /* The guard that keeps a click on the dialog's own contents from closing
+     * it. Without it the helper would shut on every click inside. */
+    await page.locator("#" + buttonId).click();
+    await page.locator("#" + closeId).hover();
+    await page.mouse.down();
+    await page.mouse.up();
+    await page.waitForTimeout(80);
+    await page.locator("#" + buttonId).click();
+    const inside = await modal.boundingBox();
+    await page.mouse.click(inside.x + inside.width / 2, inside.y + 8);
+    await page.waitForTimeout(80);
+    check(modalId + " stays open when its own contents are clicked", await modal.isVisible());
+    await closeModals(page);
+  }
+
+  /* onOpen and onClose, the only things the three dialogs do differently. */
+  await page.locator("#search-button").click();
+  check("opening search focuses the input",
+    await page.evaluate(() => document.activeElement && document.activeElement.id) === "search-input");
+  await page.locator("#search-input").fill("water");
+  await page.waitForTimeout(350);
+  await page.locator("#search-close-button").click();
+  await page.waitForTimeout(80);
+  await page.locator("#search-button").click();
+  check("closing search clears the query it was left with",
+    (await page.locator("#search-input").inputValue()) === "");
+  await closeModals(page);
+
+  await page.locator("#settings-button").click();
+  await page.locator("#clear-storage-button").click();
+  check("the clear-storage confirmation opens", await page.locator("#clear-storage-confirm").isVisible());
+  await page.locator("#settings-close-button").click();
+  await page.waitForTimeout(80);
+  await page.locator("#settings-button").click();
+  check("closing settings puts the clear-storage confirmation away",
+    !(await page.locator("#clear-storage-confirm").isVisible()));
+  await closeModals(page);
+
+  section("[15] about page");
   const aboutErrors = [];
   const aboutPage = await context.newPage();
   aboutPage.on("pageerror", (e) => aboutErrors.push(String(e)));
