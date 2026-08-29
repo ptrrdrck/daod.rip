@@ -15,6 +15,8 @@
     />
     <title>Dao Drip</title>
     <link href="./style.css" rel="stylesheet" />
+    <link rel="modulepreload" href="./js/main.js" />
+    <link rel="modulepreload" href="./js/dao.js" />
   </head>
   <body>
     <div class="cursor"></div>
@@ -159,33 +161,6 @@
           </div>
         </div>
         <div class="setting-row">
-          <span class="select-text">Landing</span>
-          <div
-            class="segmented-buttons"
-            role="group"
-            aria-label="Landing chapter"
-          >
-            <button
-              class="button"
-              id="landing-random-button"
-              title="Random chapter on load"
-              aria-label="Random chapter on load"
-              aria-pressed="true"
-            >
-              Random
-            </button>
-            <button
-              class="button"
-              id="landing-resume-button"
-              title="Resume last chapter on load"
-              aria-label="Resume last chapter on load"
-              aria-pressed="false"
-            >
-              Resume
-            </button>
-          </div>
-        </div>
-        <div class="setting-row">
           <span class="select-text">Translation Order</span>
           <div
             class="segmented-buttons"
@@ -209,6 +184,33 @@
               aria-pressed="false"
             >
               Manual
+            </button>
+          </div>
+        </div>
+        <div class="setting-row">
+          <span class="select-text">Page load chapter</span>
+          <div
+            class="segmented-buttons"
+            role="group"
+            aria-label="Page load chapter"
+          >
+            <button
+              class="button"
+              id="landing-random-button"
+              title="Random chapter on load"
+              aria-label="Random chapter on load"
+              aria-pressed="true"
+            >
+              Random
+            </button>
+            <button
+              class="button"
+              id="landing-resume-button"
+              title="Resume last chapter on load"
+              aria-label="Resume last chapter on load"
+              aria-pressed="false"
+            >
+              Resume
             </button>
           </div>
         </div>
