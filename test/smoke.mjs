@@ -144,6 +144,17 @@ async function run() {
 
   section("[1] initial render");
   noErrors("loads without page errors");
+  /* The browser cannot discover dao.js until main.js parses, which on a slow
+   * connection delayed the request by about 400ms. These hints start both
+   * fetches while the HTML is still being read; losing them costs that back
+   * silently, so they are pinned here. */
+  const preloads = await page.evaluate(() =>
+    [...document.querySelectorAll('link[rel="modulepreload"]')].map((l) =>
+      l.getAttribute("href")
+    )
+  );
+  check("dao.js is preloaded", preloads.includes("./js/dao.js"), preloads.join(", "));
+  check("main.js is preloaded", preloads.includes("./js/main.js"), preloads.join(", "));
   check("renders translation cards", (await page.locator("#display .translation").count()) > 0);
   check("each card has a chapter number", (await page.locator("#display .chapter-number").count()) > 0);
   check(
@@ -378,6 +389,22 @@ async function run() {
 
   section("[9] settings persistence");
   await openModal(page, "settings-button");
+  const settingLabels = await page.evaluate(() =>
+    [...document.querySelectorAll("#settings-modal .setting-row .select-text")].map(
+      (el) => el.textContent.trim()
+    )
+  );
+  check("the load-chapter setting is named for what it does",
+    settingLabels.includes("Page load chapter"), settingLabels.join(" | "));
+  check("it sits below Translation Order",
+    settingLabels.indexOf("Page load chapter") ===
+      settingLabels.indexOf("Translation Order") + 1,
+    settingLabels.join(" | "));
+  /* Renaming the label must not rename the setting: the stored key and the
+   * button ids are what a reader's existing choice hangs on. */
+  check("its buttons keep the ids the stored choice is wired to",
+    (await page.locator("#landing-random-button").count()) === 1 &&
+      (await page.locator("#landing-resume-button").count()) === 1);
   /* Every row is a label above its controls, all flush to one left edge, at
    * every width — the layout used to reflow at 360, 414 and 500px. */
   const rowLayout = await page.evaluate(() => {

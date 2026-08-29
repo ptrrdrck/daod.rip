@@ -37,6 +37,29 @@ differ. It counts how many times the shape of stored data has changed, and
 changing it wipes every reader's saved state. It is not a release version and
 should never be synced to this one.
 
+## 1.4.5 — 2026-08-28
+
+### Changed
+
+- The **Landing** setting is now **Page load chapter**, and it sits below
+  Translation Order rather than above it. Only the label and the group's
+  aria-label change: the stored key and the button ids stay as they were,
+  because a reader's existing Random or Resume choice hangs on them.
+- The page asks for `dao.js` and `main.js` as soon as the HTML is read. The
+  browser could not discover `dao.js` until `main.js` had been fetched and
+  parsed, which on a slow connection left the file that carries every
+  translation unrequested for the first 600ms. Measured on a throttled
+  connection, cards reach the screen about 250ms sooner, a 15% improvement.
+  Nothing else about loading changes; the same bytes arrive, only earlier.
+
+### Added
+
+- Five assertions. Two pin the preload hints in place, since losing them would
+  cost that 250ms back without anything failing. Three cover the renamed
+  setting: that it carries the new label, that it sits directly below
+  Translation Order, and that its buttons keep the ids a stored choice depends
+  on.
+
 ## 1.4.4 — 2026-08-28
 
 ### Changed
