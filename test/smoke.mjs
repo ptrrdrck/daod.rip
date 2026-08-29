@@ -395,9 +395,9 @@ async function run() {
     )
   );
   check("the load-chapter setting is named for what it does",
-    settingLabels.includes("Page load chapter"), settingLabels.join(" | "));
+    settingLabels.includes("Page Load Chapter"), settingLabels.join(" | "));
   check("it sits below Translation Order",
-    settingLabels.indexOf("Page load chapter") ===
+    settingLabels.indexOf("Page Load Chapter") ===
       settingLabels.indexOf("Translation Order") + 1,
     settingLabels.join(" | "));
   /* Renaming the label must not rename the setting: the stored key and the
