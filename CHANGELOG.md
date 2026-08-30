@@ -37,6 +37,29 @@ differ. It counts how many times the shape of stored data has changed, and
 changing it wipes every reader's saved state. It is not a release version and
 should never be synced to this one.
 
+## 1.6.3 — 2026-08-30
+
+Tooling only. Nothing about the site changes for a reader.
+
+### Removed
+
+- The Instagram tooling moves to **daodrip-press**, a separate private
+  repository: `divergence.mjs`, `compose.mjs`, `card.html`, `render.mjs` and
+  the vendored font. The split is by risk rather than by subject. That
+  repository will hold the Meta credentials, and a token has no business in a
+  repository anyone can open a pull request against — `pull_request_target`
+  against a fork's head is a well-worn way to read secrets out of a public
+  repo, and the whole class of problem disappears when the secret is not there.
+  The card design goes with it because it is a visual work worth keeping, where
+  the divergence scores are facts computed from texts nobody owns and could not
+  be fenced anyway.
+- `tools/browser.mjs` and `tools/ingest.mjs` stay. The smoke test needs the
+  first, and the second gates translations joining a corpus that lives here.
+
+`daodrip-press` consumes this repository as a submodule pinned at a commit, so
+the translations keep exactly one home and a queued post cannot have its text
+change underneath it.
+
 ## 1.6.2 — 2026-08-30
 
 Tooling only. Nothing about the site changes for a reader.

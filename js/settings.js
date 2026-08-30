@@ -8,7 +8,7 @@ import { setupChoiceSetting } from "./util.js";
  *
  * This is not storageEpoch below. They count different things and are
  * expected to differ. */
-const APP_VERSION = "1.6.2";
+const APP_VERSION = "1.6.3";
 
 const appVersionEl = document.getElementById("app-version");
 if (appVersionEl) {

@@ -62,9 +62,6 @@ npm install     # playwright and eslint, used only for checks
 npm test        # browser smoke test, starts its own server on a free port
 npm run lint    # eslint with no-undef
 npm run corpus  # dao.js and the catalog still agree; 81 chapters each
-npm run card -- --ch 11 --t legge    # one post card into cards/
-npm run divergence                   # most contested chapters
-npm run compose                      # the next post, as JSON
 python3 -m http.server 8000    # to look at the site
 ```
 
@@ -111,28 +108,12 @@ Below them:
 `test/smoke.mjs` is the smoke test. `tools/ingest.mjs` checks the corpus and
 gates new translations joining it.
 
-`tools/card.html` is one Instagram card, a real page you can open in a browser
-to work on the design; `tools/render.mjs` drives it in Chromium and writes the
-PNG. Both call `quotableInFull`, and the renderer stops if the two disagree.
-`--audit` measures every quotable chapter without writing anything, which is
-how you find out what a card can actually hold: 323 of the 324 fit at 32px or
-better, and Legge's chapter 38 is the one that does not.
+The Instagram side of the project lives in **daodrip-press**, a separate
+private repository: the divergence engine, the composer, the card renderer and
+its vendored font. It consumes this repository as a pinned submodule, so the
+translations keep one home. Nothing about posting belongs here.
 
-`tools/divergence.mjs` scores each chapter by how far the quotable
-translations diverge — mean pairwise Jaccard distance over content words,
-after stopwords, a crude stemmer and a small British/American spelling map.
-That last one matters: Legge writes *favour* and Goddard *favor*, and left
-alone the engine reads orthography as interpretation. `tools/compose.mjs`
-turns a chapter into a post. It picks each translator's rarest distinctive
-word from the opening, because rarity is what separates *trodden* from *like*.
-
-The corpus holds no Chinese, so nothing knows which English word renders which
-character. Two translators' distinctive words are therefore not reliably
-counterparts, which is why the question copy names what each one reached for
-rather than setting two against each other — it asserts only what is on the
-page. Do not reintroduce an "X says this, Y says that" phrasing.
-
-Both the test and the renderer launch through `tools/browser.mjs`, which falls
+The smoke test launches through `tools/browser.mjs`, which falls
 back to a browser under `PLAYWRIGHT_BROWSERS_PATH` when the installed
 Playwright pins a revision the machine does not have. Set
 `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to name one outright.
