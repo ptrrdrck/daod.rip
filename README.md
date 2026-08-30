@@ -164,6 +164,8 @@ npm test       # drives index.html and about.html in headless Chromium
 npm run lint   # catches undefined references, which module scope now enforces
 npm run corpus # checks dao.js and the catalog still agree about the corpus
 npm run card -- --ch 11 --t legge   # render one post card to cards/
+npm run divergence                  # which chapters the translators fight over
+npm run compose                     # assemble the next post as JSON
 ```
 
 `npm test` starts its own static server on a free port, so nothing needs to be
@@ -186,6 +188,8 @@ adding or editing a translation will not break it.
 | `style.css` | All of the styling, including the theme variables. |
 | `test/smoke.mjs` | The smoke test. |
 | `tools/ingest.mjs` | Corpus checks, and the gate a new translation passes before joining. |
+| `tools/divergence.mjs` | How much the translators disagree, chapter by chapter. |
+| `tools/compose.mjs` | Turns that into a post: slides, caption, question, alt text. |
 | `tools/card.html` | One post card at 4:5. Open it in a browser to work on the design. |
 | `tools/render.mjs` | Drives that page in Chromium and writes the PNG. |
 | `tools/browser.mjs` | Launches Chromium, tolerating a browser build Playwright did not expect. |

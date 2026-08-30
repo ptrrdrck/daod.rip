@@ -37,6 +37,51 @@ differ. It counts how many times the shape of stored data has changed, and
 changing it wipes every reader's saved state. It is not a release version and
 should never be synced to this one.
 
+## 1.6.2 — 2026-08-30
+
+Tooling only. Nothing about the site changes for a reader.
+
+### Added
+
+- `tools/divergence.mjs` (`npm run divergence`): which chapters the
+  translators most disagree about. Mean pairwise Jaccard distance over content
+  words, across the four translations a card may quote. This is the editorial
+  judgement the Instagram account runs on, and it is the one thing here nothing
+  else has — thirteen translations of the same 81 chapters, aligned. A quote
+  account picks a nice-sounding passage; this picks the passage where four
+  people read the same line and could not agree what it said. `--ch 1` shows
+  one chapter word by word: *trodden*, *reason*, *understood*, *subject* are
+  four readings of the same character, and the engine finds them rather than
+  being told.
+- `tools/compose.mjs` (`npm run compose`): a chapter turned into a post —
+  one slide per translation, a closing question, a caption, alt text and the
+  deep link back to the site. It picks the most contested chapter not already
+  in the queue, skipping any the card renderer cannot hold legibly. It writes
+  a spec rather than anything to Instagram, so the editorial decision can be
+  read and corrected before it becomes a post.
+
+### Fixed
+
+- Three things the first cut of the engine got wrong, each found by reading
+  its output rather than by a test:
+  - It compared and then **displayed** stems, so a card would have been set in
+    `veri`, `chao` and `ourselv`. Stems are for comparing; the word a
+    translator actually wrote is what goes on the card, and both are now kept.
+  - It read **orthography as interpretation**. Legge writes *favour*, Goddard
+    *favor*, and counting those as disagreement inflated exactly the chapters
+    about favour and honour — chapter 13 ranked first on the strength of it.
+    A scan of the corpus found six such pairs; they are mapped explicitly,
+    because a rule that rewrites `-our` also rewrites *four* and *your*.
+  - It chose each translator's **earliest** distinctive word, which gave
+    *like*, *get* and *made* as often as *trodden*. It now prefers the rarest,
+    measured across the whole corpus, which is what separates a translator's
+    reading from filler that happens to be unique.
+- The question copy names what each translator reached for instead of setting
+  two of them against each other. The corpus holds no Chinese, so nothing here
+  knows that Legge's word and Carus's word render the same character —
+  "Legge says X, Carus says Y" quietly asserts something that is often untrue.
+  Naming all four asserts only what is on the page.
+
 ## 1.6.1 — 2026-08-30
 
 Tooling only. Nothing about the site changes for a reader.

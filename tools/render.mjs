@@ -21,7 +21,7 @@
 import http from "node:http";
 import path from "node:path";
 import { mkdir, readFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import process from "node:process";
 
 import { dao } from "../js/dao.js";
@@ -275,7 +275,9 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error("render failed: " + error.message);
-  process.exit(1);
-});
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error("render failed: " + error.message);
+    process.exit(1);
+  });
+}
