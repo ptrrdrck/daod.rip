@@ -37,6 +37,110 @@ differ. It counts how many times the shape of stored data has changed, and
 changing it wipes every reader's saved state. It is not a release version and
 should never be synced to this one.
 
+## 1.6.0 — 2026-08-30
+
+### Added
+
+- Three more translations, all public domain, taking the corpus from ten to
+  thirteen: **Walter Gorn Old** (1904), **Paul Carus** (1913) and **Dwight
+  Goddard** (1919). Four of the thirteen are now free to republish rather than
+  one, which is what the Instagram pipeline needed in order to have anything to
+  run on. Each carries a **Read free** link to the scan it came from; none has
+  an in-print edition to link a **Buy the book** to, which the card already
+  handles by printing one link instead of two.
+- `RIGHTS.md` gains a section on where that text came from and how far each one
+  can be trusted. sacred-texts.com is behind a Cloudflare challenge and the
+  Wayback Machine could not be reached, so all three were parsed from page
+  scans on archive.org — OCR, not transcription. Carus was checked word by word
+  against a second independent scan of the same edition; Old's translation is
+  set in a wider measure than its commentary, which is what separated them, and
+  all 81 break points were reviewed; Goddard exists in only one scan of the
+  1919 edition and so rests on a spell audit rather than a second witness. That
+  last one is the weakest of the three and the file says so.
+
+### Changed
+
+- **The Lin Yutang renewal search is done, and it came back against us.** The
+  *Catalog of Copyright Entries* for January–June 1976 records renewal R624226:
+  Lin Yutang renewed *The Wisdom of Laotse* himself on 14 January 1976, against
+  the original registration A28447 of 20 December 1948. It stays `restricted`,
+  now as a determined fact rather than as the safe reading, and it enters the
+  public domain on 1 January 2044. `RIGHTS.md` quotes the record. The search
+  named in that file was the Stanford database, which turned out to be behind a
+  JavaScript challenge; the Catalog of Copyright Entries — the fallback it
+  named, and the records Stanford indexes — answered instead.
+- Isabella Mears (1916) and Balfour (1884) were attempted and are **not** here.
+  Mears's 1916 scan loses 26 of its 81 chapter numerals with several chapters
+  run together; Balfour prints the Chinese alongside the English, which OCRs as
+  columns of stray glyphs, and his smaller-type remarks are not marked in the
+  text layer, so commentary leaks into the chapters. Both need the hOCR layer,
+  which carries the font sizes that would separate the two. `RIGHTS.md` records
+  where each stopped. Placing a chapter boundary by eye is a silent way to file
+  the wrong words under the right number, which is the one failure this corpus
+  cannot afford.
+- The smoke test counted ten translations in two places. It now reads the count
+  off the catalog, so adding a translation does not fail it.
+
+## 1.5.0 — 2026-08-29
+
+### Added
+
+- Every translation now carries its rights: the year, the publisher, the
+  citation, and whether it is public domain or still in copyright. A card
+  prints that line under the citation, so a reader can see who owns the words
+  they are reading and a publisher who finds the site finds their own name on
+  the same line as their text. One of the ten — Legge, 1891 — is free to
+  republish; the other nine are not. There are two statuses rather than three:
+  a draft had a third for translations published after 1930 and never checked
+  for renewal, which described Lin Yutang (1948) exactly, but it behaved
+  identically to `restricted` everywhere it mattered and printed a hedge on
+  the card that a reader could do nothing with. Unverified means in copyright
+  until shown otherwise. `RIGHTS.md` records the one search that would settle
+  it and why it is worth ten minutes.
+- `quotableInFull` in `js/catalog.js`, which is the only question anything
+  outside the site is allowed to ask before reproducing a translation. It
+  answers `true` for public-domain entries and nothing else. Putting the check
+  in the corpus rather than in each caller means a caller has to go out of its
+  way to be careless rather than merely forget to be careful. `RIGHTS.md`
+  explains what the site relies on for the other nine and why a feed, a print
+  run or an export does not get to rely on the same thing.
+- `tools/ingest.mjs`, run as `npm run corpus`. With `--verify` it checks what
+  is here — that dao.js and the catalog agree on which translations exist,
+  that each has 81 non-empty chapters, that no slug is used twice, and that
+  nothing claims public domain with a date after the 1930 cutoff. Given a
+  candidate file it checks a translation before it joins the corpus and prints
+  the blocks to paste in. It refuses anything still in copyright: adding one of
+  those is a decision to be made by hand, with the reasoning written down.
+  It deliberately does not edit `js/dao.js` itself, because saving a minute of
+  pasting is not worth a script that rewrites the one file the whole site is
+  built on.
+- `docs/permission-requests.md`: drafts asking Copper Canyon, Shambhala and
+  Harper for permission to quote short excerpts with attribution and a link to
+  buy the book. None have been sent.
+
+### Changed
+
+- The link at the foot of a card was labelled **Source** and went to Amazon,
+  which is two things it was not. It is now **Buy the book**, and it goes to
+  Bookshop.org, which pays a commission on the sale and splits a second one
+  across independent bookshops. Public-domain translations get a **Read free**
+  link to the full text alongside it. The ISBNs are the ISBN-13s of the same
+  editions the old links pointed at, so a reader lands on the same book.
+  Emptying `BOOKSHOP_AFFILIATE_ID` does not break them: they fall back to a
+  search on the same ISBN, which reaches the same book and earns nothing.
+- `js/dao.js` is the translation texts and nothing else. The `sources` export
+  went with the Amazon and terebess.hu URLs it mostly held; its one surviving
+  field, the citation, moved to the catalog entry beside the year, publisher
+  and rights it belongs with. Every fact *about* a translation is now in one
+  file, and `cards.js` reads them all from one import instead of two.
+- The rights line names the translation year — "Translation © 1972 · Vintage
+  Books" — because `year` records when a translation was made while the
+  citation above it cites the printing consulted, and for Feng and English, Le
+  Guin and Legge those are decades apart. Without the word the two lines read
+  as contradicting each other. Derek Lin's year follows his citation to 1994,
+  the translation, rather than the 2006 edition the ISBN points at.
+- `npm run lint` covers `tools` as well as `js` and `test`.
+
 ## 1.4.6 — 2026-08-29
 
 ### Fixed

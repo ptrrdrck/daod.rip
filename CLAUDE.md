@@ -61,6 +61,7 @@ checkout that has not seen the merge yet.
 npm install     # playwright and eslint, used only for checks
 npm test        # browser smoke test, starts its own server on a free port
 npm run lint    # eslint with no-undef
+npm run corpus  # dao.js and the catalog still agree; 81 chapters each
 python3 -m http.server 8000    # to look at the site
 ```
 
@@ -89,10 +90,12 @@ Entry modules, loaded by a script tag:
 
 Below them:
 
-- `js/dao.js` — the translations and their sources, exported as data. Large, and
-  reproducing its text in output is not appropriate; treat it as a data file.
-- `js/catalog.js` — which translations exist, their slugs, sort order, chapter
-  count, and share-link parsing. Never changes as a reader uses the site.
+- `js/dao.js` — the translation texts, exported as data and nothing else.
+  Large, and reproducing its text in output is not appropriate; treat it as a
+  data file.
+- `js/catalog.js` — everything true *about* a translation: slugs, sort order,
+  chapter count, share-link parsing, and the citation, year, publisher, ISBN
+  and rights status of each. Never changes as a reader uses the site.
 - `js/state.js` — everything kept between renders, on one object because a
   module cannot assign to a binding it imports, plus every localStorage write
   the reading page makes.
@@ -102,4 +105,18 @@ Below them:
   returns; none of them calls an action, which is why none of them needs
   `main.js`.
 
-`test/smoke.mjs` is the smoke test.
+`test/smoke.mjs` is the smoke test. `tools/ingest.mjs` checks the corpus and
+gates new translations joining it.
+
+## Rights
+
+`RIGHTS.md` is the rule, and it is load-bearing rather than decorative. Nine of
+the ten translations are still in copyright and are shown here under provisions
+106 and 107; only Legge (1891) is public domain. That permission covers this
+page and does not stretch to reproducing the text anywhere else.
+
+So anything that takes a translation off this page — a card renderer, a feed,
+an export, print — calls `quotableInFull` from `js/catalog.js` first and
+honours the answer. Do not add a code path that reproduces a translation
+without it, and do not relax a `rights` value without a written reason in
+`RIGHTS.md`.

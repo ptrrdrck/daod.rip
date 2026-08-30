@@ -503,16 +503,30 @@ input {
   color: var(--fontColor);
 }
 .trans-link,
-.trans-ref {
+.trans-ref,
+.trans-rights {
   font-size: 14px;
-  padding-right: 20px;
 }
 .trans-ref {
   font-style: italic;
 }
+/* Who owns the words, set quieter than the citation above it. A card names
+ * the rightsholder whether or not there is anything for the reader to do
+ * about it. */
+.trans-rights {
+  opacity: 0.7;
+}
+.trans-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
 .trans-info {
   padding-top: 20px;
-  line-height: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  line-height: 1.4;
 }
 .bookmark-toggle {
   position: absolute;
