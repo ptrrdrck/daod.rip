@@ -5,9 +5,9 @@
  *
  * There is no build step, so this deliberately does not edit `js/dao.js` or
  * `js/catalog.js`. It validates, and then prints the exact blocks to paste in.
- * dao.js is 891 lines of hand-formatted text that the whole site is built on;
- * a script that rewrites it in place would save a minute of pasting and risk
- * the one file with nothing to fall back on.
+ * dao.js is the hand-formatted text the whole site is built on; a script that
+ * rewrites it in place would save a minute of pasting and put the one file
+ * with nothing to fall back on at risk.
  *
  * A candidate file looks like this, with all 81 chapters in order:
  *
@@ -27,18 +27,17 @@
 import { readFile } from "node:fs/promises";
 import process from "node:process";
 
-import { dao, sources } from "../js/dao.js";
+import { dao } from "../js/dao.js";
 import {
   PUBLIC_DOMAIN,
   RESTRICTED,
-  UNCERTAIN,
   allTranslations,
   catalogEntry,
   totalChapters,
   translationCatalog,
 } from "../js/catalog.js";
 
-const RIGHTS_VALUES = [PUBLIC_DOMAIN, RESTRICTED, UNCERTAIN];
+const RIGHTS_VALUES = [PUBLIC_DOMAIN, RESTRICTED];
 
 /* The year at which the US public domain currently stops. It moves forward by
  * one every 1 January, so this is a fact with a shelf life: 1930 is the line
@@ -75,9 +74,6 @@ function verifyCorpus() {
     if (!catalogNames.includes(name)) {
       fail(`dao.js has "${name}" but the catalog does not`);
     }
-    if (!sources[name]) {
-      fail(`"${name}" has no entry in the sources export`);
-    }
   }
 
   for (const entry of translationCatalog) {
@@ -100,8 +96,8 @@ function verifyCorpus() {
     if (!RIGHTS_VALUES.includes(entry.rights)) {
       fail(`"${entry.name}" has an unknown rights value: ${entry.rights}`);
     }
-    if (!entry.year || !entry.publisher) {
-      fail(`"${entry.name}" is missing a year or a publisher`);
+    if (!entry.year || !entry.publisher || !entry.citation) {
+      fail(`"${entry.name}" is missing a year, a publisher or a citation`);
     }
     if (entry.rights === PUBLIC_DOMAIN && entry.year > PUBLIC_DOMAIN_CUTOFF) {
       fail(
@@ -204,13 +200,6 @@ function printBlocks(candidate) {
   }
   console.log("  ],");
 
-  console.log("\n--- paste into the sources object in js/dao.js ---\n");
-  console.log(`  ${js(candidate.name)}: [`);
-  console.log(`    ${js(candidate.freeText || "")},`);
-  console.log(`    ${js(candidate.freeText || "")},`);
-  console.log(`    ${js(candidate.citation)},`);
-  console.log("  ],");
-
   console.log("\n--- paste into translationCatalog in js/catalog.js ---\n");
   console.log("  {");
   console.log(`    slug: ${js(candidate.slug)},`);
@@ -218,6 +207,7 @@ function printBlocks(candidate) {
   console.log(`    sortKey: ${js(candidate.sortKey)},`);
   console.log(`    year: ${candidate.year},`);
   console.log(`    publisher: ${js(candidate.publisher)},`);
+  console.log(`    citation: ${js(candidate.citation)},`);
   console.log("    rights: PUBLIC_DOMAIN,");
   if (candidate.isbn) {
     console.log(`    isbn: ${js(candidate.isbn)},`);

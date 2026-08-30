@@ -90,10 +90,12 @@ Entry modules, loaded by a script tag:
 
 Below them:
 
-- `js/dao.js` — the translations and their sources, exported as data. Large, and
-  reproducing its text in output is not appropriate; treat it as a data file.
-- `js/catalog.js` — which translations exist, their slugs, sort order, chapter
-  count, and share-link parsing. Never changes as a reader uses the site.
+- `js/dao.js` — the translation texts, exported as data and nothing else.
+  Large, and reproducing its text in output is not appropriate; treat it as a
+  data file.
+- `js/catalog.js` — everything true *about* a translation: slugs, sort order,
+  chapter count, share-link parsing, and the citation, year, publisher, ISBN
+  and rights status of each. Never changes as a reader uses the site.
 - `js/state.js` — everything kept between renders, on one object because a
   module cannot assign to a binding it imports, plus every localStorage write
   the reading page makes.

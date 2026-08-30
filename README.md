@@ -178,10 +178,10 @@ adding or editing a translation will not break it.
 | `js/main.js` | Every action and listener on the reading page: opening chapters, history, the modals, sharing, stars. |
 | `js/settings.js` | Version, themes, font size, view and landing mode. Loaded by both pages. |
 | `js/state.js` | What is kept between renders, and every localStorage write. |
-| `js/catalog.js` | Which translations exist, how they sort, how a share link names them, and what may lawfully be done with each. |
+| `js/catalog.js` | Which translations exist, how they sort, how a share link names them, their citations, and what may lawfully be done with each. |
 | `js/cards.js`, `js/translation-list.js`, `js/chapter-list.js`, `js/history.js`, `js/search.js` | The renderers, one per part of the page. |
 | `js/util.js` | Stateless helpers shared by both entry modules. |
-| `js/dao.js` | The translations and their sources, exported as data. |
+| `js/dao.js` | The translation texts, exported as data and nothing else. |
 | `style.css` | All of the styling, including the theme variables. |
 | `test/smoke.mjs` | The smoke test. |
 | `tools/ingest.mjs` | Corpus checks, and the gate a new translation passes before joining. |

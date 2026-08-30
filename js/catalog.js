@@ -19,11 +19,16 @@ export function getRandomTranslations(arr, num) {
  *
  * PUBLIC_DOMAIN applies the US rule and nothing subtler: everything published
  * in 1930 or earlier is free of copyright as of 1 January 2026. RESTRICTED is
- * a translation still under copyright — showing it side by side for study is
- * a far narrower permission than reproducing it somewhere else, and the
- * copyright notice at the top of dao.js is what the site relies on for it.
- * UNCERTAIN is post-1930 but has never been checked for renewal, and is
- * treated exactly as RESTRICTED until somebody does that search.
+ * everything else — a translation the site shows side by side for study,
+ * which is a far narrower permission than reproducing it somewhere else, and
+ * the copyright notice at the top of dao.js is what that relies on.
+ *
+ * There are two statuses rather than three on purpose. An earlier draft had a
+ * third for translations published after 1930 and never checked for renewal,
+ * which described Lin Yutang (1948) exactly. But it behaved identically to
+ * RESTRICTED everywhere it mattered, and printed a hedge on the card that
+ * gave a reader nothing to act on. Unverified means in copyright until proven
+ * otherwise, so it is recorded as such. RIGHTS.md says what would settle it.
  *
  * This distinction is not decorative. Anything that reproduces a translation
  * away from this page — the card renderer that will feed the Instagram
@@ -31,7 +36,6 @@ export function getRandomTranslations(arr, num) {
  * decides what may leave the site rather than the caller remembering to. */
 export const PUBLIC_DOMAIN = "public-domain";
 export const RESTRICTED = "restricted";
-export const UNCERTAIN = "uncertain";
 
 /* Every translation the site carries. `slug` is the short identity: it is the
  * ?t= value in a share link and, suffixed with -checkbox, the id of the row's
@@ -52,6 +56,7 @@ export const translationCatalog = [
     sortKey: "Mitchell",
     year: 1988,
     publisher: "Harper Perennial",
+    citation: "Tzu, L. (1988) Tao Te Ching: A New English Version. Translated by S. Mitchell. Harper Perennial.",
     rights: RESTRICTED,
     isbn: "9780060812454",
   },
@@ -61,6 +66,7 @@ export const translationCatalog = [
     sortKey: "Feng",
     year: 1972,
     publisher: "Vintage Books",
+    citation: "Tsu, L. (2011) Tao Te Ching. Translated by G.-F. Feng, J. English, and T. Lippe. Vintage Books.",
     rights: RESTRICTED,
     isbn: "9780307949301",
   },
@@ -70,6 +76,7 @@ export const translationCatalog = [
     sortKey: "Addiss",
     year: 1993,
     publisher: "Hackett Publishing Company",
+    citation: "Tzu, L. (1993) Tao Te Ching. Translated by S. Addiss and S. Lombardo. Hackett Publishing Company, Inc.",
     rights: RESTRICTED,
     isbn: "9780872202320",
   },
@@ -77,8 +84,9 @@ export const translationCatalog = [
     slug: "lin",
     name: "Derek Lin",
     sortKey: "Lin",
-    year: 2006,
+    year: 1994,
     publisher: "SkyLight Paths",
+    citation: "Tzu, L. (1994) Tao Teh Ching. Translated by D. Lin.",
     rights: RESTRICTED,
     isbn: "9781594732041",
   },
@@ -88,6 +96,7 @@ export const translationCatalog = [
     sortKey: "Legge",
     year: 1891,
     publisher: "Oxford University Press",
+    citation: "Tsu, L. (1891) The Tao Te Ching. Translated by J. Legge.",
     rights: PUBLIC_DOMAIN,
     isbn: "9781420953527",
     freeText: "https://sacred-texts.com/tao/taote.htm",
@@ -98,6 +107,7 @@ export const translationCatalog = [
     sortKey: "Le Guin",
     year: 1997,
     publisher: "Shambhala",
+    citation: "Tzu, L. (2011) Tao Te Ching: A Book about the Way and the Power of the Way. Translated by U.K. Le Guin. Shambhala.",
     rights: RESTRICTED,
     isbn: "9781611807240",
   },
@@ -107,6 +117,7 @@ export const translationCatalog = [
     sortKey: "Lau",
     year: 1963,
     publisher: "Penguin Classics",
+    citation: "Tzu, L. (1963) Tao Te Ching. Translated by D.C. Lau. Penguin Classics.",
     rights: RESTRICTED,
     isbn: "9780140441314",
   },
@@ -116,7 +127,8 @@ export const translationCatalog = [
     sortKey: "Yutang",
     year: 1948,
     publisher: "The Modern Library",
-    rights: UNCERTAIN,
+    citation: "Tse, L. (1948) The Wisdom of Laotse. Translated by L. Yutang. The Modern Library - New York, Random House, Inc.",
+    rights: RESTRICTED,
     isbn: "9780313211645",
   },
   {
@@ -125,6 +137,7 @@ export const translationCatalog = [
     sortKey: "Henricks",
     year: 1989,
     publisher: "Ballantine Books",
+    citation: "Tzu, L. (1989) Te-Tao Ching: A New Translation Based on the Recently Discovered Ma-wang-tui Texts. Translated by R.G. Henricks. Ballantine Books.",
     rights: RESTRICTED,
     isbn: "9780345370990",
   },
@@ -134,6 +147,7 @@ export const translationCatalog = [
     sortKey: "Red Pine",
     year: 1996,
     publisher: "Mercury House",
+    citation: "Tzu, L. (1996) Lao-tzu’s Taoteching: Translated by Red Pine, with selected commentaries of the past 2000 years. 1st edn. Translated by B. Porter. Mercury House.",
     rights: RESTRICTED,
     isbn: "9781556592904",
   },
@@ -165,29 +179,29 @@ export function quotableInFull(name) {
 
 /* The line printed under a card. A reader deserves to know who owns the words
  * they are reading, and a publisher who looks at this site deserves to find
- * their name and a way to be paid on the same line as their text. */
+ * their name and a way to be paid on the same line as their text.
+ *
+ * It says "Translation" because `year` is the year of the translation while
+ * the citation above it cites the printing consulted, and for Feng and
+ * English, Le Guin and Legge those are decades apart. Without the word the
+ * two lines look like they disagree. */
 export function rightsLabel(name) {
   const entry = catalogEntry(name);
   if (!entry) {
     return "";
   }
   if (entry.rights === PUBLIC_DOMAIN) {
-    return `Public domain · ${entry.year}`;
+    return `Translation ${entry.year} · public domain`;
   }
-  if (entry.rights === UNCERTAIN) {
-    return `© ${entry.year} ${entry.publisher} · renewal unverified`;
-  }
-  return `© ${entry.year} ${entry.publisher}`;
+  return `Translation © ${entry.year} · ${entry.publisher}`;
 }
 
 /* Bookshop.org pays a commission on a sale and splits a second one across
  * independent bookshops, which is why the buy links point there rather than
- * at the Amazon URLs they replace. Fill this in with the id from
- * bookshop.org/affiliates and every link below starts earning; leave it empty
- * and the links still take a reader to the right book, they just earn
- * nothing. The site is correct either way, which is the point of the
- * fallback. */
-export const BOOKSHOP_AFFILIATE_ID = "";
+ * at the Amazon URLs they replaced. Emptying the id does not break the links:
+ * they fall back to a search on the same ISBN, which still reaches the right
+ * book and simply earns nothing. */
+export const BOOKSHOP_AFFILIATE_ID = "127992";
 
 export function buyUrl(name) {
   const entry = catalogEntry(name);

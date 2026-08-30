@@ -41,13 +41,18 @@ should never be synced to this one.
 
 ### Added
 
-- Every translation now carries its rights: the year, the publisher, and
-  whether it is public domain, still in copyright, or post-1930 and never
-  checked for renewal. A card prints that line under the citation, so a reader
-  can see who owns the words they are reading and a publisher who finds the
-  site finds their own name on the same line as their text. One of the ten —
-  Legge, 1891 — is unambiguously free to republish; Lin Yutang (1948) is the
-  one marked unverified.
+- Every translation now carries its rights: the year, the publisher, the
+  citation, and whether it is public domain or still in copyright. A card
+  prints that line under the citation, so a reader can see who owns the words
+  they are reading and a publisher who finds the site finds their own name on
+  the same line as their text. One of the ten — Legge, 1891 — is free to
+  republish; the other nine are not. There are two statuses rather than three:
+  a draft had a third for translations published after 1930 and never checked
+  for renewal, which described Lin Yutang (1948) exactly, but it behaved
+  identically to `restricted` everywhere it mattered and printed a hedge on
+  the card that a reader could do nothing with. Unverified means in copyright
+  until shown otherwise. `RIGHTS.md` records the one search that would settle
+  it and why it is worth ten minutes.
 - `quotableInFull` in `js/catalog.js`, which is the only question anything
   outside the site is allowed to ask before reproducing a translation. It
   answers `true` for public-domain entries and nothing else. Putting the check
@@ -77,10 +82,19 @@ should never be synced to this one.
   across independent bookshops. Public-domain translations get a **Read free**
   link to the full text alongside it. The ISBNs are the ISBN-13s of the same
   editions the old links pointed at, so a reader lands on the same book.
-  `BOOKSHOP_AFFILIATE_ID` is empty until there is an id to put in it, and the
-  links reach the right book either way — they simply earn nothing first. The
-  card's other URL, the one pointing at a scan of the text, stays unlinked, as
-  it always has been.
+  Emptying `BOOKSHOP_AFFILIATE_ID` does not break them: they fall back to a
+  search on the same ISBN, which reaches the same book and earns nothing.
+- `js/dao.js` is the translation texts and nothing else. The `sources` export
+  went with the Amazon and terebess.hu URLs it mostly held; its one surviving
+  field, the citation, moved to the catalog entry beside the year, publisher
+  and rights it belongs with. Every fact *about* a translation is now in one
+  file, and `cards.js` reads them all from one import instead of two.
+- The rights line names the translation year — "Translation © 1972 · Vintage
+  Books" — because `year` records when a translation was made while the
+  citation above it cites the printing consulted, and for Feng and English, Le
+  Guin and Legge those are decades apart. Without the word the two lines read
+  as contradicting each other. Derek Lin's year follows his citation to 1994,
+  the translation, rather than the 2006 edition the ISBN points at.
 - `npm run lint` covers `tools` as well as `js` and `test`.
 
 ## 1.4.6 — 2026-08-29

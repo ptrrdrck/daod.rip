@@ -9,39 +9,65 @@ thing; an account that reposts excerpts somewhere else, with money somewhere in
 the picture, is a different thing with a different answer. Keeping the two
 apart is easier if the difference is written down.
 
-## The three statuses
+## The two statuses
 
 Every entry in `translationCatalog` in `js/catalog.js` carries a `rights`
-value. There are three.
+value. There are two.
 
 **`public-domain`** — published in 1930 or earlier, and therefore free of US
 copyright as of 1 January 2026. This is a moving line: it advances by one year
 every 1 January, and `PUBLIC_DOMAIN_CUTOFF` in `tools/ingest.mjs` is the place
 that records where it currently sits.
 
-**`restricted`** — still under copyright. The site shows it under provisions
-106 and 107 of Public Law 94-553, which is the notice at the top of
-`js/dao.js`. That is a narrow permission covering comparison and study on this
-page. It is not permission to reproduce the text anywhere else.
+**`restricted`** — everything else. The site shows it under provisions 106 and
+107 of Public Law 94-553, which is the notice at the top of `js/dao.js`. That
+is a narrow permission covering comparison and study on this page. It is not
+permission to reproduce the text anywhere else.
 
-**`uncertain`** — published after 1930 and never checked for renewal. Treated
-exactly as `restricted` until somebody does the search. Lin Yutang (1948) is
-the only one, and the entry says so on the card.
+There is deliberately no third status for "probably in copyright but nobody
+has checked". It would behave identically to `restricted` everywhere that
+matters, and printing the doubt on a card gives a reader nothing they can act
+on. Unverified means in copyright until shown otherwise.
+
+### The one worth checking
+
+Lin Yutang's *The Wisdom of Laotse* (Modern Library, 1948) is recorded as
+`restricted`, and that is the safe reading rather than a determined one.
+
+A US book published in 1948 kept its copyright only if a renewal was filed in
+the 28th year, which for 1948 means 1975 or 1976. If no renewal was filed, the
+translation is public domain and could join the quotable corpus — a real gain,
+since it would be the only modern-voiced translation the Instagram pipeline
+could use.
+
+Settling it takes one search that has not been done: the **Stanford Copyright
+Renewal Database** (`exhibits.stanford.edu/copyrightrenewals`), which indexes
+Class A book renewals received between 1950 and 1992. The Catalog of Copyright
+Entries at `onlinebooks.library.upenn.edu/cce/` is the fallback.
+
+Two things point at a renewal having been filed, so do not expect a win:
+Random House was a large publisher with a working renewals desk, and Greenwood
+Press reissued the book in 1979, which is hard to explain if the copyright had
+lapsed three years earlier. Check anyway — the cost is ten minutes and the
+upside is a translation.
+
+If the search comes back empty, change the status here and in
+`js/catalog.js`, and record the date of the search and what was found.
 
 ## Where the ten stand
 
 | Translation | Year | Status |
 | --- | --- | --- |
 | James Legge | 1891 | `public-domain` |
-| Lin Yutang | 1948 | `uncertain` |
+| Lin Yutang | 1948 | `restricted` (renewal unsearched — see above) |
 | D. C. Lau | 1963 | `restricted` |
 | Gia-Fu Feng & Jane English | 1972 | `restricted` |
 | Stephen Mitchell | 1988 | `restricted` |
 | Robert G. Henricks | 1989 | `restricted` |
 | Stephen Addiss & Stanley Lombardo | 1993 | `restricted` |
+| Derek Lin | 1994 | `restricted` |
 | Red Pine (Bill Porter) | 1996 | `restricted` |
 | Ursula K. Le Guin | 1997 | `restricted` |
-| Derek Lin | 2006 | `restricted` |
 
 One of ten is unambiguously free to republish. That number is the reason the
 next section exists.
@@ -92,9 +118,10 @@ Every card names the translator, the year and the publisher, and carries a
 link to buy the book. Public-domain entries also carry a link to read the text
 for nothing.
 
-The buy links go to Bookshop.org rather than Amazon, and become affiliate
-links once `BOOKSHOP_AFFILIATE_ID` in `js/catalog.js` is filled in. Until it
-is, they still reach the right book and simply earn nothing.
+The buy links go to Bookshop.org rather than Amazon, as affiliate links under
+id `127992`. Emptying `BOOKSHOP_AFFILIATE_ID` in `js/catalog.js` does not
+break them: they fall back to a search on the same ISBN, which reaches the
+same book and earns nothing.
 
 Sending readers to buy the book is the most useful thing this site can do for
 the people whose work it shows, and it is worth more than the commission.
@@ -108,5 +135,6 @@ then relax the status of that translation.
 ## Not legal advice
 
 The statuses above are read off publication dates and the US public-domain
-line. No title-by-title renewal search has been done. Anything that puts this
-text on paper, or behind a price, is worth an hour of a lawyer's time first.
+line. The only title where a renewal search would change the answer is Lin
+Yutang, and that search has not been done. Anything that puts this text on
+paper, or behind a price, is worth an hour of a lawyer's time first.

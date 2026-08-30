@@ -7,7 +7,7 @@
  * module knows nothing about cards.
  */
 
-import { dao, sources } from "./dao.js";
+import { dao } from "./dao.js";
 import { buyUrl, catalogEntry, rightsLabel } from "./catalog.js";
 import {
   state,
@@ -22,8 +22,8 @@ const displayArea = document.getElementById("display");
 export function buildTranslationCard(translation, chapterIndex) {
   const isBookmarked = state.bookmarkedChapters.includes(chapterIndex + 1);
   const starLabel = isBookmarked ? "Remove star" : "Star this chapter";
-  const reference = sources[translation][2];
   const entry = catalogEntry(translation);
+  const reference = entry ? entry.citation : "";
   const buy = buyUrl(translation);
   /* A translation still in print is worth buying and a translation in the
    * public domain is worth reading for nothing, so a card offers whichever
