@@ -37,6 +37,50 @@ differ. It counts how many times the shape of stored data has changed, and
 changing it wipes every reader's saved state. It is not a release version and
 should never be synced to this one.
 
+## 1.6.0 — 2026-08-30
+
+### Added
+
+- Three more translations, all public domain, taking the corpus from ten to
+  thirteen: **Walter Gorn Old** (1904), **Paul Carus** (1913) and **Dwight
+  Goddard** (1919). Four of the thirteen are now free to republish rather than
+  one, which is what the Instagram pipeline needed in order to have anything to
+  run on. Each carries a **Read free** link to the scan it came from; none has
+  an in-print edition to link a **Buy the book** to, which the card already
+  handles by printing one link instead of two.
+- `RIGHTS.md` gains a section on where that text came from and how far each one
+  can be trusted. sacred-texts.com is behind a Cloudflare challenge and the
+  Wayback Machine could not be reached, so all three were parsed from page
+  scans on archive.org — OCR, not transcription. Carus was checked word by word
+  against a second independent scan of the same edition; Old's translation is
+  set in a wider measure than its commentary, which is what separated them, and
+  all 81 break points were reviewed; Goddard exists in only one scan of the
+  1919 edition and so rests on a spell audit rather than a second witness. That
+  last one is the weakest of the three and the file says so.
+
+### Changed
+
+- **The Lin Yutang renewal search is done, and it came back against us.** The
+  *Catalog of Copyright Entries* for January–June 1976 records renewal R624226:
+  Lin Yutang renewed *The Wisdom of Laotse* himself on 14 January 1976, against
+  the original registration A28447 of 20 December 1948. It stays `restricted`,
+  now as a determined fact rather than as the safe reading, and it enters the
+  public domain on 1 January 2044. `RIGHTS.md` quotes the record. The search
+  named in that file was the Stanford database, which turned out to be behind a
+  JavaScript challenge; the Catalog of Copyright Entries — the fallback it
+  named, and the records Stanford indexes — answered instead.
+- Isabella Mears (1916) and Balfour (1884) were attempted and are **not** here.
+  Mears's 1916 scan loses 26 of its 81 chapter numerals with several chapters
+  run together; Balfour prints the Chinese alongside the English, which OCRs as
+  columns of stray glyphs, and his smaller-type remarks are not marked in the
+  text layer, so commentary leaks into the chapters. Both need the hOCR layer,
+  which carries the font sizes that would separate the two. `RIGHTS.md` records
+  where each stopped. Placing a chapter boundary by eye is a silent way to file
+  the wrong words under the right number, which is the one failure this corpus
+  cannot afford.
+- The smoke test counted ten translations in two places. It now reads the count
+  off the catalog, so adding a translation does not fail it.
+
 ## 1.5.0 — 2026-08-29
 
 ### Added

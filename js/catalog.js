@@ -27,8 +27,9 @@ export function getRandomTranslations(arr, num) {
  * third for translations published after 1930 and never checked for renewal,
  * which described Lin Yutang (1948) exactly. But it behaved identically to
  * RESTRICTED everywhere it mattered, and printed a hedge on the card that
- * gave a reader nothing to act on. Unverified means in copyright until proven
- * otherwise, so it is recorded as such. RIGHTS.md says what would settle it.
+ * gave a reader nothing to act on. That hedge is now moot in the one place it
+ * applied: the renewal was found, filed on 14 January 1976, so Lin Yutang is
+ * restricted as a fact rather than as a precaution. RIGHTS.md records it.
  *
  * This distinction is not decorative. Anything that reproduces a translation
  * away from this page — the card renderer that will feed the Instagram
@@ -151,6 +152,36 @@ export const translationCatalog = [
     rights: RESTRICTED,
     isbn: "9781556592904",
   },
+  {
+    slug: "carus",
+    name: "Paul Carus",
+    sortKey: "Carus",
+    year: 1913,
+    publisher: "Open Court Publishing",
+    citation: "Tze, L. (1913) The Canon of Reason and Virtue: Being Lao-tze's Tao Teh King. Translated by P. Carus. Chicago: The Open Court Publishing Co.",
+    rights: PUBLIC_DOMAIN,
+    freeText: "https://archive.org/details/canonofreasonvir00laoz",
+  },
+  {
+    slug: "goddard",
+    name: "Dwight Goddard",
+    sortKey: "Goddard",
+    year: 1919,
+    publisher: "Brentano's",
+    citation: "Laotzu (1919) Laotzu's Tao and Wu Wei. Translated by D. Goddard. New York: Brentano's.",
+    rights: PUBLIC_DOMAIN,
+    freeText: "https://archive.org/details/cu31924023066503",
+  },
+  {
+    slug: "old",
+    name: "Walter Gorn Old",
+    sortKey: "Old",
+    year: 1904,
+    publisher: "Philip Wellby",
+    citation: "Laotze (1904) The Book of the Simple Way. Translated by W. G. Old. London: Philip Wellby.",
+    rights: PUBLIC_DOMAIN,
+    freeText: "https://archive.org/details/bookofsimplewayo00laozrich",
+  },
 ];
 
 export const slugToName = Object.fromEntries(
@@ -171,7 +202,7 @@ export function catalogEntry(name) {
 
 /* The one question the rest of the project asks about rights. A caller that
  * wants to put a translation anywhere but this page has to get `true` here
- * first, and the honest answer for nine of the ten is no. */
+ * first, and the honest answer for nine of the thirteen is no. */
 export function quotableInFull(name) {
   const entry = catalogEntry(name);
   return Boolean(entry) && entry.rights === PUBLIC_DOMAIN;

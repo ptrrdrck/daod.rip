@@ -9,6 +9,7 @@ import path from "node:path";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { allTranslations } from "../js/catalog.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -351,10 +352,11 @@ async function run() {
   await page.locator("#select-all-translations-button").click();
   await page.waitForTimeout(150);
   check("selecting all shows every translation",
-    (await page.locator("#display .translation").count()) === 10,
+    (await page.locator("#display .translation").count()) === allTranslations.length,
     "got " + (await page.locator("#display .translation").count()));
   check("checkbox state matches the selection",
-    (await page.locator("#library-panel-translations input[type=checkbox]:checked").count()) === 10);
+    (await page.locator("#library-panel-translations input[type=checkbox]:checked").count())
+      === allTranslations.length);
   await closeModals(page);
 
   section("[7] selection survives a reload");
@@ -516,10 +518,13 @@ async function run() {
   check("unselected translations follow, alphabetically by last name",
     (await libraryOrder()).slice(3).join("|") === [
       "Stephen Addiss & Stanley Lombardo",
+      "Paul Carus",
       "Gia-Fu Feng & Jane English",
+      "Dwight Goddard",
       "Robert G. Henricks",
       "Ursula K. Le Guin",
       "Derek Lin",
+      "Walter Gorn Old",
       "Red Pine (Bill Porter)",
       "Lin Yutang",
     ].join("|"), JSON.stringify((await libraryOrder()).slice(3)));

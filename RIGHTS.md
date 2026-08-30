@@ -4,7 +4,7 @@ What Dao Drip may do with each translation it carries, and what anything built
 on top of it may not.
 
 This file exists because the site is about to stop being only a site. A
-comparison tool that shows ten translations side by side for study is one
+comparison tool that shows thirteen translations side by side for study is one
 thing; an account that reposts excerpts somewhere else, with money somewhere in
 the picture, is a different thing with a different answer. Keeping the two
 apart is easier if the difference is written down.
@@ -29,37 +29,47 @@ has checked". It would behave identically to `restricted` everywhere that
 matters, and printing the doubt on a card gives a reader nothing they can act
 on. Unverified means in copyright until shown otherwise.
 
-### The one worth checking
+### The one that was worth checking
 
-Lin Yutang's *The Wisdom of Laotse* (Modern Library, 1948) is recorded as
-`restricted`, and that is the safe reading rather than a determined one.
+Lin Yutang's *The Wisdom of Laotse* (Modern Library, 1948) is `restricted`,
+and that is now a determined answer rather than a safe reading.
 
 A US book published in 1948 kept its copyright only if a renewal was filed in
-the 28th year, which for 1948 means 1975 or 1976. If no renewal was filed, the
-translation is public domain and could join the quotable corpus — a real gain,
-since it would be the only modern-voiced translation the Instagram pipeline
-could use.
+the 28th year, which for 1948 means 1975 or 1976. **It was filed.** Searched on
+30 August 2026, in the renewals section of the *Catalog of Copyright Entries*,
+Third Series, Part 1 (Books and Pamphlets), January–June 1976:
 
-Settling it takes one search that has not been done: the **Stanford Copyright
-Renewal Database** (`exhibits.stanford.edu/copyrightrenewals`), which indexes
-Class A book renewals received between 1950 and 1992. The Catalog of Copyright
-Entries at `onlinebooks.library.upenn.edu/cce/` is the fallback.
+> **R624226.** The Wisdom of Laotse. Editor, introd., translation & notes:
+> Yutang Lin. NM: introd., translation & notes. © 20Dec48; A28447. Yutang Lin
+> (A); 14Jan76; R624226.
 
-Two things point at a renewal having been filed, so do not expect a win:
-Random House was a large publisher with a working renewals desk, and Greenwood
-Press reissued the book in 1979, which is hard to explain if the copyright had
-lapsed three years earlier. Check anyway — the cost is ten minutes and the
-upside is a translation.
+The original registration is A28447 of 20 December 1948; Lin Yutang renewed it
+himself on 14 January 1976, claiming the introduction, translation and notes as
+new matter. A renewed 1948 book runs 95 years from publication, so this one
+enters the public domain on 1 January 2044. It stays out of the quotable corpus
+until then.
 
-If the search comes back empty, change the status here and in
-`js/catalog.js`, and record the date of the search and what was found.
+The two signs that pointed this way were both right: Random House ran a working
+renewals desk, and the 1979 Greenwood reissue is exactly what a live copyright
+looks like.
 
-## Where the ten stand
+**A note on the source.** RIGHTS.md named the Stanford Copyright Renewal
+Database as the search to do and the Catalog of Copyright Entries as the
+fallback. It was the fallback that answered: `exhibits.stanford.edu` sits behind
+a JavaScript anti-bot challenge that a scripted fetch cannot pass, so the CCE
+volumes on archive.org were searched directly instead. That is the same records
+Stanford indexes, one step closer to the source, and the renewal number can be
+checked against either.
+
+## Where the thirteen stand
 
 | Translation | Year | Status |
 | --- | --- | --- |
 | James Legge | 1891 | `public-domain` |
-| Lin Yutang | 1948 | `restricted` (renewal unsearched — see above) |
+| Walter Gorn Old | 1904 | `public-domain` |
+| Paul Carus | 1913 | `public-domain` |
+| Dwight Goddard | 1919 | `public-domain` |
+| Lin Yutang | 1948 | `restricted` (renewed 14 Jan 1976 — see above) |
 | D. C. Lau | 1963 | `restricted` |
 | Gia-Fu Feng & Jane English | 1972 | `restricted` |
 | Stephen Mitchell | 1988 | `restricted` |
@@ -69,8 +79,51 @@ If the search comes back empty, change the status here and in
 | Red Pine (Bill Porter) | 1996 | `restricted` |
 | Ursula K. Le Guin | 1997 | `restricted` |
 
-One of ten is unambiguously free to republish. That number is the reason the
-next section exists.
+Four of thirteen are free to republish, up from one. That is the difference
+between an Instagram account that can run and one that cannot.
+
+### Where the public-domain text came from
+
+sacred-texts.com is unreachable from a scripted fetch — it sits behind a
+Cloudflare challenge — and the Wayback Machine could not be reached either. All
+three new translations were therefore parsed from page scans on archive.org,
+which is OCR rather than a transcription, so each was checked rather than
+trusted:
+
+- **Carus (1913)** was parsed from one scan and then compared word by word
+  against a second, independent scan of the same edition. Seventeen
+  disagreements remained; in every one of them the second scan was the one in
+  error. Note that the 1913 *Canon of Reason and Virtue* is a genuine revision
+  of Carus's 1898 translation, not a reprint — chapter 2 is rewritten — so 1913
+  is the date recorded.
+- **Old (1904)** was parsed from the cleaner of two scans. Its commentary is set
+  in a narrower measure than the translation, which is what separates the two;
+  every one of the 81 break points was checked by eye against the line that
+  triggered it.
+- **Goddard (1919)** survives in a single scan of that edition, so there was
+  nothing to diff it against. Its OCR damage is a small, repeating set of
+  letter-shape confusions (`ll` read as `U`, `li` as `h`, `un` as `im`), and
+  each was repaired only where exactly one candidate was a word the dictionary
+  knew; the rest were read off the scan by hand. This one rests on a spell audit
+  rather than on a second witness, which is a weaker guarantee — worth knowing
+  if a reading ever looks wrong.
+
+### The two that are not here yet
+
+**Isabella Mears (1916)** and **Balfour (1884)** were attempted and left out.
+
+Mears's 1916 scan loses 26 of its 81 chapter numerals, and several chapters run
+together with no recoverable boundary; her own revised 1922 edition scans better
+but interleaves marginal Chinese glosses into the text. Balfour prints the
+Chinese alongside the English, which OCRs as columns of stray glyphs, and his
+smaller-type remarks are not reliably marked in the text layer, so commentary
+leaks into the chapters.
+
+Both are recoverable from the hOCR layer, which carries font size and position
+and would separate translation from commentary properly. Neither was worth
+guessing at: a chapter boundary placed by eye is a silent way to put the wrong
+words under the right number, and the whole point of this corpus is that it can
+be trusted.
 
 ## The rule for anything downstream
 
@@ -135,6 +188,6 @@ then relax the status of that translation.
 ## Not legal advice
 
 The statuses above are read off publication dates and the US public-domain
-line. The only title where a renewal search would change the answer is Lin
-Yutang, and that search has not been done. Anything that puts this text on
+line, plus the one renewal search that could have changed an answer — Lin
+Yutang, settled above and settled against us. Anything that puts this text on
 paper, or behind a price, is worth an hour of a lawyer's time first.
