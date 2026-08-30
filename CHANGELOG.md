@@ -37,6 +37,34 @@ differ. It counts how many times the shape of stored data has changed, and
 changing it wipes every reader's saved state. It is not a release version and
 should never be synced to this one.
 
+## 1.6.1 — 2026-08-30
+
+### Fixed
+
+- **A saved translation selection naming something the corpus no longer holds
+  froze the whole page.** A card renders `dao[name][chapter]`, so one unknown
+  name threw before the first card was drawn; that exception went up through
+  `main.js` as it was still evaluating, so no event listener was ever attached.
+  The page sat on its `Fetching translations...` placeholder with every control
+  dead — the About link kept working only because it is a plain anchor that
+  needs no JavaScript. A stored selection is now read as a suggestion and
+  filtered against the corpus before anything renders.
+
+  A selection is the one piece of stored state that names something in the
+  corpus, which is what made it the one that could go stale. The same path also
+  threw on a stored value that was not valid JSON, or was valid JSON but not an
+  array; both are now survivable.
+
+  A selection emptied by that filtering falls back to a random three, on the
+  grounds that every name in it has gone stale and a blank page is not what the
+  reader asked for. A selection that was *saved* empty is still honoured —
+  deselecting everything is a real thing to have done, and the empty state is a
+  real screen.
+
+- The smoke test now covers all four cases plus the deliberate-empty one, in
+  their own browser contexts so seeded state cannot leak into the rest of the
+  run. 115 checks, up from 105.
+
 ## 1.6.0 — 2026-08-30
 
 ### Added

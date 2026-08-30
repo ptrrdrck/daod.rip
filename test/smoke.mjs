@@ -322,6 +322,47 @@ async function run() {
     !(await soloPage.locator("#history-nav").isVisible()));
   await soloContext.close();
 
+  /* A saved selection is the one piece of stored state that names something
+   * in the corpus, so it is the one that can go stale — a translation renamed
+   * or dropped leaves a name that `dao` no longer has. Rendering a card reads
+   * `dao[name][chapter]`, so an unknown name threw before the first card was
+   * drawn, took main.js down with it, and left the page frozen on its
+   * placeholder with every control dead. Each of these used to do that. */
+  for (const [what, stored] of [
+    ["an unknown translation", JSON.stringify(["James Legge", "Some Old Name"])],
+    ["a selection that is entirely unknown", JSON.stringify(["Gone", "Also Gone"])],
+    ["a stored value that is not JSON", "{not json"],
+    ["a stored value that is not an array", '"a string"'],
+  ]) {
+    const staleContext = await browser.newContext();
+    const stalePage = await staleContext.newPage();
+    const staleErrors = [];
+    stalePage.on("pageerror", (e) => staleErrors.push(e.message));
+    await stalePage.goto(base + "/index.html", { waitUntil: "networkidle" });
+    await stalePage.evaluate(
+      (v) => localStorage.setItem("selectedTranslations", v), stored);
+    staleErrors.length = 0;
+    await stalePage.reload({ waitUntil: "networkidle" });
+    check("the page survives " + what,
+      staleErrors.length === 0, staleErrors.join("; "));
+    check("cards still render past " + what,
+      (await stalePage.locator("#display .translation").count()) > 0);
+    await staleContext.close();
+  }
+
+  /* Deselecting everything is a real thing to have done, so an empty
+   * selection is honoured rather than repaired into a random three. */
+  const emptyContext = await browser.newContext();
+  const emptyPage = await emptyContext.newPage();
+  await emptyPage.goto(base + "/index.html", { waitUntil: "networkidle" });
+  await emptyPage.evaluate(() => localStorage.setItem("selectedTranslations", "[]"));
+  await emptyPage.reload({ waitUntil: "networkidle" });
+  check("an empty selection is left empty",
+    (await emptyPage.locator("#display .translation").count()) === 0);
+  check("an empty selection still shows the empty state",
+    (await emptyPage.locator("#display .empty-state").count()) === 1);
+  await emptyContext.close();
+
   /* Back to the newest chapter for the sections that follow. */
   await page.locator("#drip-button").click();
   await page.waitForTimeout(150);
