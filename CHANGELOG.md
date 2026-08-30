@@ -37,6 +37,55 @@ differ. It counts how many times the shape of stored data has changed, and
 changing it wipes every reader's saved state. It is not a release version and
 should never be synced to this one.
 
+## 1.6.1 — 2026-08-30
+
+Tooling only. Nothing about the site changes for a reader.
+
+### Added
+
+- `tools/card.html` and `tools/render.mjs`: the card renderer the Instagram
+  account will be built on. `npm run card -- --ch 11 --t legge` writes a
+  1080x1350 PNG into `cards/`. The card is a real page rather than a string
+  inside the renderer, so `tools/card.html?ch=11&t=legge` opens in a browser
+  and the design can be worked on there; it reads the corpus straight out of
+  `dao.js` and `catalog.js`, so there is no second copy of the text to drift.
+- **The rights gate is now load-bearing rather than documented.** Both the
+  page and the renderer call `quotableInFull`, and the renderer stops if they
+  ever disagree. Asking for an in-copyright translation fails with the list of
+  the four that are allowed and a pointer to `RIGHTS.md`. There is no flag that
+  overrides it: putting one of the other nine on a card means changing the
+  corpus and writing down why.
+- Chapters run from about forty words to two hundred and fifty, so the card
+  binary-searches the largest whole pixel size that still fits and records it.
+  Below 32px a card is full but not readable at the size Instagram serves it —
+  roughly 12pt on a phone — so the renderer warns, and `--strict` fails, which
+  is what a scheduled job should use. `--audit` measures every quotable chapter
+  without writing anything: 323 of the 324 fit at 32px or better, and Legge's
+  chapter 38 at 31px is the only one that does not.
+- The renderer refuses to draw a chapter containing a character the vendored
+  font does not carry. A missing glyph renders as a blank box, which a
+  screenshot captures perfectly happily, so it is checked before drawing rather
+  than found in a published post.
+- Newsreader is vendored into `tools/fonts/` under its OFL licence, latin
+  subset, roman and italic. A webfont fetched at render time is a network
+  dependency that fails by quietly falling back to whatever the machine has
+  installed, which would make a card look different on a laptop and on a CI
+  runner. The subset covers every character in all four public-domain
+  translations.
+
+### Changed
+
+- `tools/browser.mjs` launches Chromium for both the smoke test and the
+  renderer. When the installed Playwright pins a browser revision the machine
+  does not carry — a prebuilt container, a CI runner, anywhere the browsers
+  were installed separately from `npm install` — the normal launch fails with
+  "Executable doesn't exist". This tries the normal launch first and only then
+  looks under `PLAYWRIGHT_BROWSERS_PATH` for the newest Chromium that is
+  actually there. `PLAYWRIGHT_CHROMIUM_EXECUTABLE` names one outright. `npm
+  test` now runs in this project's container without editing the test.
+- `cards/` is ignored. Rendered output is a build artifact, and the plan is for
+  it to be served from a separate public assets repository rather than this one.
+
 ## 1.6.0 — 2026-08-30
 
 ### Added

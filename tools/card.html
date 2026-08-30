@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Dao Drip card</title>
+
+<!--
+  One post card, at Instagram's 4:5.
+
+  This is a real page rather than a string inside the renderer, so the design
+  can be worked on in a browser: serve the repository and open
+
+    /tools/card.html?ch=11&t=legge
+
+  It reads the corpus straight out of js/dao.js and js/catalog.js, which is
+  what keeps a card honest — there is no second copy of the text to drift.
+
+  The rights check is here as well as in render.mjs. The renderer's is the one
+  that matters, because it is what a pipeline calls; this one exists so that
+  opening the page by hand cannot produce something that looks postable from a
+  translation that is not.
+-->
+
+<style>
+  /* Vendored rather than linked. A card has to render identically on a laptop
+   * and on a CI runner, and a webfont fetched at render time is a network
+   * dependency that fails quietly by falling back to whatever is installed.
+   * The latin subset covers every character in the public-domain corpus;
+   * tools/render.mjs re-checks that rather than assuming it. */
+  @font-face {
+    font-family: "Newsreader";
+    font-style: normal;
+    font-weight: 200 800;
+    font-display: block;
+    src: url("fonts/newsreader-latin.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Newsreader";
+    font-style: italic;
+    font-weight: 200 800;
+    font-display: block;
+    src: url("fonts/newsreader-latin-italic.woff2") format("woff2");
+  }
+
+  :root {
+    /* daod.rip's own ink and paper, so the feed and the site read as one
+     * object rather than two designs that happen to share a subject. */
+    --ink: #001436;
+    --paper: #fff1e0;
+    --paper-deep: #f7e6d2;
+    --rule: #d8c4ae;
+
+    --w: 1080px;
+    --h: 1350px;
+    --pad: 96px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #8a8a8a;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .card {
+    width: var(--w);
+    height: var(--h);
+    padding: var(--pad);
+    background: linear-gradient(170deg, var(--paper) 0%, var(--paper-deep) 100%);
+    color: var(--ink);
+    font-family: "Newsreader", Georgia, serif;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .eyebrow {
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    flex: 0 0 auto;
+  }
+
+  /* The text is centred in whatever room is left once the eyebrow and the
+   * footer have taken theirs, so a four-line chapter and a thirty-line one
+   * both sit composed rather than top-aligned with a hole underneath. */
+  .body {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    padding: 76px 0;
+  }
+
+  .text {
+    width: 100%;
+    line-height: 1.42;
+    text-wrap: pretty;
+    hyphens: none;
+  }
+
+  .foot {
+    flex: 0 0 auto;
+    border-top: 1px solid var(--rule);
+    padding-top: 28px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .who {
+    font-size: 28px;
+    font-style: italic;
+  }
+
+  .who .year {
+    font-style: normal;
+    opacity: 0.55;
+    margin-left: 10px;
+  }
+
+  .site {
+    font-size: 24px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+
+  /* What a card looks like when the corpus says no. Deliberately not
+   * postable: no text, and it says why. */
+  .refusal {
+    margin: auto;
+    max-width: 22em;
+    text-align: center;
+    font-size: 40px;
+    line-height: 1.4;
+  }
+
+  .refusal strong { display: block; margin-bottom: 0.5em; }
+  .refusal span { font-size: 26px; opacity: 0.6; }
+</style>
+</head>
+<body>
+
+<div class="card" id="card"></div>
+
+<script type="module">
+  import { dao } from "../js/dao.js";
+  import { catalogEntry, quotableInFull, totalChapters } from "../js/catalog.js";
+
+  const params = new URLSearchParams(location.search);
+  const card = document.getElementById("card");
+  const root = document.documentElement;
+
+  for (const key of ["w", "h", "pad"]) {
+    const value = params.get(key);
+    if (value) {
+      root.style.setProperty("--" + key, parseInt(value, 10) + "px");
+    }
+  }
+
+  function refuse(headline, detail) {
+    card.innerHTML =
+      '<p class="refusal"><strong></strong><span></span></p>';
+    card.querySelector("strong").textContent = headline;
+    card.querySelector("span").textContent = detail;
+    root.dataset.refused = "true";
+    root.dataset.ready = "1";
+  }
+
+  const slug = params.get("t") || "legge";
+  const chapter = parseInt(params.get("ch") || "1", 10);
+
+  const entry = [...Object.keys(dao)]
+    .map(catalogEntry)
+    .find((e) => e && e.slug === slug);
+
+  if (!entry) {
+    refuse("Unknown translation", `No catalog entry with the slug "${slug}".`);
+  } else if (!Number.isInteger(chapter) || chapter < 1 || chapter > totalChapters) {
+    refuse("No such chapter", `Chapter ${params.get("ch")} is outside 1–${totalChapters}.`);
+  } else if (!quotableInFull(entry.name)) {
+    /* The whole reason this file asks. See RIGHTS.md. */
+    refuse(
+      "Not quotable off the site",
+      `${entry.name} is ${entry.rights}. Only public-domain translations may be rendered to a card.`
+    );
+  } else {
+    render(entry, chapter);
+  }
+
+  function render(entry, chapter) {
+    card.innerHTML =
+      '<p class="eyebrow"></p>' +
+      '<div class="body"><p class="text"></p></div>' +
+      '<div class="foot"><span class="who"><span class="name"></span>' +
+      '<span class="year"></span></span><span class="site">daod.rip</span></div>';
+
+    card.querySelector(".eyebrow").textContent = "Chapter " + chapter;
+    card.querySelector(".text").textContent = dao[entry.name][chapter - 1];
+    card.querySelector(".name").textContent = entry.name;
+    card.querySelector(".year").textContent = entry.year;
+
+    document.fonts.ready.then(() => {
+      const fitted = fit(
+        card.querySelector(".text"),
+        card.querySelector(".body")
+      );
+      root.dataset.fitted = String(fitted);
+      root.dataset.ready = "1";
+    });
+  }
+
+  /* Chapters run from about forty words to about two hundred and fifty, so a
+   * fixed size either overflows the long ones or wastes the short ones. Binary
+   * search the largest whole pixel size that still fits, and record it: a size
+   * near the floor means the card is technically full but not really readable
+   * at the size Instagram shows it, and render.mjs decides what to do about
+   * that rather than this file silently shipping it. */
+  function fit(textEl, boxEl) {
+    const MIN = 16;
+    const MAX = 76;
+    let low = MIN;
+    let high = MAX;
+    let best = MIN;
+    while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+      textEl.style.fontSize = mid + "px";
+      if (textEl.scrollHeight <= boxEl.clientHeight) {
+        best = mid;
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+    textEl.style.fontSize = best + "px";
+    return best;
+  }
+</script>
+</body>
+</html>

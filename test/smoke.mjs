@@ -8,8 +8,8 @@ import http from "node:http";
 import path from "node:path";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { chromium } from "playwright";
 import { allTranslations } from "../js/catalog.js";
+import { launchChromium } from "../tools/browser.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -129,7 +129,7 @@ async function historySlotMismatches(page) {
 async function run() {
   const server = await startServer();
   const base = "http://127.0.0.1:" + server.address().port;
-  const browser = await chromium.launch();
+  const browser = await launchChromium();
   const context = await browser.newContext();
   const page = await context.newPage();
 

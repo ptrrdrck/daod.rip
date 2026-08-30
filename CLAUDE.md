@@ -62,6 +62,7 @@ npm install     # playwright and eslint, used only for checks
 npm test        # browser smoke test, starts its own server on a free port
 npm run lint    # eslint with no-undef
 npm run corpus  # dao.js and the catalog still agree; 81 chapters each
+npm run card -- --ch 11 --t legge    # one post card into cards/
 python3 -m http.server 8000    # to look at the site
 ```
 
@@ -107,6 +108,18 @@ Below them:
 
 `test/smoke.mjs` is the smoke test. `tools/ingest.mjs` checks the corpus and
 gates new translations joining it.
+
+`tools/card.html` is one Instagram card, a real page you can open in a browser
+to work on the design; `tools/render.mjs` drives it in Chromium and writes the
+PNG. Both call `quotableInFull`, and the renderer stops if the two disagree.
+`--audit` measures every quotable chapter without writing anything, which is
+how you find out what a card can actually hold: 323 of the 324 fit at 32px or
+better, and Legge's chapter 38 is the one that does not.
+
+Both the test and the renderer launch through `tools/browser.mjs`, which falls
+back to a browser under `PLAYWRIGHT_BROWSERS_PATH` when the installed
+Playwright pins a revision the machine does not have. Set
+`PLAYWRIGHT_CHROMIUM_EXECUTABLE` to name one outright.
 
 ## Rights
 

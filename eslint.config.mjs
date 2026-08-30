@@ -29,12 +29,14 @@ export default [
     rules: { "no-undef": "error", "no-unused-vars": "warn" },
   },
   {
-    /* tools/ runs in Node only: it reads the corpus modules and prints. */
+    /* tools/ is Node, but render.mjs drives a browser and the bodies of its
+     * page.evaluate() and waitForFunction() callbacks run in the page, so
+     * both sets are in play here for the same reason they are in test/. */
     files: ["tools/**/*.mjs"],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "module",
-      globals: nodeGlobals,
+      globals: { ...nodeGlobals, ...browserGlobals },
     },
     rules: { "no-undef": "error", "no-unused-vars": "warn" },
   },
