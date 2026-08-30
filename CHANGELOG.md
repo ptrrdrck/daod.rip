@@ -37,6 +37,45 @@ differ. It counts how many times the shape of stored data has changed, and
 changing it wipes every reader's saved state. It is not a release version and
 should never be synced to this one.
 
+## 1.6.2 — 2026-08-30
+
+### Fixed
+
+- **The three new translations could be selected from the library and then
+  refuse to appear.** The library list, Select All and share links were all
+  built from `translationCatalog` in `js/catalog.js`, while a card renders
+  `dao[name][chapter]` out of `js/dao.js`. Those are two files with independent
+  cache lifetimes, so a reader mid-deploy could hold a new catalog and the
+  previous dao — and then be offered three translations the text could not
+  back. Clicking one threw and rendered nothing.
+
+  The site now offers only what both files agree on. `carriedEntries` in
+  `js/catalog.js` is that intersection, and the library list, Select All, share
+  links, search, the random opening three and the filtering of a stored
+  selection all come from it. A translation the catalog describes but `dao` has
+  not got is not offered at all, and the console says which ones and why rather
+  than leaving a reader with a row that does nothing.
+
+  `translationCatalog` stays unfiltered on purpose: `tools/ingest.mjs` has to
+  see what was actually written down in order to report an entry with no text
+  behind it.
+
+  The practical consequence is worth knowing: after a deploy that adds a
+  translation, a returning reader may not see it until both files refresh — a
+  hard reload, or the Pages cache window. That is now a translation quietly
+  missing for a few minutes instead of a page that breaks when you touch it.
+
+- `CLAUDE.md` gains an **Adding a translation** section: the two files that
+  move together, the intersection rule and why it exists, how the pair comes
+  apart in a browser, the release checklist, and the two things this project's
+  tests kept missing — a returning reader's stored state, and a mismatched pair
+  of files.
+
+- The smoke test serves the whole site a second time under `/stale/`, with a
+  `dao.js` three translations short of the catalog, reproducing the mismatch on
+  purpose. Reverting the fix turns those four checks red. 119 checks, up
+  from 115.
+
 ## 1.6.1 — 2026-08-30
 
 ### Fixed

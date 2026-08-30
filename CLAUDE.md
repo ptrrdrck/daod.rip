@@ -108,6 +108,74 @@ Below them:
 `test/smoke.mjs` is the smoke test. `tools/ingest.mjs` checks the corpus and
 gates new translations joining it.
 
+## Adding a translation
+
+A translation lives in **two files that must move together**, and the way they
+can come apart is not obvious, so this is written down rather than left to be
+rediscovered.
+
+- `js/dao.js` holds the **text**: 81 chapters under the translator's name.
+- `js/catalog.js` holds every **fact about** that text: slug, sort key, year,
+  publisher, citation, rights, and the links.
+
+`npm run corpus` is what makes the two agree, and it is not optional. A
+catalog entry with no text behind it, or text with no entry, fails it.
+
+### The rule the runtime follows
+
+The site offers **only the translations both files agree on**. `carriedEntries`
+in `js/catalog.js` is that intersection, and everything a reader can touch is
+built from it: the library list, Select All, share links, search, the random
+opening three, and the filtering of a stored selection. `translationCatalog`
+itself is deliberately left unfiltered so `tools/ingest.mjs` can still see what
+was actually written down and report the discrepancy.
+
+This exists because a card renders `dao[name][chapter]`. Offer a library row
+the text cannot back, and clicking it throws — which does not merely blank one
+card. If it happens while `main.js` is still evaluating, no event listener is
+ever attached and the whole page sits dead on its `Fetching translations...`
+placeholder. That is a real failure that reached production, twice.
+
+### Why the two files come apart
+
+They reach the browser as **two separate files with independent cache
+lifetimes**. A deploy that adds a translation changes both, so for as long as a
+reader holds one new and one old, the pair disagrees — and `dao.js` is by far
+the larger, so it is the one most likely to be served from cache while the
+small `catalog.js` revalidates. The corpus check cannot see this, because in
+the repository the two always agree.
+
+The site now degrades instead of breaking: the unpaired translations are simply
+not offered, and `catalog.js` logs which ones and why. **The consequence to
+expect after adding a translation is that it may not appear for a returning
+reader until both files refresh** — a hard reload, or GitHub Pages' cache
+window. That is the designed behaviour, not a new bug.
+
+### The checklist
+
+1. Add the text to `js/dao.js` and the entry to `js/catalog.js`.
+2. `npm run corpus` — dao and the catalog agree, 81 chapters each.
+3. `npm run lint`.
+4. `npm test` — includes a `/stale/` page that serves a `dao.js` three
+   translations short of the catalog, which is the mismatch above reproduced on
+   purpose. If those checks fail, the intersection rule has been broken.
+5. Bump the version in the three places, per **Versioning** above.
+
+### What testing this needs, and what it missed
+
+Both production failures got through a green suite because every check started
+from a **fresh profile against a matched pair of files**. Neither of the two
+things that actually break is visible from there:
+
+- **A returning reader's stored state.** A saved selection is the one piece of
+  stored data that names something in the corpus, so it is the one that can go
+  stale. Seed `localStorage` and reload; do not assert only on a clean boot.
+- **A mismatched pair.** Serve the site with one file behind the other, which
+  is what `/stale/` in `test/smoke.mjs` does.
+
+Both are covered now. Anything that changes which translations exist, or how
+they are looked up, should keep them covered.
+
 ## Rights
 
 `RIGHTS.md` is the rule, and it is load-bearing rather than decorative. Nine of

@@ -7,7 +7,7 @@
  * main.js actions.
  */
 
-import { allTranslations, totalChapters } from "./catalog.js";
+import { carriedTranslations, totalChapters } from "./catalog.js";
 import { dao } from "./dao.js";
 import { escapeHtml } from "./util.js";
 
@@ -40,7 +40,7 @@ export function searchTranslations(query) {
   const results = [];
   for (let chapterIndex = 0; chapterIndex < totalChapters; chapterIndex++) {
     const matches = [];
-    allTranslations.forEach((translation) => {
+    carriedTranslations.forEach((translation) => {
       const snippet = extractSnippet(dao[translation][chapterIndex], query);
       if (snippet !== null) {
         matches.push({ translation, snippet });
@@ -78,7 +78,7 @@ export function renderSearchResults(results, query) {
         `<div class="search-result" data-chapter-index="${chapterIndex}" tabindex="0" role="button">` +
         `<div class="search-result-header">` +
         `<span>Chapter ${chapterIndex + 1}</span>` +
-        `<span class="search-result-count">${matches.length} of ${allTranslations.length} translations</span>` +
+        `<span class="search-result-count">${matches.length} of ${carriedTranslations.length} translations</span>` +
         `</div>` +
         snippetsHtml +
         `</div>`

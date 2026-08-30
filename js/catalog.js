@@ -184,16 +184,57 @@ export const translationCatalog = [
   },
 ];
 
+/* The entries this site can actually show.
+ *
+ * `translationCatalog` above is the authored list — what the catalog *claims*
+ * — while `dao` is the text that exists. `npm run corpus` makes the two agree
+ * in the repository, but the browser holds them as two separate files with
+ * independent cache lifetimes, so a reader mid-deploy can have a new
+ * catalog.js and a dao.js from the previous one. Everything the reader can
+ * touch is therefore built from the intersection rather than from the catalog
+ * alone: the library list, select-all, share links and the random opening
+ * three. A translation the catalog describes but `dao` has not got is simply
+ * not offered.
+ *
+ * The alternative is worse than it sounds. A card renders `dao[name][chapter]`,
+ * so offering a row the text cannot back means a reader clicks a translation
+ * and gets a thrown exception and a blank page instead of a card. That is
+ * exactly what a half-updated cache used to produce.
+ *
+ * `translationCatalog` is deliberately left unfiltered: `tools/ingest.mjs`
+ * verifies it against `dao` and has to see what was actually written down in
+ * order to report an entry that has no text behind it. */
+const carriedEntries = translationCatalog.filter((entry) =>
+  Object.prototype.hasOwnProperty.call(dao, entry.name)
+);
+
+export const carriedTranslations = carriedEntries.map(({ name }) => name);
+
+/* A mismatch is always a mistake — a half-updated cache, or a catalog entry
+ * added without its text. Say so once rather than letting it pass quietly:
+ * the symptom on its own (a translation that will not appear) gives whoever
+ * hits it nothing to go on. */
+if (carriedEntries.length !== translationCatalog.length) {
+  const missing = translationCatalog
+    .filter((entry) => !Object.prototype.hasOwnProperty.call(dao, entry.name))
+    .map(({ name }) => name);
+  console.warn(
+    "Dao Drip: the catalog describes translations dao.js has not got, so they " +
+      "are not being offered: " + missing.join(", ") +
+      ". If this is a browser, a hard reload should pair the two files again."
+  );
+}
+
 export const slugToName = Object.fromEntries(
-  translationCatalog.map(({ slug, name }) => [slug, name])
+  carriedEntries.map(({ slug, name }) => [slug, name])
 );
 
 export const nameToSlug = Object.fromEntries(
-  translationCatalog.map(({ slug, name }) => [name, slug])
+  carriedEntries.map(({ slug, name }) => [name, slug])
 );
 
 const byName = Object.fromEntries(
-  translationCatalog.map((entry) => [entry.name, entry])
+  carriedEntries.map((entry) => [entry.name, entry])
 );
 
 export function catalogEntry(name) {
@@ -247,7 +288,7 @@ export function buyUrl(name) {
 /* Where an unselected translation sits in the library list. Spaces are folded
  * out before comparing so it reads letter by letter, the way a bookshelf does:
  * Legge comes before Le Guin. */
-export const alphabeticalTranslations = translationCatalog
+export const alphabeticalTranslations = carriedEntries
   .slice()
   .sort((a, b) =>
     a.sortKey.replace(/\s+/g, "").localeCompare(b.sortKey.replace(/\s+/g, ""))
