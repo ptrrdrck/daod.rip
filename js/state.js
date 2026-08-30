@@ -13,7 +13,7 @@
  */
 
 import {
-  allTranslations,
+  carriedTranslations,
   getRandomTranslations,
   getSharedTranslationsFromUrl,
 } from "./catalog.js";
@@ -46,11 +46,11 @@ function readStoredSelection() {
     stored = null;
   }
   if (!Array.isArray(stored)) {
-    return getRandomTranslations(allTranslations, 3);
+    return getRandomTranslations(carriedTranslations, 3);
   }
-  const known = stored.filter((name) => allTranslations.includes(name));
+  const known = stored.filter((name) => carriedTranslations.includes(name));
   if (known.length === 0 && stored.length > 0) {
-    return getRandomTranslations(allTranslations, 3);
+    return getRandomTranslations(carriedTranslations, 3);
   }
   return known;
 }

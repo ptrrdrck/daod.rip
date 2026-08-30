@@ -22,9 +22,37 @@ const MIME = {
   ".ico": "image/x-icon",
 };
 
+/* dao.js and catalog.js reach the browser as two files with independent cache
+ * lifetimes, so a reader mid-deploy can hold a new catalog and the previous
+ * dao. Serving the site under /stale/ with the newest three translations cut
+ * out of dao.js reproduces that exactly, which is the only way to test it:
+ * the repository itself always has the two in agreement, because
+ * `npm run corpus` is what keeps them that way. */
+const STALE_PREFIX = "/stale/";
+let staleDao;
+async function staleDaoModule() {
+  if (!staleDao) {
+    const { dao } = await import("../js/dao.js");
+    const { translationCatalog } = await import("../js/catalog.js");
+    const dropped = translationCatalog.slice(-3).map(({ name }) => name);
+    const kept = Object.fromEntries(
+      Object.entries(dao).filter(([name]) => !dropped.includes(name))
+    );
+    staleDao = "export const dao = " + JSON.stringify(kept) + ";\n";
+  }
+  return staleDao;
+}
+
 function startServer() {
   const server = http.createServer(async (req, res) => {
-    const urlPath = decodeURIComponent(new URL(req.url, "http://x").pathname);
+    let urlPath = decodeURIComponent(new URL(req.url, "http://x").pathname);
+    const stale = urlPath.startsWith(STALE_PREFIX);
+    if (stale) urlPath = urlPath.slice(STALE_PREFIX.length - 1);
+    if (stale && urlPath === "/js/dao.js") {
+      res.writeHead(200, { "content-type": MIME[".js"] });
+      res.end(await staleDaoModule());
+      return;
+    }
     const filePath = path.join(ROOT, urlPath === "/" ? "index.html" : urlPath);
     if (!filePath.startsWith(ROOT)) {
       res.writeHead(403).end();
@@ -362,6 +390,49 @@ async function run() {
   check("an empty selection still shows the empty state",
     (await emptyPage.locator("#display .empty-state").count()) === 1);
   await emptyContext.close();
+
+  /* A reader holding a new catalog.js and the previous dao.js used to be
+   * offered the new translations in the library and then get a thrown
+   * exception and a blank display on clicking one, because the library is
+   * built from the catalog while a card renders `dao[name][chapter]`. The
+   * site now offers only what both files agree on. */
+  const staleContext = await browser.newContext();
+  const stalePage = await staleContext.newPage();
+  const staleErrors = [];
+  const staleWarnings = [];
+  stalePage.on("pageerror", (e) => staleErrors.push(String(e)));
+  stalePage.on("console", (m) => {
+    if (m.type() === "error") staleErrors.push("console: " + m.text());
+    if (m.type() === "warning") staleWarnings.push(m.text());
+  });
+  await stalePage.goto(base + "/stale/index.html", { waitUntil: "networkidle" });
+  const carried = allTranslations.length - 3;
+  /* Checked before anything is clicked: without the filter the page throws on
+   * the way up and every interaction below would time out instead of saying
+   * what went wrong. */
+  check("a dao.js behind the catalog throws nothing",
+    staleErrors.length === 0, staleErrors.join(" | "));
+  check("a dao.js behind the catalog says so in the console",
+    staleWarnings.some((w) => w.includes("dao.js has not got")),
+    staleWarnings.join(" | "));
+  const staleNames = await stalePage
+    .locator("#translation-list .translation-row")
+    .evaluateAll((rows) => rows.map((r) => r.dataset.translation));
+  check("a dao.js behind the catalog offers only what it can render",
+    staleNames.length === carried,
+    staleNames.length + " rows, expected " + carried + ": " + staleNames.join(", "));
+  if (staleErrors.length === 0 && staleNames.length === carried) {
+    await openLibrary(stalePage, "translations");
+    await stalePage.locator("#select-all-translations-button").click();
+    await stalePage.waitForTimeout(200);
+    await closeModals(stalePage);
+    check("selecting all of a short dao.js still renders every card",
+      (await stalePage.locator("#display .translation").count()) === carried);
+  } else {
+    check("selecting all of a short dao.js still renders every card", false,
+      "skipped: the page did not come up cleanly");
+  }
+  await staleContext.close();
 
   /* Back to the newest chapter for the sections that follow. */
   await page.locator("#drip-button").click();
