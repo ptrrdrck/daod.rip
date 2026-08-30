@@ -26,12 +26,38 @@ export function translationOrderIsShuffled() {
   return localStorage.getItem(TRANSLATION_ORDER_KEY) === "shuffled";
 }
 
+/* What was saved is not necessarily what the corpus still holds: a reader can
+ * come back to a selection naming a translation that has since been renamed or
+ * dropped. A card renders `dao[name][chapter]`, so one unknown name used to
+ * throw before a single card was drawn, which killed main.js on its way up and
+ * left the page frozen on its placeholder with nothing clickable. A stored
+ * selection is therefore read as a suggestion and filtered against the corpus.
+ *
+ * An empty result is only honoured if that is what was actually saved —
+ * deselecting everything is a real thing to have done, and the empty state is
+ * a real screen. A selection emptied by filtering means every name in it has
+ * gone stale, and a reader is better served by three translations than by a
+ * blank page they did not ask for. */
+function readStoredSelection() {
+  let stored;
+  try {
+    stored = JSON.parse(localStorage.getItem("selectedTranslations"));
+  } catch {
+    stored = null;
+  }
+  if (!Array.isArray(stored)) {
+    return getRandomTranslations(allTranslations, 3);
+  }
+  const known = stored.filter((name) => allTranslations.includes(name));
+  if (known.length === 0 && stored.length > 0) {
+    return getRandomTranslations(allTranslations, 3);
+  }
+  return known;
+}
+
 export const state = {
   /* Cards appear in this order, and the library list shows the same one. */
-  selectedTranslations:
-    getSharedTranslationsFromUrl() ||
-    JSON.parse(localStorage.getItem("selectedTranslations")) ||
-    getRandomTranslations(allTranslations, 3),
+  selectedTranslations: getSharedTranslationsFromUrl() || readStoredSelection(),
 
   readChapters: JSON.parse(localStorage.getItem("readChapters")) || [],
   bookmarkedChapters:

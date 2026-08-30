@@ -1,6 +1,6 @@
 {
   "name": "daod-rip",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "private": true,
   "description": "Read English translations of the Daodejing side by side.",
   "type": "module",
